@@ -1,0 +1,5 @@
+aiortc
+websockets
+pandas
+matplotlib
+customtkinter
