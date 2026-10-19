@@ -1,19 +1,40 @@
-import asyncio,json,time,requests
+import asyncio,json,time,requests,redis
 import pandas as pd
 import websockets as ws
 
 SERVER = "0x1.lxsdev.net"
 
 class Database:
-    def __init__(self, host=False):
+    def __init__(self, host:bool=False):
         self.host = host
         self.connected = False
-        self.data = None
+        self.data = redis.Redis("localhost", port=6379, decode_responses=True)
         self.webs = None
         self.code = None
         self.token = None
         self.nextSignalingRoomExtendTime = None
         self.signalingQueue = asyncio.Queue()
+        self.connections = {}
+
+    def setValue(self,key:str,value):
+        if self.host:
+            pass
+        else:
+            pass
+
+    def getValue(self,key:str):
+        if self.host:
+            pass
+        else:
+            pass
+
+    def addDataframe(self,name:str,dataframe):
+        if not self.host:
+            return False
+
+    def removeDataframe(self,name:str):
+        if not self.host:
+            return False
 
     async def signalingRecv(self):
         pass
@@ -21,7 +42,7 @@ class Database:
     async def signalingWaitFor(self,type:str):
         pass
 
-    async def waitForConnections(self):
+    async def startWaitForConnections(self):
         if not self.host:
             return
         code = requests.get("https://"+SERVER+"/create",timeout=3)
@@ -40,10 +61,14 @@ class Database:
             return False
 
     async def stopWaitingForConnections(self):
-        pass
+        if not self.host:
+            return
 
     async def connectToDatabase(self,code:str):
         if self.host:
             return
-        
-        pass
+
+    def killDatabase(self):
+        if not self.host:
+            return
+        self.data.close()
