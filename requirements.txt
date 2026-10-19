@@ -1,0 +1,4 @@
+matplotlib
+customtkinter
+pandas
+numpy
