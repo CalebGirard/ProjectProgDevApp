@@ -12,14 +12,7 @@ class MainApp(ctk.CTk):
         self.menu_bar()
 
     def menu_bar(self):
-        menu_bar = tk.Menu(self)
-        self.config(menu=menu_bar)
-        file_menu = tk.Menu(menu_bar, tearoff=0)
-        menu_bar.add_cascade(label="Fichier", menu=file_menu)
-        file_menu.add_command(label="Ouvrir", menu=file_menu)
-        file_menu.add_command(label="Enregistrer", menu=file_menu)
-        file_menu.add_separator()
-        file_menu.add_command(label="Quitter", menu=file_menu)
+        print()
 
 
 if __name__ == "__main__":
