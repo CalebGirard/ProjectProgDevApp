@@ -50,8 +50,7 @@ class Database:
                 return data
 
     async def handleConnections(self):
-        while self.sigRoomRunning:
-            print("Waiting for user to join...")
+        while self.sigRoomRunning and len(self.connections.keys()) < 4:
             await self.sigWait("user_joined")
             ice = await self.sigIceGather()
             config = aiortc.RTCConfiguration(ice)
@@ -64,16 +63,13 @@ class Database:
                 "sdp": pc.localDescription.sdp,
                 "type": pc.localDescription.type
             }
-            print("Sending info...")
             await self.webs.send(json.dumps(payload))
-            print("Waiting for info...")
             data = await self.sigWait("relay")
             data = json.loads(data["data"])
             self.handleChannel(channel, data["username"])
             await pc.setRemoteDescription(RTCSessionDescription(data["sdp"],data["type"]))
             self.connections[data["username"]] = pc
             self.channels[data["username"]] = channel
-        print("Room expired")
 
     async def sigIceGather(self):
         creds = requests.get("https://"+SERVER+"/turn-cred?username="+self.username)
@@ -120,13 +116,11 @@ class Database:
             return False
         self.sigRoomRunning = True
         asyncio.create_task(self.signalRecv())
-        print("Waiting for host info...")
         data = await self.sigWait("relay")
         data = json.loads(data["data"])
         ice = await self.sigIceGather()
         config = aiortc.RTCConfiguration(ice)
         pc = aiortc.RTCPeerConnection(configuration=config)
-        print("Connecting to host...")
         @pc.on("datachannel")
         def on_datachannel(channel):
             self.handleChannel(channel, data["username"])
@@ -157,7 +151,10 @@ class Database:
     # Networking Module 
 
     def handleChannel(self, channel, username):
-        self.channels[username] = channel
+        if self.host:
+            self.channels[username] = channel
+        else:
+            self.channels[self.username] = channel
 
         if channel.readyState != "open":
             @channel.on("open")
@@ -169,8 +166,20 @@ class Database:
         def on_message(message):
             print(f"Received: {message}")
 
-    async def send(self, data, username):
+    async def sendAsHost(self, data, username:str):
         self.channels[username].send(data)
+
+    async def sendAsClient(self, data):
+        if self.host or not self.clientPc:
+            return
+        self.channels[self.username].send(data)
+
+    async def broadcast(self, data, excep=None):
+        if not self.host:
+            return
+        for user in self.connections.keys():
+            if user != excep:
+                await self.sendAsHost(data,user)
 
     async def disconnect(self):
         if self.host or not self.clientPc:
