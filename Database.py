@@ -1,4 +1,4 @@
-import asyncio,json,time,requests,redis
+import asyncio,json,time,requests
 import pandas as pd
 import websockets as ws
 import aiortc
@@ -13,12 +13,9 @@ class Database:
         self.host = host
         self.connected = False
 
-        # Data Subscription Module
-        self.subInfo = {}
-
         # Requests
         self.requestQueue = asyncio.Queue()
-        self.data = redis.Redis("localhost", port=6379, decode_responses=True)
+        self.data = {}
         
         # Signaling 
         self.webs = None
@@ -61,8 +58,8 @@ class Database:
             return False
         creds = creds.json()
         ice = [
-            RTCIceServer(urls=[creds["uris"][0]]),
-            RTCIceServer(
+            aiortc.RTCIceServer(urls=[creds["uris"][0]]),
+            aiortc.RTCIceServer(
                 urls=[creds["uris"][1]],
                 username=creds["username"],
                 credential=creds["password"]
@@ -95,20 +92,6 @@ class Database:
     async def connectToDatabase(self,code:str):
         if self.host:
             return
-
-    # Data Subscription Module
-
-    async def handleSub(self):
-        pass
-
-    async def sub(self, key):
-        pass
-
-    async def unSub(self, key):
-        pass
-    
-    async def forceUpdate(self):
-        pass
 
     # Request Module
 
