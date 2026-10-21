@@ -6,6 +6,7 @@ async def main():
     code = input("Room code: ")
     await database.connectToDatabase(code)
     while True:
-        await asyncio.sleep(0.04)
+        data = await asyncio.to_thread(input, f"{username} > ")
+        await database.sendAsClient(data)
 
 asyncio.run(main())
