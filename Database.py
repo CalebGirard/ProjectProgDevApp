@@ -2,7 +2,7 @@ import asyncio,json,time,requests
 import pandas as pd
 import websockets as ws
 import aiortc
-from aiortc import RTCSessionDescription
+from aiortc import RTCSessionDescription, RTCPeerConnection
 
 SERVER = "0x1.lxsdev.net"
 TURNSERVER = "turn:turn.lxsdev.net:3487"
@@ -36,6 +36,7 @@ class Database:
         while self.sigRoomRunning:
             data = await self.webs.recv()
             data = json.loads(data)
+            #print(data)
             await self.sigQueue.put(data)
 
     async def sigWait(self, type:str):
@@ -49,28 +50,33 @@ class Database:
 
     async def handleConnections(self):
         while self.sigRoomRunning:
+            print("Waiting for user to join...")
             await self.sigWait("user_joined")
             ice = await self.sigIceGather()
             config = aiortc.RTCConfiguration(ice)
             pc = aiortc.RTCPeerConnection(configuration=config)
-            offer = await pc.createAnswer()
+            channel = pc.createDataChannel("sync_data")
+            offer = await pc.createOffer()
             await pc.setLocalDescription(offer)
-            while pc.iceGatheringState != "complete":
-                await asyncio.sleep(0.1)
             payload = {
+                "username": self.username,
                 "sdp": pc.localDescription.sdp,
                 "type": pc.localDescription.type
             }
-            self.webs.send(json.dumps(payload))
+            print("Sending info...")
+            await self.webs.send(json.dumps(payload))
+            print("Waiting for info...")
             data = await self.sigWait("relay")
             data = json.loads(data["data"])
+            self.handleChannel(channel, data["username"])
             await pc.setRemoteDescription(RTCSessionDescription(data["sdp"],data["type"]))
-            pc.add_listener("datachannel", lambda channel: self.handleChannel(channel, data["username"]))
-            self.connections[data[self.username]] = pc
+            self.connections[data["username"]] = pc
+            self.channels[data["username"]] = channel
+        print("Room expired")
             
 
     async def sigIceGather(self):
-        creds = requests.get(SERVER+"/turn-cred?username="+self.username)
+        creds = requests.get("https://"+SERVER+"/turn-cred?username="+self.username)
         if creds.status_code != 200:
             return False
         creds = creds.json()
@@ -95,7 +101,6 @@ class Database:
         self.webs = await ws.connect("wss://"+SERVER+"/ws?id="+self.code+"&token="+self.token)
         data = json.loads(await self.webs.recv())
         if data["type"] == "successful_connection":
-            self.signalRecv = asyncio.create_task(self.signalingRecv())
             self.sigRoomRunning = True
             asyncio.create_task(self.signalRecv())
             asyncio.create_task(self.handleConnections())
@@ -115,24 +120,27 @@ class Database:
             return False
         self.sigRoomRunning = True
         asyncio.create_task(self.signalRecv())
+        print("Waiting for host info...")
+        data = await self.sigWait("relay")
+        data = json.loads(data["data"])
         ice = await self.sigIceGather()
         config = aiortc.RTCConfiguration(ice)
         pc = aiortc.RTCPeerConnection(configuration=config)
-        self.channels["sync_channel"] = pc.createDataChannel("sync_channel")
-        offer = await pc.createOffer()
+        print("Connecting to host...")
+        @pc.on("datachannel")
+        def on_datachannel(channel):
+            self.handleChannel(channel, data["username"])
+        await pc.setRemoteDescription(RTCSessionDescription(data["sdp"],data["type"]))
+        offer = await pc.createAnswer()
         await pc.setLocalDescription(offer)
-        while pc.iceGatheringState != "complete":
-            await asyncio.sleep(0.1)
         payload = {
             "username":self.username,
             "sdp": pc.localDescription.sdp,
             "type": pc.localDescription.type
         }
-        data = await self.sigWait("relay")
-        data = json.loads(data["data"])
-        pc.remoteDescription(RTCSessionDescription(data["sdp"],data["type"]))
-        self.webs.send(json.dumps(payload))
+        await self.webs.send(json.dumps(payload))
         self.sigRoomRunning = False
+        print("Waiting for connection confirmation ...")
         return True
 
     # Request Module
@@ -148,9 +156,18 @@ class Database:
     
     # Networking Module 
 
-    async def handleChannel(self, channel, username):
-        print("Connected Channel with client ->", username)
+    def handleChannel(self, channel, username):
         self.channels[username] = channel
+
+        if channel.readyState != "open":
+            @channel.on("open")
+            def on_open():channel.send("Connection established!")
+        else:
+            channel.send("Connection established!")
+
+        @channel.on("message")
+        def on_message(message):
+            print(f"Received: {message}")
 
     async def send(self, data):
         pass
