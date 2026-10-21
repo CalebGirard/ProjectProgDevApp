@@ -29,6 +29,7 @@ class Database:
         # Networking 
         self.connections = {}
         self.channels = {}
+        self.clientPc = None
 
     # Signaling Module
 
@@ -73,7 +74,6 @@ class Database:
             self.connections[data["username"]] = pc
             self.channels[data["username"]] = channel
         print("Room expired")
-            
 
     async def sigIceGather(self):
         creds = requests.get("https://"+SERVER+"/turn-cred?username="+self.username)
@@ -140,7 +140,7 @@ class Database:
         }
         await self.webs.send(json.dumps(payload))
         self.sigRoomRunning = False
-        print("Waiting for connection confirmation ...")
+        self.clientPc = pc
         return True
 
     # Request Module
@@ -169,11 +169,13 @@ class Database:
         def on_message(message):
             print(f"Received: {message}")
 
-    async def send(self, data):
-        pass
+    async def send(self, data, username):
+        self.channels[username].send(data)
 
     async def disconnect(self):
-        pass
+        if self.host or not self.clientPc:
+            return
+        self.clientPc.close()
 
     def killDatabase(self):
         if not self.host:
