@@ -229,7 +229,7 @@ class Database:
                     op = data["data"]["op"]
                     await self.opData(key,value,op)
                 elif data["type"] == "disconnect":
-                    user = data["data"]["username"]
+                    user = data["username"]
                     self.sendAsHost({"type":"conf"},user)
                     self.connections[user].close()
                     del self.connections[user]
