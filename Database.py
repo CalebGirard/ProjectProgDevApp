@@ -3,9 +3,10 @@ import pandas as pd
 import websockets as ws
 import aiortc
 from aiortc import RTCSessionDescription, RTCPeerConnection
+import logging
 
 SERVER = "0x1.lxsdev.net"
-TURNSERVER = "turn:turn.lxsdev.net:3487"
+TURNSERVER = "turn:turn.lxsdev.net:3478"
 
 class Database:
     def __init__(self,username:str, host:bool=False,):
@@ -13,6 +14,7 @@ class Database:
         self.username = username
         self.host = host
         self.data = {}
+        self.canSend = False
 
         # Requests
         self.requestQueue = asyncio.Queue()
@@ -30,6 +32,10 @@ class Database:
         self.connections = {}
         self.channels = {}
         self.clientPc = None
+
+    async def init(self):
+        asyncio.create_task(self.handleRequests())
+        await self.openRoom()
 
     # Signaling Module
 
@@ -54,12 +60,15 @@ class Database:
     async def handleConnections(self):
         while self.sigRoomRunning and len(self.connections.keys()) < 4:
             await self.sigWait("user_joined")
+            print("New client attempting to connect...")
             ice = await self.sigIceGather()
             config = aiortc.RTCConfiguration(ice)
             pc = aiortc.RTCPeerConnection(configuration=config)
             channel = pc.createDataChannel("sync_data")
             offer = await pc.createOffer()
             await pc.setLocalDescription(offer)
+            while pc.iceGatheringState != "complete":
+                await asyncio.sleep(0.05)
             payload = {
                 "username": self.username,
                 "sdp": pc.localDescription.sdp,
@@ -68,10 +77,11 @@ class Database:
             await self.webs.send(json.dumps(payload))
             data = await self.sigWait("relay")
             data = json.loads(data["data"])
-            self.handleChannel(channel, data["username"])
             await pc.setRemoteDescription(RTCSessionDescription(data["sdp"],data["type"]))
+            self.handleChannel(channel, data["username"])
             self.connections[data["username"]] = pc
             self.channels[data["username"]] = channel
+            print("New client successfully connected!")
 
     async def sigIceGather(self):
         creds = requests.get("https://"+SERVER+"/turn-cred?username="+self.username)
@@ -123,20 +133,24 @@ class Database:
         ice = await self.sigIceGather()
         config = aiortc.RTCConfiguration(ice)
         pc = aiortc.RTCPeerConnection(configuration=config)
-        @pc.on("datachannel")
         def on_datachannel(channel):
-            self.handleChannel(channel, data["username"])
+            self.channels[self.username] = channel
+            self.handleChannel(channel, self.username)
+        pc.remove_all_listeners("datachannel")
+        pc.on("datachannel", on_datachannel)
         await pc.setRemoteDescription(RTCSessionDescription(data["sdp"],data["type"]))
         offer = await pc.createAnswer()
         await pc.setLocalDescription(offer)
+        while pc.iceGatheringState != "complete":
+            await asyncio.sleep(0.05)
         payload = {
             "username":self.username,
             "sdp": pc.localDescription.sdp,
             "type": pc.localDescription.type
         }
         await self.webs.send(json.dumps(payload))
-        self.sigRoomRunning = False
         self.clientPc = pc
+        self.sigRoomRunning = False
         return True
 
     # Request Module
@@ -147,9 +161,9 @@ class Database:
     async def set(self, key:str, value):
         if self.host:
             self.data[key] = value
-            await self.broadcast({"type":"sync","data":{"key":key,"value":value}})
+            await self.broadcast(json.dumps({"type":"sync","data":{"key":key,"value":value}}))
         elif self.clientPc:
-            self.sendAsClient({"type":"set","username":self.username,"data":{"key":key,"value":value}})
+            await self.sendAsClient(json.dumps({"type":"set","username":self.username,"data":{"key":key,"value":value}}))
 
     async def opData(self, key:str, value , op:str):
         if self.host:
@@ -166,38 +180,46 @@ class Database:
                     self.data[key] //= value
                 elif op == "%":
                     self.data[key] %= value
-                await self.broadcast({"type":"sync","data":{"key":key,"value":value}})
+                await self.broadcast(json.dumps({"type":"sync","data":{"key":key,"value":self.data[key]}}))
                 return True
-            except:
+            except Exception as e:
+                print("Op data error ->",e)
                 return False
         elif self.clientPc:
-            self.sendAsClient({"type":"op_data","username":self.username,"data":{"key":key,"value":value,"op":op}})
+            await self.sendAsClient(json.dumps({"type":"op_data","username":self.username,"data":{"key":key,"value":value,"op":op}}))
     
     # Networking Module 
 
     def handleChannel(self, channel, username:str):
         if self.host:
             self.channels[username] = channel
-        else:
-            self.channels[self.username] = channel
-
         if channel.readyState != "open":
             @channel.on("open")
-            def on_open():channel.send("Connection established!")
+            def on_open():
+                if self.host:
+                    channel.send(json.dumps({"type":"init_sync","data":self.data}))
+                else:
+                    self.canSend = True
+                    self.channels[self.username] = channel
         else:
-            channel.send("Connection established!")
+            if self.host:
+                channel.send(json.dumps({"type":"init_sync","data":self.data}))
+            else:
+                self.canSend = True
+                self.channels[self.username] = channel
 
         @channel.on("message")
         def on_message(message):
             try:
                 message = json.loads(message)
             except:
-                return
+                message = {"type": "raw", "data": message}
+
             if self.host:
-                await self.requestQueue.put(message)
+                self.requestQueue.put_nowait(message)
             else:
-                await self.waitQueue.put(message)
-                await self.netProcess(message)
+                self.waitQueue.put_nowait(message)
+                self.netProcess(message)
 
     async def sendAsHost(self, data, username:str):
         self.channels[username].send(data)
@@ -205,6 +227,8 @@ class Database:
     async def sendAsClient(self, data):
         if self.host or not self.clientPc:
             return
+        while not self.canSend:
+            await asyncio.sleep(0.03)
         self.channels[self.username].send(data)
 
     async def broadcast(self, data, excep:str=None):
@@ -217,8 +241,9 @@ class Database:
     async def handleRequests(self):
         while True:
             data = await self.requestQueue.get()
+            self.requestQueue.task_done()
             try:
-                user = data["user"]
+                user = data["username"]
                 if data["type"] == "set":
                     key = data["data"]["key"]
                     value = data["data"]["value"]
@@ -236,29 +261,38 @@ class Database:
                     del self.channels[user]
             except:
                 pass
+            #await asyncio.sleep(0.03)
 
     async def netWait(self,type):
         while True:
             data = await self.waitQueue.get()
+            self.waitQueue.task_done()
             if data["type"] == type:
                 return data
 
-    async def netProcess(self,data):
+    def netProcess(self,data):
+        if self.host:
+            return
         if data["type"] == "sync":
+            print("received sync ->",data)
             self.data[data["data"]["key"]] = data["data"]["value"]
         elif data["type"] == "database_close":
-            self.disconnect(False)
+            asyncio.create_task(self.disconnect(False))
+            print("Database closed...")
+        elif data["type"] == "init_sync":
+            self.data = data["data"]
+            print("Database initiated ...")
 
     async def disconnect(self,notify:bool=True):
         if self.host or not self.clientPc:
             return
         if notify:
-            self.sendAsClient({"type":"disconnect","username":self.username})
+            self.sendAsClient(json.dumps({"type":"disconnect","username":self.username}))
             await self.netWait("conf")
         self.clientPc.close()
+        self.canSend = False
 
     def killDatabase(self):
         if not self.host:
             return
-        self.broadcast({"type":"database_close"})
-
+        self.broadcast(json.dumps({"type":"database_close"}))
