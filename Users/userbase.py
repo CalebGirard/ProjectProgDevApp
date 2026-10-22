@@ -3,7 +3,7 @@
 
 import random as rd
 import json
-
+import math
 
 
 class user():
@@ -60,7 +60,7 @@ class userbase():
             temp = rd.randint(1, self.size)
             if temp %50 == 0 and x < 19:
                 x += 1
-            elif temp %20 == 0 and y < 18:
+            elif temp %20 == 0 and y < 19:
                 y += 1
             elif temp %10 == 0 and z < 259:
                 z += 1
@@ -94,7 +94,7 @@ class userbase():
         users = []
         for i in range(self.random_proportions[0]):
             obj = rd.choice(list(t1_names.keys()))
-            users.append(user(obj, 10 * self.difficulty_multiplier ** 2, t1_names[obj]))
+            users.append(user(obj, 10 * self.difficulty_multiplier ** 2, math.ceil(t1_names[obj] * self.difficulty_multiplier ** 2)))
             t1_names.pop(obj)
         self.userbase.extend(users)
 
@@ -124,7 +124,7 @@ class userbase():
         users = []
         for i in range(self.random_proportions[1]):
             obj = rd.choice(list(t2_names.keys()))
-            users.append(user(obj, rd.uniform(7, 9.5) * self.difficulty_multiplier ** 2, t2_names[obj]))
+            users.append(user(obj, rd.uniform(7, 9.5) * self.difficulty_multiplier ** 2, math.ceil(t2_names[obj]* self.difficulty_multiplier ** 2)))
             t2_names.pop(obj)
         self.userbase.extend(users)
 
@@ -147,7 +147,8 @@ class userbase():
                 "Capital",
                 "Partners",
                 "Ventures",
-                "Trust"
+                "Trust",
+                "Associates"
                 ]
             for i in range(self.random_proportions[2]):
                 name = ""
@@ -157,7 +158,7 @@ class userbase():
                 data.remove(obj)
                 name += " "
                 name += rd.choice(terminology)
-                temp.append(user(name, rd.uniform(4, 8) * self.difficulty_multiplier ** 2, rd.randint(1000000000 * self.difficulty_multiplier ** 2, 10000000000 * self.difficulty_multiplier ** 2)))
+                temp.append(user(name, rd.uniform(4, 8) * self.difficulty_multiplier ** 2, math.ceil(rd.uniform(1000000000 * self.difficulty_multiplier ** 2, 10000000000 * self.difficulty_multiplier ** 2))))
 
             self.userbase.extend(temp)
 
@@ -167,10 +168,10 @@ class userbase():
 
         users = []
         for i in range(self.random_proportions[3]):
-            users.append(user((rd.choice(first_names) + " " + rd.choice(last_names)), rd.uniform(0, 3), rd.randint(100 * self.difficulty_multiplier ** 2, 10000000 * self.difficulty_multiplier ** 2)))
+            users.append(user((rd.choice(first_names) + " " + rd.choice(last_names)), rd.uniform(0, 3), math.ceil(rd.uniform(100 * self.difficulty_multiplier ** 2, 10000000 * self.difficulty_multiplier ** 2))))
         self.userbase.extend(users)
 
-ub = userbase(500, 1)
+ub = userbase(500, 0.1)
 print(ub.random_proportions)
 ub.build_T1s()
 ub.build_T2s()
