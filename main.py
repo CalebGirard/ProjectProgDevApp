@@ -48,7 +48,7 @@ class MainApp(ctk.CTk):
         self.btn_market = ctk.CTkButton(self.menu_bar, text="Market", image=market_pic, compound="top", command=lambda: self.show_frame("Market"))
         self.btn_market.grid(row=0, column=1, padx=5, pady=10, sticky="nsew")
         
-        self.btn_stats = ctk.CTkButton(self.menu_bar, text="Trading", image=trading_pic, compound="top", command=lambda: self.show_frame("Stats"))
+        self.btn_stats = ctk.CTkButton(self.menu_bar, text="Trading", image=trading_pic, compound="top", command=lambda: self.show_frame("Trading"))
         self.btn_stats.grid(row=0, column=2, padx=5, pady=10, sticky="nsew")
         
         self.btn_multi = ctk.CTkButton(self.menu_bar, text="Multi", image=multi_pic, compound="top", command=lambda: self.show_frame("Multi"))
