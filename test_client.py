@@ -9,4 +9,6 @@ async def main():
         data = await asyncio.to_thread(input, f"{username} > ")
         await database.sendAsClient(data)
 
+#Test
+
 asyncio.run(main())
