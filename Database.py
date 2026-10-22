@@ -35,10 +35,12 @@ class Database:
 
     async def signalRecv(self):
         while self.sigRoomRunning:
-            data = await self.webs.recv()
-            data = json.loads(data)
-            #print(data)
-            await self.sigQueue.put(data)
+            try:
+                data = await self.webs.recv()
+                data = json.loads(data)
+                #print(data)
+                await self.sigQueue.put(data)
+            except:pass
 
     async def sigWait(self, type:str):
         while self.sigRoomRunning: 
@@ -140,13 +142,19 @@ class Database:
     # Request Module
 
     async def get(self, key):
-        pass
+        return self.data[key]
 
     async def set(self, key, value):
-        pass
+        if self.host:
+            pass
+        else:
+            pass
 
     async def opData(self, key, value , op):
-        pass
+        if self.host:
+            pass
+        else:
+            pass
     
     # Networking Module 
 
