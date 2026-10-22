@@ -147,10 +147,9 @@ class Database:
     async def set(self, key:str, value):
         if self.host:
             self.data[key] = value
+            await self.broadcast({"type":"sync","data":{"key":key,"value":value}})
         elif self.clientPc:
             self.sendAsClient({"type":"set","username":self.username,"data":{"key":key,"value":value}})
-            await self.netWait("conf")
-            self.data[key] = value
 
     async def opData(self, key:str, value , op:str):
         if self.host:
@@ -167,29 +166,12 @@ class Database:
                     self.data[key] //= value
                 elif op == "%":
                     self.data[key] %= value
-                return True, self.data[key]
-            except:
-                return False, self.data[key]
-        elif self.clientPc:
-            self.sendAsClient({"type":"op_data","username":self.username,"data":{"key":key,"value":value,"op":op}})
-            await self.netWait("conf")
-            try:
-                if op == "+":
-                    self.data[key] += value
-                elif op == "-":
-                    self.data[key] -= value
-                elif op == "*":
-                    self.data[key] *= value
-                elif op == "/":
-                    self.data[key] /= value
-                elif op == "//":
-                    self.data[key] //= value
-                elif op == "%":
-                    self.data[key] %= value
+                await self.broadcast({"type":"sync","data":{"key":key,"value":value}})
                 return True
             except:
                 return False
-
+        elif self.clientPc:
+            self.sendAsClient({"type":"op_data","username":self.username,"data":{"key":key,"value":value,"op":op}})
     
     # Networking Module 
 
@@ -214,10 +196,8 @@ class Database:
             if self.host:
                 await self.requestQueue.put(message)
             else:
-                if message["type"] in ["conf",]:
-                    await self.waitQueue.put(message)
-                else:
-                    await self.netProcess(message)
+                await self.waitQueue.put(message)
+                await self.netProcess(message)
 
     async def sendAsHost(self, data, username:str):
         self.channels[username].send(data)
@@ -243,16 +223,17 @@ class Database:
                     key = data["data"]["key"]
                     value = data["data"]["value"]
                     await self.set(key,value)
-                    await self.sendAsHost({"type":"conf","data":{"success":True}})
-                    await self.broadcast({"type":"sync","data":{"key":key,"value":value}},user)
                 elif data["type"] == "op_data":
                     key = data["data"]["key"]
                     value = data["data"]["value"]
                     op = data["data"]["op"]
-                    success,value = await self.opData(key,value,op)
-                    await self.sendAsHost({"type":"conf","data":{"success":success}})
-                    if success:
-                        await self.broadcast({"type":"sync","data":{"key":key,"value":value}},user)
+                    await self.opData(key,value,op)
+                elif data["type"] == "disconnect":
+                    user = data["data"]["username"]
+                    self.sendAsHost({"type":"conf"},user)
+                    self.connections[user].close()
+                    del self.connections[user]
+                    del self.channels[user]
             except:
                 pass
 
@@ -261,6 +242,7 @@ class Database:
             data = await self.waitQueue.get()
             if data["type"] == type:
                 return data
+
     async def netProcess(self,data):
         if data["type"] == "sync":
             self.data[data["data"]["key"]] = data["data"]["value"]
