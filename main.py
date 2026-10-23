@@ -1,8 +1,8 @@
-from logging import root
-
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image
+
+from casino import Casino
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -30,19 +30,19 @@ class MainApp(ctk.CTk):
             self.menu_bar.grid_columnconfigure(i, weight=1)
 
         try: 
-            wheel_pic = ctk.CTkImage(dark_image=Image.open("Image/Roulette.png"), size=(80,80))
+            casino_pic = ctk.CTkImage(dark_image=Image.open("Image/Roulette.png"), size=(80,80))
             market_pic = ctk.CTkImage(dark_image=Image.open("Image/Market.png"), size=(80,80))
             trading_pic = ctk.CTkImage(dark_image=Image.open("Image/Trading.png"), size=(80,80))
             multi_pic = ctk.CTkImage(dark_image=Image.open("Image/Multi.png"), size=(80,80))
             bank_pic = ctk.CTkImage(dark_image=Image.open("Image/Bank.png"), size=(80,80))
         except:
-            wheel_pic = None
+            casino_pic = None
             market_pic = None
             trading_pic = None
             multi_pic = None
             bank_pic = None
 
-        self.btn_wheel = ctk.CTkButton(self.menu_bar, text="Casino", image=wheel_pic, compound="top", command=lambda: self.show_frame("Wheel"))
+        self.btn_wheel = ctk.CTkButton(self.menu_bar, text="Casino", image=casino_pic, compound="top", command=lambda: self.show_frame("Casino"))
         self.btn_wheel.grid(row=0, column=0, padx=5, pady=10, sticky="nsew")
         
         self.btn_market = ctk.CTkButton(self.menu_bar, text="Market", image=market_pic, compound="top", command=lambda: self.show_frame("Market"))
@@ -59,17 +59,20 @@ class MainApp(ctk.CTk):
 
         self.frames = {}
         self.init_frames()
-        self.show_frame("Wheel")
+        self.show_frame("Trading")
 
     def init_frames(self):
-        for F in ("Wheel", "Market", "Trading", "Multi", "Bank"):
-            frame = ctk.CTkFrame(self.container)
+        for F in ("Casino", "Market", "Trading", "Multi", "Bank"):
+            frame = ctk.CTkFrame(self.container, fg_color="black")
             self.frames[F] = frame
-            
-            label = ctk.CTkLabel(frame, text=f"Vue : {F}", font=("Arial", 24, "bold"), text_color= "LightSkyBlue")
+            frame.place(relx=0, rely=0, relwidth=1, relheight=1)
+
+        self.casino_view = Casino(self.frames["Casino"])
+
+        for F in ("Market", "Trading", "Multi", "Bank"):
+            label = ctk.CTkLabel(self.frames[F], text=f"Vue : {F}", font=("Arial", 24, "bold"), text_color="LightSkyBlue")
             label.pack(expand=True)
 
-            frame.place(relx=0, rely=0, relwidth=1, relheight=1)
 
     def show_frame(self, page_name):
         """Fait passer au premier plan la vue demandée"""
