@@ -261,7 +261,6 @@ class Database:
                     del self.channels[user]
             except:
                 pass
-            #await asyncio.sleep(0.03)
 
     async def netWait(self,type):
         while True:
