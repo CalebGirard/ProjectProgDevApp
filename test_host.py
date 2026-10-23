@@ -12,6 +12,7 @@ async def main():
         await asyncio.sleep(5)
         counter  = await database.get("Test1") + 1
         await database.set("Test1", counter)
+        print(await database.get("Test1"))
 
 #Test
 
