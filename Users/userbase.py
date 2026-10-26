@@ -1,12 +1,12 @@
-#import pandas as pd
-
+# import pandas as pd
 
 import random as rd
 import json
 import math
+import csv
 
 
-class user():
+class user:
     def __init__(self, nom, lvl, starting_cash):
         self.nom = nom
         self.lvl = lvl
@@ -44,132 +44,114 @@ class user():
         return f"{self.nom} (holding ${self.holdings})"
 
 
-
-
-class userbase():
+class userbase:
     def __init__(self, nb, difficulty_multiplier):
         self.userbase = []
         self.size = nb
         self.difficulty_multiplier = difficulty_multiplier
         self.random_proportions = self.randomize_odds()
 
-
     def randomize_odds(self):
         x, y, z, t = 0, 0, 0, 0
         for i in range(self.size):
             temp = rd.randint(1, self.size)
-            if temp %50 == 0 and x < 19:
+            if temp % 50 == 0 and x < 19:
                 x += 1
-            elif temp %20 == 0 and y < 19:
+            elif temp % 20 == 0 and y < 19:
                 y += 1
-            elif temp %10 == 0 and z < 259:
+            elif temp % 10 == 0 and z < 259:
                 z += 1
             else:
                 t += 1
         return [x, y, z, t]
 
     def build_T1s(self):
-        t1_names = {
-    "Government Pension Fund Global": 1800000000000,
-    "SAFE Investment Company": 2047000000000,
-    "China Investment Corporation": 1567000000000,
-    "GIC Private Limited": 936000000000,
-    "Abu Dhabi Investment Authority": 990000000000,
-    "Kuwait Investment Authority": 1072000000000,
-    "Public Investment Fund": 909000000000,
-    "BlackRock": 15500000000000,
-    "Vanguard": 13300000000000,
-    "Fidelity Investments": 7800000000000,
-    "State Street Global Advisors": 6300000000000,
-    "J.P. Morgan Asset Management": 4800000000000,
-    "Capital Group": 3600000000000,
-    "Amundi": 2720000000000,  # Approximate USD equivalent
-    "Bridgewater Associates": 150200000000,
-    "Millennium Management": 97000000000,
-    "Elliott Investment Management": 80300000000,
-    "Citadel LLC": 77000000000,
-    "Man Group": 270900000000
-}
-
+        with open("./Users/predefined_users.json", "r") as f:
+            t1_names = json.load(f)[0]
         users = []
         for i in range(self.random_proportions[0]):
             obj = rd.choice(list(t1_names.keys()))
-            users.append(user(obj, 10 * self.difficulty_multiplier ** 2, math.ceil(t1_names[obj] * self.difficulty_multiplier ** 2)))
+            users.append(
+                user(
+                    obj,
+                    10 * self.difficulty_multiplier**2,
+                    math.ceil(t1_names[obj] * self.difficulty_multiplier**2),
+                )
+            )
             t1_names.pop(obj)
         self.userbase.extend(users)
 
     def build_T2s(self):
-        t2_names = {
-    "Warren Buffett": 143500000000,
-    "Peter Lynch": 450000000,
-    "Benjamin Graham": 50200000,
-    "George Soros": 8600000000,
-    "Jim Simons": 31400000000,
-    "John \"Jack\" Bogle": 80000000,
-    "Ray Dalio": 20000000000,
-    "Carl Icahn": 16200000000,
-    "Elon Musk": 1100000000000,
-    "Jeff Bezos": 370000000000,
-    "Larry Page": 334100000000,
-    "Sergey Brin": 257100000000,
-    "Mark Zuckerberg": 250000000000,
-    "Bernard Arnaud": 180000000000,
-    "Donald Trump": 5500000000,
-    "Larry Ellison": 202000000000,
-    "Jensen Huang": 200000000000,
-    "Peter Thiel": 37700000000,
-    "Sam Altman": 4000000000
-}
-        
+        with open("./Users/predefined_users.json", "r") as f:
+            t2_names = json.load(f)[1]
         users = []
         for i in range(self.random_proportions[1]):
             obj = rd.choice(list(t2_names.keys()))
-            users.append(user(obj, rd.uniform(7, 9.5) * self.difficulty_multiplier ** 2, math.ceil(t2_names[obj]* self.difficulty_multiplier ** 2)))
+            users.append(
+                user(
+                    obj,
+                    rd.uniform(7, 9.5) * self.difficulty_multiplier**2,
+                    math.ceil(t2_names[obj] * self.difficulty_multiplier**2),
+                )
+            )
             t2_names.pop(obj)
         self.userbase.extend(users)
 
-
     def build_T3s(self):
-            data = json.load(open("./Users/adjectives.json","r"))
-            temp = []
-            terminology = [
-                "Inc.",
-                "Corp.",
-                "Co.",
-                "Ltd.",
-                "LLC",
-                "PLC",
-                "LLP",
-                "LP",
-                "GP",
-                "Holdings",
-                "Group",
-                "Capital",
-                "Partners",
-                "Ventures",
-                "Trust",
-                "Associates"
-                ]
-            for i in range(self.random_proportions[2]):
-                name = ""
-                if rd.randint(1,100) % 10 == 0: name += "The "
-                obj = rd.choice(data)
-                name += obj
-                data.remove(obj)
-                name += " "
-                name += rd.choice(terminology)
-                temp.append(user(name, rd.uniform(4, 8) * self.difficulty_multiplier ** 2, math.ceil(rd.uniform(1000000000 * self.difficulty_multiplier ** 2, 10000000000 * self.difficulty_multiplier ** 2))))
+        with open("./Users/adjectives.json", "r") as f:
+            data = json.load(f)
 
-            self.userbase.extend(temp)
+        temp = []
+
+        with open("./Users/terminology.csv", "r") as f:
+            terminology = list(csv.reader(f, delimiter=","))[0]
+
+        for i in range(self.random_proportions[2]):
+            name = ""
+            if rd.randint(1, 100) % 10 == 0:
+                name += "The "
+            obj = rd.choice(data)
+            name += obj
+            data.remove(obj)
+            name += " "
+            name += rd.choice(terminology)
+            temp.append(
+                user(
+                    name,
+                    rd.uniform(4, 8) * self.difficulty_multiplier**2,
+                    math.ceil(
+                        rd.uniform(
+                            1000000000 * self.difficulty_multiplier**2,
+                            10000000000 * self.difficulty_multiplier**2,
+                        )
+                    ),
+                )
+            )
+
+        self.userbase.extend(temp)
 
     def build_T4s(self):
-        first_names = json.load(open("./Users/names.json","r"))
-        last_names = json.load(open("./Users/last.names.json","r"))
+        with open("./Users/names.json", "r") as f:
+            first_names = json.load(f)
+        with open("./Users/last.names.json", "r") as f:
+            last_names = json.load(f)
 
         users = []
         for i in range(self.random_proportions[3]):
-            users.append(user((rd.choice(first_names) + " " + rd.choice(last_names)), rd.uniform(0, 3), math.ceil(rd.uniform(100 * self.difficulty_multiplier ** 2, 10000000 * self.difficulty_multiplier ** 2))))
+            users.append(
+                user(
+                    (rd.choice(first_names) + " " + rd.choice(last_names)),
+                    rd.uniform(0, 3),
+                    math.ceil(
+                        rd.uniform(
+                            100 * self.difficulty_multiplier**2,
+                            10000000 * self.difficulty_multiplier**2,
+                        )
+                    ),
+                )
+            )
         self.userbase.extend(users)
+
 
 ub = userbase(500, 0.1)
 print(ub.random_proportions)
