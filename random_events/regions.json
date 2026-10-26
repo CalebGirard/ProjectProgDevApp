@@ -1,0 +1,211 @@
+[
+    [
+        {
+            "Alabama": "Montgomery"
+        },
+        {
+            "Alaska": "Juneau"
+        },
+        {
+            "Arizona": "Phoenix"
+        },
+        {
+            "Arkansas": "Little Rock"
+        },
+        {
+            "Californie": "Sacramento"
+        },
+        {
+            "Caroline du Nord": "Raleigh"
+        },
+        {
+            "Caroline du Sud": "Columbia"
+        },
+        {
+            "Colorado": "Denver"
+        },
+        {
+            "Connecticut": "Hartford"
+        },
+        {
+            "Dakota du Nord": "Bismarck"
+        },
+        {
+            "Dakota du Sud": "Pierre"
+        },
+        {
+            "Delaware": "Dover"
+        },
+        {
+            "Floride": "Tallahassee"
+        },
+        {
+            "Géorgie": "Atlanta"
+        },
+        {
+            "Hawaï": "Honolulu"
+        },
+        {
+            "Idaho": "Boise"
+        },
+        {
+            "Illinois": "Springfield"
+        },
+        {
+            "Indiana": "Indianapolis"
+        },
+        {
+            "Iowa": "Des Moines"
+        },
+        {
+            "Kansas": "Topeka"
+        },
+        {
+            "Kentucky": "Frankfort"
+        },
+        {
+            "Louisiane": "Baton Rouge"
+        },
+        {
+            "Maine": "Augusta"
+        },
+        {
+            "Maryland": "Annapolis"
+        },
+        {
+            "Massachusetts": "Boston"
+        },
+        {
+            "Michigan": "Lansing"
+        },
+        {
+            "Minnesota": "Saint Paul"
+        },
+        {
+            "Mississippi": "Jackson"
+        },
+        {
+            "Missouri": "Jefferson City"
+        },
+        {
+            "Montana": "Helena"
+        },
+        {
+            "Nebraska": "Lincoln"
+        },
+        {
+            "Nevada": "Carson City"
+        },
+        {
+            "New Hampshire": "Concord"
+        },
+        {
+            "New Jersey": "Trenton"
+        },
+        {
+            "New York": "Albany"
+        },
+        {
+            "Nouveau-Mexique": "Santa Fe"
+        },
+        {
+            "Ohio": "Columbus"
+        },
+        {
+            "Oklahoma": "Oklahoma City"
+        },
+        {
+            "Oregon": "Salem"
+        },
+        {
+            "Pennsylvanie": "Harrisburg"
+        },
+        {
+            "Rhode Island": "Providence"
+        },
+        {
+            "Tennessee": "Nashville"
+        },
+        {
+            "Texas": "Austin"
+        },
+        {
+            "Utah": "Salt Lake City"
+        },
+        {
+            "Vermont": "Montpelier"
+        },
+        {
+            "Virginie": "Richmond"
+        },
+        {
+            "Virginie-Occidentale": "Charleston"
+        },
+        {
+            "Washington": "Olympia"
+        },
+        {
+            "Wisconsin": "Madison"
+        },
+        {
+            "Wyoming": "Cheyenne"
+        }
+    ],
+    [
+        {
+            "Alberta": "Edmonton"
+        },
+        {
+            "Colombie-Britannique": "Victoria"
+        },
+        {
+            "Île-du-Prince-Édouard": "Charlottetown"
+        },
+        {
+            "Manitoba": "Winnipeg"
+        },
+        {
+            "Nouveau-Brunswick": "Fredericton"
+        },
+        {
+            "Nouvelle-Écosse": "Halifax"
+        },
+        {
+            "Ontario": "Toronto"
+        },
+        {
+            "Québec": "Québec"
+        },
+        {
+            "Saskatchewan": "Regina"
+        },
+        {
+            "Terre-Neuve-et-Labrador": "Saint-Jean (St. John's)"
+        },
+        {
+            "Nunavut": "Iqaluit"
+        },
+        {
+            "Territoires du Nord-Ouest": "Yellowknife"
+        },
+        {
+            "Yukon": "Whitehorse"
+        }
+    ],
+    [
+        "Pacific Ocean",
+        "Atlantic Ocean",
+        "Indian Ocean",
+        "Antarctic Ocean",
+        "Arctic Ocean"
+    ],
+    [
+        "North America",
+        "South America",
+        "Europe",
+        "Asia",
+        "Africa",
+        "Oceania",
+        "Antarctica"
+    ]
+]

@@ -1,0 +1,42 @@
+[
+    [
+        {
+            "id": "event_earnings_blowout",
+            "scope": "minor",
+            "target_tag": null,
+            "target_ticker": "{company}",
+            "headline": "{company} posts blowout Q3 earnings, raising annual revenue targets by 25%.",
+            "impact_range": [
+                0.12,
+                0.28
+            ],
+            "volatility_multiplier": 1.2,
+            "duration_ticks": 2,
+            "spillover": []
+        }
+    ],
+    [
+        {
+            "id": "event_tech_zero_day",
+            "scope": "major",
+            "target_tag": "tech",
+            "target_ticker": null,
+            "headline": "Zero-day silicon exploit forces emergency hardware patches across {tag} sector.",
+            "impact_range": [
+                -0.18,
+                -0.07
+            ]
+        }
+    ],
+    [
+        {
+            "id": "solar_flare",
+            "scope": "global",
+            "headline": "A geomagnetic solar storm disrupts orbital GPS satellites and disables algorithmic trading execution engines for 3 hours.",
+            "impact_range": [
+                -0.18,
+                -0.07
+            ]
+        }
+    ]
+]
