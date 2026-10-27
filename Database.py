@@ -3,13 +3,14 @@ import pandas as pd
 import websockets as ws
 import aiortc
 from aiortc import RTCSessionDescription, RTCPeerConnection
+from pandas import DataFrame
 import logging
 
 SERVER = "0x1.lxsdev.net"
 TURNSERVER = "turn:turn.lxsdev.net:3478"
 
 class Database:
-    def __init__(self,username:str, host:bool=False,):
+    def __init__(self,username:str, host:bool=False):
         # Global
         self.username = username
         self.host = host
@@ -155,8 +156,14 @@ class Database:
 
     # Request Module
 
+    async def getPath(self, path:str):
+        pass
+
+    async def setPath(self,path:str):
+        pass
+
     async def get(self, key:str):
-        return self.data[key]
+        return self.data.get(key)
 
     async def set(self, key:str, value):
         if self.host:
@@ -187,6 +194,17 @@ class Database:
                 return False
         elif self.clientPc:
             await self.sendAsClient(json.dumps({"type":"op_data","username":self.username,"data":{"key":key,"value":value,"op":op}}))
+
+    async def setDataframe(self, key:str, dataframe:Dataframe):
+        if not self.host:
+            return
+
+    async def getDataframe(self, key:str):
+        return self.data.get(key)
+
+    async def opDataframe(self, key:str, value):
+        pass
+
     
     # Networking Module 
 
@@ -295,3 +313,14 @@ class Database:
         if not self.host:
             return
         self.broadcast(json.dumps({"type":"database_close"}))
+
+    # Utilities
+
+    def splitPath(self, path:str, validate:bool=True):
+        path = [p in path.split(":")]
+        for i in len(path):
+            dt = self.data.get(path[i])
+            if not dt:
+                return None
+        return path
+            
