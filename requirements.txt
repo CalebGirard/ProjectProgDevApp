@@ -1,4 +1,13 @@
+<<<<<<< HEAD
 matplotlib
 customtkinter
 pandas
 numpy
+=======
+aiortc
+websockets
+pandas
+matplotlib
+customtkinter
+requests
+>>>>>>> caleb-database
