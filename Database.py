@@ -6,6 +6,11 @@ from aiortc import RTCSessionDescription, RTCPeerConnection
 from pandas import DataFrame
 import logging
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
 SERVER = "0x1.lxsdev.net"
 TURNSERVER = "turn:turn.lxsdev.net:3478"
 
@@ -157,10 +162,26 @@ class Database:
     # Request Module
 
     async def getPath(self, path:str):
-        pass
+        path = self.splitPath(path)
+        if not path:
+            return None
+        dt = self.data
+        for p in path:
+            dt = dt.get(p)
+        return dt
 
-    async def setPath(self,path:str):
-        pass
+    async def setPath(self,path:str,value):
+        if self.host:
+            path = self.splitPath(path)
+            if not path:
+                return None
+            dt = self.data
+            for p in path[:-1]:
+                dt = dt.get(p)
+            dt[path[-1]] = value
+            await self.broadcast(json.dumps({"type":"sync","data":{"path":path[0],"value":self.data[path[0]]}}))
+        elif self.clientPc:
+            await self.sendAsClient(json.dumps({"type":"set_path","username":self.username,"data":{"path":key,"value":value}}))
 
     async def get(self, key:str):
         return self.data.get(key)
@@ -195,16 +216,19 @@ class Database:
         elif self.clientPc:
             await self.sendAsClient(json.dumps({"type":"op_data","username":self.username,"data":{"key":key,"value":value,"op":op}}))
 
-    async def setDataframe(self, key:str, dataframe:Dataframe):
-        if not self.host:
-            return
+    async def setDataframe(self, key:str, dataframe):
+        if self.host:
+            if type(dataframe) == DataFrame:
+                dataframe = dataframe.to_dict()
+            self.data[key] = dataframe
+            await self.broadcast(json.dumps({"type":"sync","data":{"key":key,"value":dataframe}}))
+        elif self.clientPc:
+            await self.sendAsClient(json.dumps({"type":"set_df","username":self.username,"data":{"key":key,"df":dataframe.to_dict()}}))
 
     async def getDataframe(self, key:str):
-        return self.data.get(key)
-
-    async def opDataframe(self, key:str, value):
-        pass
-
+        if self.data.get(key):
+            return pd.DataFrame(self.data.get(key))
+        return None
     
     # Networking Module 
 
@@ -266,6 +290,14 @@ class Database:
                     key = data["data"]["key"]
                     value = data["data"]["value"]
                     await self.set(key,value)
+                elif data["type"] == "set_path":
+                    path = data["data"]["path"]
+                    value = data["data"]["value"]
+                    await self.setPath(path,value)
+                elif data["type"] == "set_df":
+                    key = data["data"]["key"]
+                    dataframe = data["data"]["df"]
+                    await self.setDataframe(key,dataframe)
                 elif data["type"] == "op_data":
                     key = data["data"]["key"]
                     value = data["data"]["value"]
