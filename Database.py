@@ -4,12 +4,6 @@ import websockets as ws
 import aiortc
 from aiortc import RTCSessionDescription, RTCPeerConnection
 from pandas import DataFrame
-import logging
-
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
 
 SERVER = "0x1.lxsdev.net"
 TURNSERVER = "turn:turn.lxsdev.net:3478"
@@ -166,9 +160,11 @@ class Database:
         if not path:
             return None
         dt = self.data
-        for p in path:
+        for p in path[:-1]:
+            if not isinstance(dt, dict):
+                return None
             dt = dt.get(p)
-        return dt
+        return dt[path[-1]]
 
     async def setPath(self,path:str,value):
         if self.host:
@@ -177,11 +173,11 @@ class Database:
                 return None
             dt = self.data
             for p in path[:-1]:
-                dt = dt.get(p)
+                dt = dt.setdefault(p, {})
             dt[path[-1]] = value
-            await self.broadcast(json.dumps({"type":"sync","data":{"path":path[0],"value":self.data[path[0]]}}))
+            await self.broadcast(json.dumps({"type":"sync","data":{"key":path[0],"value":self.data[path[0]]}}))
         elif self.clientPc:
-            await self.sendAsClient(json.dumps({"type":"set_path","username":self.username,"data":{"path":key,"value":value}}))
+            await self.sendAsClient(json.dumps({"type":"set_path","username":self.username,"data":{"path":path,"value":value}}))
 
     async def get(self, key:str):
         return self.data.get(key)
@@ -348,11 +344,7 @@ class Database:
 
     # Utilities
 
-    def splitPath(self, path:str, validate:bool=True):
-        path = [p in path.split(":")]
-        for i in len(path):
-            dt = self.data.get(path[i])
-            if not dt:
-                return None
+    def splitPath(self, path:str):
+        path = path.split(":")
         return path
             
