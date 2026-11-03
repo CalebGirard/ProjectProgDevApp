@@ -26,11 +26,7 @@ class MainApp(ctk.CTk):
         self.iconbitmap("Assets/snake.ico")
         self.after(0, lambda: self.state("zoomed"))
         self.configure(fg_color="black")
-<<<<<<< HEAD
-        self.title("Main Application")
-=======
         self.title("Pynance Desktop")
->>>>>>> interface
         self.menu()
 
     def menu(self):
@@ -48,21 +44,11 @@ class MainApp(ctk.CTk):
         self.menu_bar.grid_propagate(False)
         self.menu_bar.grid_columnconfigure(0, weight=1)
 
-<<<<<<< HEAD
-        try: 
-            casino_pic = ctk.CTkImage(dark_image=Image.open("Image/Roulette.png"), size=(80,80))
-            market_pic = ctk.CTkImage(dark_image=Image.open("Image/Market.png"), size=(80,80))
-            trading_pic = ctk.CTkImage(dark_image=Image.open("Image/Trading.png"), size=(80,80))
-            multi_pic = ctk.CTkImage(dark_image=Image.open("Image/Multi.png"), size=(80,80))
-            bank_pic = ctk.CTkImage(dark_image=Image.open("Image/Bank.png"), size=(80,80))
-        except:
-            casino_pic = None
-=======
         try:
             logo = ctk.CTkImage(
                 dark_image=Image.open("Assets/snake.ico"), size=(24, 24)
             )
-            wheel_pic = ctk.CTkImage(
+            casino_pic = ctk.CTkImage(
                 dark_image=Image.open("Assets/megaphone.png"), size=(24, 24)
             )
             market_pic = ctk.CTkImage(
@@ -82,30 +68,13 @@ class MainApp(ctk.CTk):
             )
         except:
             logo = None
-            wheel_pic = None
->>>>>>> interface
+            casino_pic = None
             market_pic = None
             trading_pic = None
             multi_pic = None
             bank_pic = None
             settings = None
 
-<<<<<<< HEAD
-        self.btn_wheel = ctk.CTkButton(self.menu_bar, text="Casino", fg_color="transparent", image=casino_pic, compound="top", command=lambda: self.show_frame("Casino"))
-        self.btn_wheel.grid(row=0, column=0, padx=5, pady=10, sticky="nsew")
-        
-        self.btn_market = ctk.CTkButton(self.menu_bar, text="Market", fg_color="transparent", image=market_pic, compound="top", command=lambda: self.show_frame("Market"))
-        self.btn_market.grid(row=0, column=1, padx=5, pady=10, sticky="nsew")
-        
-        self.btn_stats = ctk.CTkButton(self.menu_bar, text="Trading", fg_color="transparent", image=trading_pic, compound="top", command=lambda: self.show_frame("Trading"))
-        self.btn_stats.grid(row=0, column=2, padx=5, pady=10, sticky="nsew")
-        
-        self.btn_multi = ctk.CTkButton(self.menu_bar, text="Multi", fg_color="transparent", image=multi_pic, compound="top", command=lambda: self.show_frame("Multi"))
-        self.btn_multi.grid(row=0, column=3, padx=5, pady=10, sticky="nsew")
-        
-        self.btn_bank = ctk.CTkButton(self.menu_bar, text="Bank", fg_color="transparent", image=bank_pic, compound="top", command=lambda: self.show_frame("Bank"))
-        self.btn_bank.grid(row=0, column=4, padx=5, pady=10, sticky="nsew")
-=======
         button_style = {
             "text": "",
             "width": 40,
@@ -114,19 +83,18 @@ class MainApp(ctk.CTk):
             "fg_color": "transparent",
             "hover_color": "#2a2d2e",
         }
->>>>>>> interface
 
         self.menu_bar.grid_rowconfigure(6, weight=1)
         self.logo = ctk.CTkLabel(self.menu_bar, image=logo, text="")
         self.logo.grid(row=0, column=0, padx=8, pady=(8, 20))
 
-        self.btn_wheel = ctk.CTkButton(
+        self.btn_casino = ctk.CTkButton(
             self.menu_bar,
-            image=wheel_pic,
-            command=lambda: self.show_frame("Wheel"),
+            image=casino_pic,
+            command=lambda: self.show_frame("Casino"),
             **button_style,
         )
-        self.btn_wheel.grid(row=3, column=0, padx=8, pady=2)
+        self.btn_casino.grid(row=3, column=0, padx=8, pady=2)
 
         self.btn_shop = ctk.CTkButton(
             self.menu_bar,
@@ -169,7 +137,7 @@ class MainApp(ctk.CTk):
         self.btn_settings.grid(row=7, column=0, padx=8, pady=10)
 
         self.navigation_buttons = {
-            "Wheel": self.btn_wheel,
+            "Casino": self.btn_casino,
             "Market": self.btn_market,
             "Shop": self.btn_shop,
             "Multi": self.btn_multi,
@@ -181,7 +149,6 @@ class MainApp(ctk.CTk):
         self.show_frame("Trading")
 
     def init_frames(self):
-<<<<<<< HEAD
         for F in ("Casino", "Market", "Trading", "Multi", "Bank"):
             frame = ctk.CTkFrame(self.container, fg_color="black")
             self.frames[F] = frame
@@ -191,25 +158,6 @@ class MainApp(ctk.CTk):
 
         for F in ("Market", "Trading", "Multi", "Bank"):
             label = ctk.CTkLabel(self.frames[F], text=f"Vue : {F}", font=("Arial", 24, "bold"), text_color="LightSkyBlue")
-=======
-        frame = ctk.CTkFrame(self.container)
-        self.frames["Market"] = frame
-
-        label = ctk.CTkLabel(
-            frame, text=f"TODO", font=("Arial", 20, "bold"), text_color="White"
-        )
-        label.pack(expand=True)
-
-        frame.place(relx=0, rely=0, relwidth=1, relheight=1)
-
-        for F in ("Wheel", "Shop", "Multi", "Bank", "Settings"):
-            frame = ctk.CTkFrame(self.container)
-            self.frames[F] = frame
-
-            label = ctk.CTkLabel(
-                frame, text=f"Vue : {F}", font=("Arial", 20, "bold"), text_color="White"
-            )
->>>>>>> interface
             label.pack(expand=True)
 
 
