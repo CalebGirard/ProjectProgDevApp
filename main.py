@@ -2,6 +2,7 @@ import customtkinter as ctk
 import tkinter as tk
 from PIL import Image
 
+
 from casino import Casino
 
 ctk.set_appearance_mode("dark")
@@ -13,7 +14,7 @@ class MainApp(ctk.CTk):
         self.geometry("800x600+0+0")
         self.after(0, lambda:self.state('zoomed'))
         self.configure(fg_color="black")
-        self.title("Application Principale")
+        self.title("Main Application")
         self.menu()
 
     def menu(self):
@@ -42,19 +43,19 @@ class MainApp(ctk.CTk):
             multi_pic = None
             bank_pic = None
 
-        self.btn_wheel = ctk.CTkButton(self.menu_bar, text="Casino", image=casino_pic, compound="top", command=lambda: self.show_frame("Casino"))
+        self.btn_wheel = ctk.CTkButton(self.menu_bar, text="Casino", fg_color="transparent", image=casino_pic, compound="top", command=lambda: self.show_frame("Casino"))
         self.btn_wheel.grid(row=0, column=0, padx=5, pady=10, sticky="nsew")
         
-        self.btn_market = ctk.CTkButton(self.menu_bar, text="Market", image=market_pic, compound="top", command=lambda: self.show_frame("Market"))
+        self.btn_market = ctk.CTkButton(self.menu_bar, text="Market", fg_color="transparent", image=market_pic, compound="top", command=lambda: self.show_frame("Market"))
         self.btn_market.grid(row=0, column=1, padx=5, pady=10, sticky="nsew")
         
-        self.btn_stats = ctk.CTkButton(self.menu_bar, text="Trading", image=trading_pic, compound="top", command=lambda: self.show_frame("Trading"))
+        self.btn_stats = ctk.CTkButton(self.menu_bar, text="Trading", fg_color="transparent", image=trading_pic, compound="top", command=lambda: self.show_frame("Trading"))
         self.btn_stats.grid(row=0, column=2, padx=5, pady=10, sticky="nsew")
         
-        self.btn_multi = ctk.CTkButton(self.menu_bar, text="Multi", image=multi_pic, compound="top", command=lambda: self.show_frame("Multi"))
+        self.btn_multi = ctk.CTkButton(self.menu_bar, text="Multi", fg_color="transparent", image=multi_pic, compound="top", command=lambda: self.show_frame("Multi"))
         self.btn_multi.grid(row=0, column=3, padx=5, pady=10, sticky="nsew")
         
-        self.btn_bank = ctk.CTkButton(self.menu_bar, text="Bank", image=bank_pic, compound="top", command=lambda: self.show_frame("Bank"))
+        self.btn_bank = ctk.CTkButton(self.menu_bar, text="Bank", fg_color="transparent", image=bank_pic, compound="top", command=lambda: self.show_frame("Bank"))
         self.btn_bank.grid(row=0, column=4, padx=5, pady=10, sticky="nsew")
 
         self.frames = {}
@@ -78,6 +79,16 @@ class MainApp(ctk.CTk):
         """Fait passer au premier plan la vue demandée"""
         frame = self.frames[page_name]
         frame.tkraise()
+
+        titles = {
+            "Casino": "Application - Royal Casino",
+            "Market": "Application - Market",
+            "Trading": "Application - Trading",
+            "Multi": "Application - Multiplayer",
+            "Bank": "Application - Bank"
+        }
+
+        self.title(titles.get(page_name, "Main Application"))
 
 
 if __name__ == "__main__":
