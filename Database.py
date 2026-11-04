@@ -43,6 +43,10 @@ class Database:
         self.connections = {}
         self.channels = {}
         self.clientPc = None
+
+        # TODO: Add callbacks for rawMessage and connection fails
+        self.rawMsgCallback = None
+        self.connFailedCallback = None
         
     @threadsafe
     async def init(self):
