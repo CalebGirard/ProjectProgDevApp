@@ -1,7 +1,6 @@
 import customtkinter as ctk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
-from Database import Database
 from engine import Engine
 
 class MultiView(ctk.CTkFrame):
@@ -21,8 +20,8 @@ class MultiView(ctk.CTkFrame):
         self.engine.hosting = False
         self.engine.database.killDatabase()
         self.engine.database.setHost(False)
-        self.engine.database.setUsername(self.usernameEntry.cget("text"))
-        self.engine.database.connectToDatabase()
+        self.engine.database.setUsername(self.usernameEntry.get())
+        self.engine.database.connectToDatabase(self.codeEntry.get())
         self.after(5000,self.showConnView)
 
     def hostGame(self):
