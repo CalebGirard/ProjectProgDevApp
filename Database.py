@@ -14,11 +14,9 @@ def threadsafe(fn):
     @functools.wraps(fn)
     def wrapper(self, *args, **kwargs):
         coro = fn(self, *args, **kwargs)
-        try:
-            asyncio.get_running_loop()
+        if threading.current_thread() is self._thread:
             return coro
-        except RuntimeError:
-            return asyncio.run_coroutine_threadsafe(coro, self.loop)
+        return asyncio.run_coroutine_threadsafe(coro, self.loop)
     return wrapper
 
 class Database:
@@ -45,7 +43,7 @@ class Database:
         self.connections = {}
         self.channels = {}
         self.clientPc = None
-
+        
     @threadsafe
     async def init(self):
         asyncio.create_task(self.handleRequests())
@@ -380,7 +378,8 @@ class Database:
 
     def startThread(self):
         self.loop = asyncio.new_event_loop()
-        threading.Thread(target=self._run, daemon=True).start()
+        self._thread = threading.Thread(target=self._run, daemon=True)
+        self._thread.start()
 
     def _run(self):
         asyncio.set_event_loop(self.loop)

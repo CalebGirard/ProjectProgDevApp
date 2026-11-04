@@ -30,7 +30,6 @@ class MainApp(ctk.CTk):
         self.menu()
         self.run_clock()
 
-
     def menu(self):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=0)
