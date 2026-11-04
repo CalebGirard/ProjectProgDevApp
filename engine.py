@@ -23,7 +23,6 @@ class Engine:
             self.database.set("prices", prices)
         else:
             pass
-            # get data from database instead
 
     def _apply_event(self, event):
         if self.hosting:

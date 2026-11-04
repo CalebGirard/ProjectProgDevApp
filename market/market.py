@@ -98,6 +98,10 @@ class Market:
         for stock in self.stocks.values():
             stock.update()
 
+    def setPrices(self,prices):
+        #TODO: Make func to set stock prices according to dict gotten from database for multiplayer
+        pass
+
     def __repr__(self):
         return str(self.stocks)
 
