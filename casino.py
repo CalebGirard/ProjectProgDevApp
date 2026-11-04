@@ -27,38 +27,123 @@ class Casino(ctk.CTkFrame) :
             multi_pic = None
             bank_pic = None
 
-        self.btn_wheel = ctk.CTkButton(self.menu_casino, text="Roulette", fg_color="transparent", image=wheel_pic, compound="top", command=lambda: print("ta mere"))
+        self.btn_wheel = ctk.CTkButton(self.menu_casino, text="Roulette", fg_color="transparent", image=wheel_pic, compound="top", command=self.open_roulette)
         self.btn_wheel.grid(row=0, column=0, padx=5, pady=10, sticky="nsew")
                 
         self.btn_market = ctk.CTkButton(self.menu_casino, text="Slot machine", fg_color="transparent", image=slot_pic, compound="top", command=self.open_slot_machine)
         self.btn_market.grid(row=0, column=1, padx=5, pady=10, sticky="nsew")
 
         # Initialisation de la vue SlotMachine en arrière-plan dans le conteneur
+        self.roulette_view = Roulette(self.container_casino, back_callback=self.return_menu)
+        self.roulette_view.place(relx=0, rely=0, relwidth=1, relheight=1)
+        self.roulette_view.lower()
+
         self.slot_view = SlotMachine(self.container_casino, back_callback=self.return_menu)
         self.slot_view.place(relx=0, rely=0, relwidth=1, relheight=1)
-        # On la cache au démarrage pour n'afficher que le menu du casino
         self.slot_view.lower()
 
+    def open_roulette(self):
+        """Roulette premier plan"""
+        self.roulette_view.tkraise()
+
     def open_slot_machine(self):
-        """Fait passer la machine à sous au premier plan"""
+        """Machine à sous premier plan"""
         self.slot_view.tkraise()
 
     def return_menu(self):
-        """Remet le menu du casino au premier plan (si tu ajoutes un bouton retour)"""
+        """Casino premier plan"""
         self.menu_casino.tkraise()
 
 class Roulette(ctk.CTkFrame):
-    def __init__(self, master):
+    def __init__(self, master, back_callback=None):
         super().__init__(master, fg_color="black")
-        self.pack(fill="both", expand=True)
+        #self.pack(fill="both", expand=True)
+
+        if back_callback:
+            self.btn_back = ctk.CTkButton(self, text="← Retour Casino", command=back_callback, width=120, height=35, fg_color="gray30",hover_color="gray40")
+            self.btn_back.place(x=20, y=20)
+
+        self.spinning = False
+        self.roulette_wheel = [("Green", "0"), ("Red", "32"), ("Black", "15"), ("Red", "19"), ("Black", "4"),
+            ("Red", "21"), ("Black", "2"), ("Red", "25"), ("Black", "17"), ("Red", "34"),
+            ("Black", "6"), ("Red", "27"), ("Black", "13"), ("Red", "36"), ("Black", "11"),
+            ("Red", "30"), ("Black", "8"), ("Red", "23"), ("Black", "10"), ("Red", "5"),
+            ("Black", "24"), ("Red", "16"), ("Black", "33"), ("Red", "1"), ("Black", "20"),
+            ("Red", "14"), ("Black", "31"), ("Red", "9"), ("Black", "22"), ("Red", "18"),
+            ("Black", "29"), ("Red", "7"), ("Black", "28"), ("Red", "12"), ("Black", "35"),
+            ("Red", "3"), ("Black", "26")]
+
+        self.bind("<space>", lambda x: self.lancer_roulette())
+        self.focus_set()
+
+        self.display_frame = ctk.CTkFrame(self, fg_color="gray20", width=300, height=300, corner_radius=150)
+        self.display_frame.pack(pady=30)
+        self.display_frame.pack_propagate(False)
+
+        self.lbl_number = ctk.CTkLabel(self.display_frame, text="?", font=("Arial", 90, "bold"), text_color="white")
+        self.lbl_number.pack(expand=True)
+
+        self.lbl_instruction = ctk.CTkLabel(self, text="Appuyez sur ESPACE pour lancer la Roulette", font=("Arial", 24, "bold"), text_color="white")
+        self.lbl_instruction.pack(pady=10)
+
+        self.lbl_result = ctk.CTkLabel(self, text="", font=("Arial", 32, "bold"))
+        self.lbl_result.pack(pady=20)
+
+    def lancer_roulette(self):
+        if self.spinning:
+            return
+        
+        self.spinning = True
+        self.lbl_result.configure(text="")
+        
+        self.current_index = random.randint(0, len(self.wheel_pockets) - 1)
+        self.speed = 30 
+        self.rotations_left = random.randint(30, 50)
+
+        self.animer_roulette()
+
+    def animer_roulette(self):
+        if self.rotations_left > 0:
+            self.current_index = (self.current_index + 1) % len(self.wheel_pockets)
+            color, number = self.wheel_pockets[self.current_index]
+
+            text_color = "white"
+            if color == "Red":
+                text_color = "#ff4d4d"
+            elif color == "Black":
+                text_color = "#2B2929"
+            elif color == "Green":
+                text_color = "#2ecc71"
+
+            self.lbl_number.configure(text=number, text_color=text_color)
+                
+            self.rotations_left -= 1
+                
+            self.speed += 8 
+            self.after(self.speed, self.anim_roulette_step)
+        else:
+            color, number = self.wheel_pockets[self.current_index]
+            self.afficher_resultat_final(color, number)
+            self.spinning = False
+
+    def anim_roulette_step(self):
+        self.animer_roulette()
+
+    def afficher_resultat_final(self, color, number):
+        text_color = "red" if color == "Red" else ("green" if color == "Green" else "Black")
+        self.lbl_result.configure(text=f"Résultat : {number} ({color})", text_color=text_color)
 
 class SlotMachine(ctk.CTkFrame):
     def __init__(self, master, back_callback=None):
         super().__init__(master, fg_color="black")
-        self.pack(fill="both", expand=True)
+        #self.pack(fill="both", expand=True)
         self.machine_running = False
         self.curr = 1
-        
+
+        if back_callback:
+            self.btn_back = ctk.CTkButton(self, text="← Retour Casino", command=back_callback, width=120, height=35, fg_color="gray30",hover_color="gray40")
+            self.btn_back.place(x=20, y=20)
+
         # Liste de tes images pour l'animation
         self.image_paths = ["Assets/Casino/SlotMachine/7.png", "Assets/Casino/SlotMachine/black-hole.png",
                              "Assets/Casino/SlotMachine/Cherries.png", "Assets/Casino/SlotMachine/diamonds.png",
@@ -179,4 +264,3 @@ class SlotMachine(ctk.CTkFrame):
             # code pour perte argent
         self.machine_running = False
         self.curr = 1
-
