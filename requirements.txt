@@ -1,4 +1,8 @@
+aiortc
+websockets
+pandas
 matplotlib
 customtkinter
+requests
 pandas
 numpy

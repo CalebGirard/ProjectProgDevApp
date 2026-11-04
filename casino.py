@@ -1,8 +1,7 @@
 import customtkinter as ctk
 import tkinter as tk
-import random
 from PIL import Image
-from main import MainApp
+import random
 
 class Casino(ctk.CTkFrame) :
     def __init__(self, master):
@@ -173,9 +172,8 @@ class SlotMachine(ctk.CTkFrame):
 
     def verify_victory(self):
         if self.index_final_1 == self.index_final_2 == self.index_final_3:
-            self.result_label.configure(text="YIPEEEEEEEEEE!!!", text_color="green")
+            self.result_label.configure(text="YIPEEEEEE!!!", text_color="green")
             # Code pour gain argent
-            
         else:
             self.result_label.configure(text="Stupid Loser :()", text_color="red")
             # code pour perte argent
