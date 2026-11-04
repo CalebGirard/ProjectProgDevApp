@@ -35,7 +35,6 @@ class Database:
 
     async def init(self):
         asyncio.create_task(self.handleRequests())
-        await self.openRoom()
 
     # Signaling Module
 
@@ -341,10 +340,17 @@ class Database:
         if not self.host:
             return
         self.broadcast(json.dumps({"type":"database_close"}))
+        self.data = {}
 
     # Utilities
 
     def splitPath(self, path:str):
         path = path.split(":")
         return path
+
+    def setHost(self,host:bool):
+        self.host = host
+
+    def setUsername(self,username:str):
+        self.username = username
             

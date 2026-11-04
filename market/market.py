@@ -1,7 +1,7 @@
 import pandas as pd
 import random
 import json
-
+from Database import Database
 
 class Stock:
     def __init__(
@@ -12,61 +12,64 @@ class Stock:
         price,
         history,
         impact,
+        database:Database,
         currency="USD",
         tags=None,
         volatility=0.02,
         drift=0.0003,
     ):
+        self.database = database
         self.name = name
-        self.ticker = ticker
-        self.tags = tags
-        self.currency = currency
-        self.price = float(price)
-        self.shares = shares
-        self.volatility = volatility
-        self.drift = drift
-        self.impact = impact
-
-        self.history = history
-
+        self.database.setPath(f"stocks:{name}:name",name)
+        self.database.setPath(f"stocks:{name}:ticker",ticker)
+        self.database.setPath(f"stocks:{name}:tags",tags)
+        self.database.setPath(f"stocks:{name}:currency",currency)
+        self.database.setPath(f"stocks:{name}:price",price)
+        self.database.setPath(f"stocks:{name}:shares",shares)
+        self.database.setPath(f"stocks:{name}:volatility",volatility)
+        self.database.setPath(f"stocks:{name}:drift",drift)
+        self.database.setPath(f"stocks:{name}:impact",impact)
         if isinstance(history, pd.Series):
-            self.history = history.dropna().tolist()
+            self.database.setPath(f"stocks:{name}:history",history.dropna().tolist())
         else:
-            self.history = list(history)
-
-        self.bought = 0
-        self.sold = 0
+            self.database.setPath(f"stocks:{name}:history",list(history))
+        self.database.setPath(f"stocks:{name}:bought",0)
+        self.database.setPath(f"stocks:{name}:sold",0)
+        self.database.setPath(f"stocks:{self.name}:marketCap",self.database.getPath(f"stock:{self.name}:price") * self.database.getPath(f"stock:{self.name}:shares"))
 
     def buy(self, qty):
-        self.bought += qty
+        self.database.setPath(f"stocks:{self.name}:bought",self.database.getPath(f"stocks:{self.name}:sold")+qty)
 
     def sell(self, qty):
-        self.sold += qty
+        self.database.setPath(f"stocks:{self.name}:sold",self.database.getPath(f"stocks:{self.name}:sold")+qty)
 
     def update(self):
-        self.price = max(
+        self.database.setPath(f"stocks:{self.name}:price",max(
             0.01,
-            self.price
+            self.database.getPath(f"stocks:{self.name}:price")
             * (
                 1
-                + random.gauss(self.drift, self.volatility)
-                + self.impact * (self.bought - self.sold) / self.shares
+                + random.gauss(self.database.getPath(f"stocks:{self.name}:drift"), self.database.getPath(f"stocks:{self.name}:volatility"))
+                + self.database.getPath(f"stocks:{self.name}:impact") * (self.database.getPath(f"stocks:{self.name}:bought") - self.database.getPath(f"stocks:{self.name}:sold")) / self.database.getPath(f"stocks:{self.name}:shares")
             ),
-        )
-        self.history.append(self.price)
-        self.buys = self.sells = 0
+        ))
+        self.database.setPath(f"stocks:{self.name}:history",self.database.getPath(f"stocks:{self.name}:history").append(self.database.getPath(f"stocks:{self.name}:price")))
+        self.database.setPath(f"stocks:{self.name}:buys",0)
+        self.database.setPath(f"stocks:{self.name}:sells",0)
+        self.database.setPath(f"stocks:{self.name}:marketCap",self.database.getPath(f"stock:{self.name}:price") * self.database.getPath(f"stock:{self.name}:shares"))
 
     @property
     def market_cap(self):
-        return self.price * self.shares
+        return self.database.getPath(f"stock:{self.name}:price") * self.database.getPath(f"stock:{self.name}:shares")
 
     def __repr__(self):
-        return f"Stock(name={self.name}, price={self.price} {self.currency}, shares={self.shares}, market_cap={self.market_cap})"
+        return f"Stock(name={self.name}, price={self.database.getPath(f"stock:{self.name}:price")} {self.database.getPath(f"stock:{self.name}:currency")}, shares={self.database.getPath(f"stock:{self.name}:shares")}, market_cap={self.market_cap})"
 
 
 class Market:
-    def __init__(self, size, impact=10):
-        self.stocks = self.create_stocks(size, impact)  # dictionnary of stocks
+    def __init__(self, size, database:Database, impact=10):
+        self.database = database
+        self.stocks = self.create_stocks(size, impact)
 
     def create_stocks(self, size, impact):
         with open("./market/stocks.json", "r") as f:
@@ -86,6 +89,7 @@ class Market:
                 i["price"],
                 prices[i["ticker"]],
                 impact,
+                self.database,
                 i["currency"],
                 i["tags"],
                 i["volatility"],
@@ -99,16 +103,16 @@ class Market:
             stock.update()
 
     def __repr__(self):
-        return str(self.stocks)
+        return str(self.database.get("stocks"))
 
     def get_tickers(self):
-        return sorted(list(self.stocks.keys()))
+        return sorted(list(self.database.get("stocks").keys()))
 
     def get_names(self):
-        return sorted([stock.name for stock in self.stocks.values()])
+        return sorted([stock["name"] for stock in self.database.get("stocks").values()])
 
     def get_stock_by_ticker(self, ticker):
-        return self.stocks.get(ticker, None)
+        return self.database.get("stocks").get(ticker, None)
 
     def find_stock_by_long_name(self, name):
         # format : A (A)
