@@ -4,14 +4,15 @@ import random as rd
 import json
 import math
 import csv
-
+from Database import Database
 
 class user:
-    def __init__(self, nom, lvl, starting_cash):
+    def __init__(self, nom, lvl, starting_cash,database:Database):
         self.nom = nom
         self.lvl = lvl
         self.wallet = {}
         self.holdings = starting_cash
+        self.database = database
 
     def make_decision(self):
         return
@@ -45,11 +46,12 @@ class user:
 
 
 class userbase:
-    def __init__(self, nb, difficulty_multiplier):
+    def __init__(self, nb, difficulty_multiplier, database:Database):
         self.userbase = []
         self.size = nb
         self.difficulty_multiplier = difficulty_multiplier
         self.random_proportions = self.randomize_odds()
+        self.database = database
 
     def randomize_odds(self):
         x, y, z, t = 0, 0, 0, 0
@@ -76,6 +78,7 @@ class userbase:
                     obj,
                     10 * self.difficulty_multiplier**2,
                     math.ceil(t1_names[obj] * self.difficulty_multiplier**2),
+                    self.database
                 )
             )
             t1_names.pop(obj)
@@ -92,6 +95,7 @@ class userbase:
                     obj,
                     rd.uniform(7, 9.5) * self.difficulty_multiplier**2,
                     math.ceil(t2_names[obj] * self.difficulty_multiplier**2),
+                    self.database
                 )
             )
             t2_names.pop(obj)
@@ -125,9 +129,9 @@ class userbase:
                             10000000000 * self.difficulty_multiplier**2,
                         )
                     ),
+                    self.database
                 )
             )
-
         self.userbase.extend(temp)
 
     def build_T4s(self):
@@ -148,6 +152,7 @@ class userbase:
                             10000000 * self.difficulty_multiplier**2,
                         )
                     ),
+                    self.database
                 )
             )
         self.userbase.extend(users)

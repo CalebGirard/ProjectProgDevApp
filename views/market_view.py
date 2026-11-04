@@ -52,10 +52,10 @@ class MarketView(ctk.CTkFrame):
 
     def _get_dropdown_options(self):
         # Format: "Apple (AAPL)"
-        return [f"{s.name} ({s.ticker})" for s in self.engine.market.stocks.values()]
+        return [f"{s["name"]} ({s["ticker"]})" for s in self.engine.database.get("stocks").values()]
 
     def switch_data(self, stock):
-        self.current_stock = self.engine.market.find_stock_by_long_name(stock)
+        self.current_stock = self.engine.market.find_stock_by_long_name(stock)["name"]
         self.refresh()
 
     def _build_top_bar(self):
@@ -89,7 +89,7 @@ class MarketView(ctk.CTkFrame):
 
         self.stat_text = ctk.CTkLabel(
             bar,
-            text=f"24h Change: {100 - self.current_stock.history[-1]/self.current_stock.history[-2]*100:.2f}%  |  Vol : ${number_formatter(self.current_stock.market_cap)} {self.current_stock.currency}",
+            text=f"24h Change: {100 - self.engine.database.getPath(f"stocks:{self.current_stock}:history")[-1]/self.engine.database.getPath(f"stocks:{self.current_stock}:history")[-2]*100:.2f}%  |  Vol : ${number_formatter(self.engine.database.getPath(f"stocks:{self.current_stock}:history"))} {self.engine.database.getPath(f"stocks:{self.current_stock}:currency")}",
             font=("Arial", 12),
             text_color="#848e9c",
         )
@@ -202,7 +202,6 @@ class MarketView(ctk.CTkFrame):
         self.ax.tick_params(colors="#848e9c", labelsize=9)
         for spine in self.ax.spines.values():
             spine.set_color("#2b313a")
-
 
 def number_formatter(valeur):
     valeur = float(valeur)

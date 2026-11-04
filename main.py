@@ -12,7 +12,7 @@ from views.market_view import MarketView
 from views.shop_view import ShopView
 from views.bank_view import BankView
 from views.casino_view import CasinoView
-from views.users_view import UsersView
+from views.multi_view import MultiView
 from views.settings_view import SettingsView
 
 
@@ -161,7 +161,7 @@ class MainApp(ctk.CTk):
             "Shop": ShopView,
             "Market": MarketView,
             "Bank": BankView,
-            "Multi": UsersView,
+            "Multi": MultiView,
             "Settings": SettingsView,
         }
 
