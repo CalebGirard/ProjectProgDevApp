@@ -6,6 +6,8 @@ class Engine:
     def __init__(self):
         self.database = Database("host",True)
         self.database.startThread()
+        self.database.init()
+        self.hosting = True
         self.market = Market(200)
         self.userbase = userbase(500, 0.1)
         self.userbase.build_T1s()
@@ -15,10 +17,15 @@ class Engine:
 
     def tick(self):
         """Advances the simulation by 1 time step."""
-        self.market.update()
-        prices = {t: s.price for t, s in self.market.stocks.items()}
-        self.database.set("prices", prices)
+        if self.hosting:
+            self.market.update()
+            prices = {t: s.price for t, s in self.market.stocks.items()}
+            self.database.set("prices", prices)
+        else:
+            pass
+            # get data from database instead
 
     def _apply_event(self, event):
-        # E.g., if event affects Tech, modify AAPL/MSFT
-        pass
+        if self.hosting:
+            # E.g., if event affects Tech, modify AAPL/MSFT
+            pass

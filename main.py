@@ -194,7 +194,6 @@ class MainApp(ctk.CTk):
 
         self.after(2000, self.run_clock)
 
-
     def destroy(self):
         self.quit()
 
