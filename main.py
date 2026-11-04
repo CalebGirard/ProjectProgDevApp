@@ -1,5 +1,7 @@
 from logging import root
 
+from engine import Engine
+
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk
@@ -22,11 +24,14 @@ class MainApp(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.geometry("800x600+0+0")
+        self.engine = Engine()
         self.iconbitmap("Assets/snake.ico")
         self.after(0, lambda: self.state("zoomed"))
         self.configure(fg_color="black")
         self.title("Pynance Desktop")
         self.menu()
+        self.run_clock()
+
 
     def menu(self):
         self.grid_rowconfigure(0, weight=1)
@@ -162,7 +167,7 @@ class MainApp(ctk.CTk):
 
         for name, FrameClass in page_classes.items():
             # Instantiate each frame inside self.container
-            frame = FrameClass(master=self.container, controller=self)
+            frame = FrameClass(master=self.container, controller=self, engine=self.engine)
             self.frames[name] = frame
 
             # Stack all frames into the exact same cell
@@ -173,7 +178,6 @@ class MainApp(ctk.CTk):
         frame = self.frames[page_name]
         frame.tkraise()
 
-        # Optional: trigger a data refresh when navigating
         if hasattr(frame, "refresh"):
             frame.refresh()
 
@@ -181,6 +185,17 @@ class MainApp(ctk.CTk):
             button.configure(
                 fg_color="#2d2d30" if name == page_name else "transparent"
             )
+
+    def run_clock(self):
+        self.engine.tick()
+
+        market_view = self.frames.get("Market")
+
+        if market_view and market_view.winfo_viewable():
+            market_view.refresh()
+
+        self.after(2000, self.run_clock)
+
 
     def destroy(self):
         self.quit()

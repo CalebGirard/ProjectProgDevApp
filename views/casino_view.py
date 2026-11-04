@@ -4,7 +4,7 @@ from PIL import Image
 import random
 
 class CasinoView(ctk.CTkFrame) :
-    def __init__(self, master, controller):
+    def __init__(self, master, controller, engine):
         super().__init__(master, fg_color="black")
         self.controller = controller
         self.casino_frames = {}

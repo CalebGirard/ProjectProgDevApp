@@ -3,7 +3,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 
 class UsersView(ctk.CTkFrame):
-    def __init__(self, master, controller):
+    def __init__(self, master, controller, engine):
         super().__init__(master, fg_color="#0b0e11")
         self.controller = controller
 
