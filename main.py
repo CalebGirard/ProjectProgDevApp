@@ -1,3 +1,7 @@
+from logging import root
+
+from engine import Engine
+
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk
@@ -5,12 +9,12 @@ from PIL import Image, ImageTk
 # Views
 
 from views.market_view import MarketView
+from views.shop_view import ShopView
+from views.bank_view import BankView
+from views.casino_view import CasinoView
+from views.users_view import UsersView
+from views.settings_view import SettingsView
 
-# TODO
-
-# Add proper icons
-#
-# Add graph visualizer
 
 
 from casino import Casino
@@ -23,11 +27,14 @@ class MainApp(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.geometry("800x600+0+0")
+        self.engine = Engine()
         self.iconbitmap("Assets/snake.ico")
         self.after(0, lambda: self.state("zoomed"))
         self.configure(fg_color="black")
         self.title("Pynance Desktop")
         self.menu()
+        self.run_clock()
+
 
     def menu(self):
         self.grid_rowconfigure(0, weight=1)
@@ -146,27 +153,55 @@ class MainApp(ctk.CTk):
         }
         self.frames = {}
         self.init_frames()
-        self.show_frame("Trading")
+        self.show_frame("Market")
 
     def init_frames(self):
-        for F in ("Casino", "Market", "Trading", "Multi", "Bank"):
-            frame = ctk.CTkFrame(self.container, fg_color="black")
-            self.frames[F] = frame
-            frame.place(relx=0, rely=0, relwidth=1, relheight=1)
+        self.container.grid_columnconfigure(0, weight=1)
+        self.container.grid_rowconfigure(0, weight=1)
+        # Map a string key to the respective class
+        page_classes = {
+            "Casino": CasinoView,
+            "Shop": ShopView,
+            "Market": MarketView,
+            "Bank": BankView,
+            "Multi": UsersView,
+            "Settings": SettingsView,
+        }
 
-        self.casino_view = Casino(self.frames["Casino"])
+        for name, FrameClass in page_classes.items():
+            # Instantiate each frame inside self.container
+            frame = FrameClass(master=self.container, controller=self, engine=self.engine)
+            self.frames[name] = frame
 
-        for F in ("Market", "Trading", "Multi", "Bank"):
-            label = ctk.CTkLabel(self.frames[F], text=f"Vue : {F}", font=("Arial", 24, "bold"), text_color="LightSkyBlue")
-            label.pack(expand=True)
+            # Stack all frames into the exact same cell
+            frame.grid(row=0, column=0, sticky="nsew")
 
-
-    def show_frame(self, page_name):
-        """Fait passer au premier plan la vue demandée"""
+    def show_frame(self, page_name: str):
+        """Brings the requested page to the front without re-creating it."""
         frame = self.frames[page_name]
         frame.tkraise()
+
+        if hasattr(frame, "refresh"):
+            frame.refresh()
+
         for name, button in self.navigation_buttons.items():
-            button.configure(fg_color="#2d2d30" if name == page_name else "transparent")
+            button.configure(
+                fg_color="#2d2d30" if name == page_name else "transparent"
+            )
+
+    def run_clock(self):
+        self.engine.tick()
+
+        market_view = self.frames.get("Market")
+
+        if market_view and market_view.winfo_viewable():
+            market_view.refresh()
+
+        self.after(2000, self.run_clock)
+
+
+    def destroy(self):
+        self.quit()
 
         titles = {
             "Casino": "Application - Royal Casino",
