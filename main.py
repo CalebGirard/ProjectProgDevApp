@@ -7,12 +7,12 @@ from PIL import Image, ImageTk
 # Views
 
 from views.market_view import MarketView
+from views.shop_view import ShopView
+from views.bank_view import BankView
+from views.casino_view import CasinoView
+from views.users_view import UsersView
+from views.settings_view import SettingsView
 
-# TODO
-
-# Add proper icons
-#
-# Add graph visualizer
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -47,7 +47,7 @@ class MainApp(ctk.CTk):
             logo = ctk.CTkImage(
                 dark_image=Image.open("Assets/snake.ico"), size=(24, 24)
             )
-            wheel_pic = ctk.CTkImage(
+            casino_pic = ctk.CTkImage(
                 dark_image=Image.open("Assets/megaphone.png"), size=(24, 24)
             )
             market_pic = ctk.CTkImage(
@@ -67,7 +67,7 @@ class MainApp(ctk.CTk):
             )
         except:
             logo = None
-            wheel_pic = None
+            casino_pic = None
             market_pic = None
             trading_pic = None
             multi_pic = None
@@ -87,13 +87,13 @@ class MainApp(ctk.CTk):
         self.logo = ctk.CTkLabel(self.menu_bar, image=logo, text="")
         self.logo.grid(row=0, column=0, padx=8, pady=(8, 20))
 
-        self.btn_wheel = ctk.CTkButton(
+        self.btn_casino = ctk.CTkButton(
             self.menu_bar,
-            image=wheel_pic,
-            command=lambda: self.show_frame("Wheel"),
+            image=casino_pic,
+            command=lambda: self.show_frame("Casino"),
             **button_style,
         )
-        self.btn_wheel.grid(row=3, column=0, padx=8, pady=2)
+        self.btn_casino.grid(row=3, column=0, padx=8, pady=2)
 
         self.btn_shop = ctk.CTkButton(
             self.menu_bar,
@@ -136,7 +136,7 @@ class MainApp(ctk.CTk):
         self.btn_settings.grid(row=7, column=0, padx=8, pady=10)
 
         self.navigation_buttons = {
-            "Wheel": self.btn_wheel,
+            "Casino": self.btn_casino,
             "Market": self.btn_market,
             "Shop": self.btn_shop,
             "Multi": self.btn_multi,
@@ -145,36 +145,45 @@ class MainApp(ctk.CTk):
         }
         self.frames = {}
         self.init_frames()
-        self.show_frame("Wheel")
+        self.show_frame("Market")
 
     def init_frames(self):
-        frame = ctk.CTkFrame(self.container)
-        self.frames["Market"] = frame
+        self.container.grid_columnconfigure(0, weight=1)
+        self.container.grid_rowconfigure(0, weight=1)
+        # Map a string key to the respective class
+        page_classes = {
+            "Casino": CasinoView,
+            "Shop": ShopView,
+            "Market": MarketView,
+            "Bank": BankView,
+            "Multi": UsersView,
+            "Settings": SettingsView,
+        }
 
-        label = ctk.CTkLabel(
-            frame, text=f"TODO", font=("Arial", 20, "bold"), text_color="White"
-        )
-        label.pack(expand=True)
+        for name, FrameClass in page_classes.items():
+            # Instantiate each frame inside self.container
+            frame = FrameClass(master=self.container, controller=self)
+            self.frames[name] = frame
 
-        frame.place(relx=0, rely=0, relwidth=1, relheight=1)
+            # Stack all frames into the exact same cell
+            frame.grid(row=0, column=0, sticky="nsew")
 
-        for F in ("Wheel", "Shop", "Multi", "Bank", "Settings"):
-            frame = ctk.CTkFrame(self.container)
-            self.frames[F] = frame
-
-            label = ctk.CTkLabel(
-                frame, text=f"Vue : {F}", font=("Arial", 20, "bold"), text_color="White"
-            )
-            label.pack(expand=True)
-
-            frame.place(relx=0, rely=0, relwidth=1, relheight=1)
-
-    def show_frame(self, page_name):
-        """Fait passer au premier plan la vue demandée"""
+    def show_frame(self, page_name: str):
+        """Brings the requested page to the front without re-creating it."""
         frame = self.frames[page_name]
         frame.tkraise()
+
+        # Optional: trigger a data refresh when navigating
+        if hasattr(frame, "refresh"):
+            frame.refresh()
+
         for name, button in self.navigation_buttons.items():
-            button.configure(fg_color="#2d2d30" if name == page_name else "transparent")
+            button.configure(
+                fg_color="#2d2d30" if name == page_name else "transparent"
+            )
+
+    def destroy(self):
+        self.quit()
 
 
 if __name__ == "__main__":
