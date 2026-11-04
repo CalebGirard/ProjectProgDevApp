@@ -172,7 +172,7 @@ class SlotMachine(ctk.CTkFrame):
 
     def verify_victory(self):
         if self.index_final_1 == self.index_final_2 == self.index_final_3:
-            self.result_label.configure(text="YIPEEEEEEEEEE!!!", text_color="green")
+            self.result_label.configure(text="YIPEEEEEE!!!", text_color="green")
             # Code pour gain argent
         else:
             self.result_label.configure(text="Stupid Loser :()", text_color="red")
