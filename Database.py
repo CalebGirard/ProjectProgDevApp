@@ -46,6 +46,7 @@ class Database:
         self.channels = {}
         self.clientPc = None
 
+    @threadsafe
     async def init(self):
         asyncio.create_task(self.handleRequests())
 
