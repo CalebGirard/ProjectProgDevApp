@@ -1,5 +1,3 @@
-from logging import root
-
 from engine import Engine
 
 import customtkinter as ctk
@@ -199,7 +197,6 @@ class MainApp(ctk.CTk):
 
     def destroy(self):
         self.quit()
-
 
 if __name__ == "__main__":
     app = MainApp()
