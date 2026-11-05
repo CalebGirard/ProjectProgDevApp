@@ -142,6 +142,8 @@ class Database:
         self.webs = await ws.connect("wss://"+SERVER+"/ws?id="+code)
         data = json.loads(await self.webs.recv())
         if data["type"] != "successful_connection":
+            if not self.connFailedCallback:
+                self.connFailedCallback()
             return False
         self.sigRoomRunning = True
         asyncio.create_task(self.signalRecv())
