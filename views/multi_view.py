@@ -27,7 +27,7 @@ class MultiView(ctk.CTkFrame):
         self.engine.database.setUsername(self.usernameEntry.get()[:20])
         self.engine.username = self.usernameEntry.get()[:20]
         self.engine.database.connectToDatabase(self.codeEntry.get())
-        self.after(5000,self.showConnView)
+        self.after(500,self.showConnView)
 
     def disconnectCallback(self):
         self.engine.database.setUsername("host")
@@ -42,7 +42,7 @@ class MultiView(ctk.CTkFrame):
     def hostGame(self):
         self.engine.database.openRoom()
         self.connectedView.code = self.engine.database.code
-        self.after(1000,self.showConnView)
+        self.after(500,self.showConnView)
 
     def showConnView(self):
         self.connectedView.start(self.engine.database.code)

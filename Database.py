@@ -305,7 +305,9 @@ class Database:
             return
         for user in self.connections.keys():
             if user != excep:
-                await self.sendAsHost(data,user)
+                try:
+                    await self.sendAsHost(data,user)
+                except:pass
 
     async def handleRequests(self):
         while True:

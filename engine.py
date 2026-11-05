@@ -42,12 +42,20 @@ class Engine:
         self.userbase.build_T4s()
 
     def newPlayer(self,username):
-        self.database.setPath(f"cash:{username}",self.config["starting_cash"])
+        self.database.setPath(f"cash:{username}", self.config["starting_cash"])
+    
+        if self.market and self.market.stocks:
+            self.database.set("market", {
+                "id": time.time(),
+                "iteration": self.iteration,
+                "stocks": self.market.snapshot(),
+            })
+
         messages = list(self.database.get("messages") or [])
-        messages.append({"username": "[Notification]", "message": f"{username}, just joined !"})
+        messages.append({"username": "[Notification]", "message": f"{username} just joined !"})
         if len(messages) >= 40:
             messages.pop(0)
-        self.database.set("messages",messages)
+        self.database.set("messages", messages)
         self.needSnapshot = True
 
     def rawMsgCallback(self,username, msg):
