@@ -8,6 +8,7 @@ class CasinoView(ctk.CTkFrame) :
     def __init__(self, master, controller, engine):
         super().__init__(master, fg_color="#0b0e11")
         self.controller = controller
+        self.pack(fill="both", expand=True)
         self.casino_frames = {}
         self.create_selecter()
         self.assets = Assets("Assets")
@@ -80,7 +81,7 @@ class CasinoView(ctk.CTkFrame) :
             corner_radius=8,
             image=wheel_pic,
             compound="top",
-            command=lambda: print("ta mere"),
+            command=self.open_roulette,
         )
         self.btn_wheel.grid(row=0, column=0, padx=6, pady=(0, 8))
 
@@ -121,29 +122,128 @@ class CasinoView(ctk.CTkFrame) :
         ).grid(row=1, column=1, padx=6, sticky="n")
 
         # Initialisation de la vue SlotMachine en arrière-plan dans le conteneur
+        self.roulette_view = Roulette(self.container_casino, back_callback=self.return_menu)
+        self.roulette_view.place(relx=0, rely=0, relwidth=1, relheight=1)
+        self.roulette_view.lower()
+
         self.slot_view = SlotMachine(self.container_casino, back_callback=self.return_menu)
         self.slot_view.place(relx=0, rely=0, relwidth=1, relheight=1)
-        # On la cache au démarrage pour n'afficher que le menu du casino
         self.slot_view.lower()
 
+    def open_roulette(self):
+        """Roulette premier plan"""
+        self.roulette_view.tkraise()
+
     def open_slot_machine(self):
-        """Fait passer la machine à sous au premier plan"""
+        """Machine à sous premier plan"""
         self.slot_view.tkraise()
 
     def return_menu(self):
-        """Remet le menu du casino au premier plan (si tu ajoutes un bouton retour)"""
+        """Casino premier plan"""
         self.menu_casino.tkraise()
 
 class Roulette(ctk.CTkFrame):
-    def __init__(self, master):
+    def __init__(self, master, back_callback=None):
         super().__init__(master, fg_color="black")
-        self.pack(fill="both", expand=True)
+        #self.pack(fill="both", expand=True)
+
+        if back_callback:
+            self.btn_back = ctk.CTkButton(self, text="Retour Casino", command=back_callback, width=120, height=35, fg_color="gray30",hover_color="gray40")
+            self.btn_back.place(x=20, y=20)
+
+        self.spinning = False
+        self.angle_actuel = 0
+
+        self.roulette_wheel = [("Green", "0"), ("Red", "32"), ("Black", "15"), ("Red", "19"), ("Black", "4"),
+            ("Red", "21"), ("Black", "2"), ("Red", "25"), ("Black", "17"), ("Red", "34"),
+            ("Black", "6"), ("Red", "27"), ("Black", "13"), ("Red", "36"), ("Black", "11"),
+            ("Red", "30"), ("Black", "8"), ("Red", "23"), ("Black", "10"), ("Red", "5"),
+            ("Black", "24"), ("Red", "16"), ("Black", "33"), ("Red", "1"), ("Black", "20"),
+            ("Red", "14"), ("Black", "31"), ("Red", "9"), ("Black", "22"), ("Red", "18"),
+            ("Black", "29"), ("Red", "7"), ("Black", "28"), ("Red", "12"), ("Black", "35"),
+            ("Red", "3"), ("Black", "26")]
+
+        try:
+            self.original_image = Image.open("Assets/Casino/Roulette/Roulette.png").resize((300, 300), Image.Resampling.LANCZOS)
+        except:
+            self.original_image = Image.new("RGBA", (300, 300), (34, 139, 34, 255))
+
+        self.wheel_container = ctk.CTkFrame(self, fg_color="transparent")
+        self.wheel_container.pack(pady=20)
+
+        self.lbl_pointer = ctk.CTkLabel(self.wheel_container, text="▼", font=("Arial", 24, "bold"), text_color="yellow")
+        self.lbl_pointer.pack(pady=(0, 5))
+
+        self.wheel_label = ctk.CTkLabel(self.wheel_container, text="")
+        self.wheel_label.pack()
+        self.update_wheel_image(0)
+
+        self.lbl_instruction = ctk.CTkLabel(self, text="Clic on SPACE", font=("Arial", 22, "bold"), text_color="white")
+        self.lbl_instruction.pack(pady=5)
+
+        self.lbl_result = ctk.CTkLabel(self, text="", font=("Arial", 28, "bold"))
+        self.lbl_result.pack(pady=10)
+
+        self.bind("<space>", lambda x: self.lancer_roulette())
+        self.focus_set()
+
+    def update_wheel_image(self, angle):
+        """Pivote l'image originale"""
+        rotated_img = self.original_image.rotate(angle, resample=Image.Resampling.NEAREST, expand=False)
+        self.ctk_image = ctk.CTkImage(dark_image=rotated_img, size=(300, 300))
+        self.wheel_label.configure(image=self.ctk_image)
+
+    def lancer_roulette(self):
+        if self.spinning:
+            return
+        
+        self.spinning = True
+        self.lbl_result.configure(text="")
+
+        winning_index = random.randint(0, len(self.roulette_wheel) - 1)
+        self.winning_color, self.winning_number = self.roulette_wheel[winning_index]
+
+        degrees_per_pocket = 360 / len(self.roulette_wheel)
+        target_relative_angle = winning_index * degrees_per_pocket
+
+        tours_complets = 360 * 3
+
+        current_mod = self.angle_actuel % 360
+        extra_degrees = (target_relative_angle - current_mod) % 360
+        self.degrees_left = tours_complets + extra_degrees
+
+        self.animer_etape()
+
+    def animer_etape(self):
+        if self.degrees_left > 0.5:
+            pas = max(self.degrees_left / 10, 1)
+            self.angle_actuel += pas
+            self.degrees_left -= pas
+
+            self.update_wheel_image(self.angle_actuel % 360)
+            self.after(15, self.animer_etape)
+        else:
+            # Fin de l'animation : on cale l'image pile sur la case gagnante
+            winning_index = next(i for i, (col, num) in enumerate(self.roulette_wheel) if num == self.winning_number and col == self.winning_color)
+            degrees_per_pocket = 360 / len(self.roulette_wheel)
+            
+            self.angle_actuel = winning_index * degrees_per_pocket
+            self.update_wheel_image(self.angle_actuel)
+            
+            self.afficher_resultat_final(self.winning_color, self.winning_number)
+            self.spinning = False
+
+    def afficher_resultat_final(self, color, number):
+        text_color = "red" if color == "Red" else ("green" if color == "Green" else "white")
+        self.lbl_result.configure(text=f"Résultat : {number} ({color})", text_color=text_color)
+
 
 class SlotMachine(ctk.CTkFrame):
     def __init__(self, master, back_callback=None):
         super().__init__(master, fg_color="#0b0e11")
         self.machine_running = False
         self.curr = 1
+<<<<<<< HEAD
         self.back_callback = back_callback
 
         self.assets = Assets("Assets")
@@ -152,6 +252,15 @@ class SlotMachine(ctk.CTkFrame):
 
         self.image_paths = self.assets.getAssetPathList(img_list)
 
+=======
+            
+        self.image_paths = ["Assets/Casino/SlotMachine/7.png", "Assets/Casino/SlotMachine/black-hole.png",
+                             "Assets/Casino/SlotMachine/cherries.png", "Assets/Casino/SlotMachine/diamond.png",
+                             "Assets/Casino/SlotMachine/blossom.png","Assets/Casino/SlotMachine/crown.png",
+                             "Assets/Casino/SlotMachine/dvd-player.png","Assets/Casino/SlotMachine/gem.png",
+                             "Assets/Casino/SlotMachine/honeycomb.png"]
+        
+>>>>>>> 8c164602a2a08f09f1d0e81de7183027bce9fa24
         self.loaded_images = []
         for path in self.image_paths:
             with Image.open(path) as symbol:
@@ -161,17 +270,17 @@ class SlotMachine(ctk.CTkFrame):
 
         header = ctk.CTkFrame(self, fg_color="transparent")
         header.pack(fill="x", padx=28, pady=(18, 8))
-        if self.back_callback is not None:
-            ctk.CTkButton(
+        if back_callback is not None:
+            self.btn_back = ctk.CTkButton(
                 header,
-                text="<  Casino",
-                width=94,
-                height=32,
-                fg_color="#181a20",
-                hover_color="#2b313a",
-                text_color="#eaecef",
-                command=self.back_callback,
-            ).pack(side="left")
+                text="Retour Casino",
+                command=back_callback,
+                width=120,
+                height=35,
+                fg_color="gray30",
+                hover_color="gray40",
+            )
+            self.btn_back.pack(side="left")
         ctk.CTkLabel(
             header,
             text="CASINO  /  SLOT MACHINE",
@@ -245,7 +354,6 @@ class SlotMachine(ctk.CTkFrame):
         self.spin_button.pack(pady=(0, 20))
 
         self.bind("<space>",lambda x:self.lancer_machine())
-        self.bind("<Escape>",lambda x:self.lancer_machine())
         self.focus_set()
 
         self.temps_1 = 0
@@ -271,7 +379,6 @@ class SlotMachine(ctk.CTkFrame):
         self.curr = 1
         
         # Chaque rouleau tourne un peu plus longtemps que le précédent
-        # Rouleau 1 s'arrête à 6 secondes, Rouleau 2 à 8 secondes, Rouleau 3 à 10 secondes
         self.temps_1 = 500
         self.temps_2 = 1500
         self.temps_3 = 2500
