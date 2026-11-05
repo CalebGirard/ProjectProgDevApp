@@ -30,6 +30,7 @@
 import json
 import random
 import pandas as pd
+import csv
 from pathlib import Path
 
 def weighted_choice(weights):
@@ -64,6 +65,25 @@ class random_eventer():
             self.companies = json.load(company_file)
         
         self.company_weights = {company_name: 1.0 for company_name in self.companies}
+
+        with (data_directory / "regions.json").open("r", encoding = "utf-8") as region_file:
+            region_data = json.load(region_file)
+
+        regions = []
+        for section in region_data:
+            if isinstance(section, dict):
+                regions.extend(section.keys())
+            elif isinstance(section, list):
+                regions.extend(section)
+
+        self.region_weights = {region: 1.0 for region in regions}
+
+        countries = []
+        with (data_directory / "country-list.csv").open("r", encoding = "utf-8") as country_file:
+            for row in csv.DictReader(country_file):
+                countries.append(row["country"])
+
+        self.country_weights = {country: 1.0 for country in dict.fromkeys(countries)}
 
         self.scope_weights = {
             "minor" : 70.0,
@@ -126,10 +146,38 @@ class random_eventer():
                 self.company_weights[company] += redistribution
 
 
+    def rebalance_region_weights(self, selected_region):
+        removed_weight = self.region_weights[selected_region] / 2
+        self.region_weights[selected_region] -= removed_weight
+
+        other_regions = [region for region in self.region_weights if region != selected_region]
+
+        if other_regions:
+            redistribution = removed_weight / len(other_regions)
+
+            for region in other_regions:
+                self.region_weights[region] += redistribution
+
+
+    def rebalance_country_weights(self, selected_country):
+        removed_weight = self.country_weights[selected_country] / 2
+        self.country_weights[selected_country] -= removed_weight
+
+        other_countries = [country for country in self.country_weights if country != selected_country]
+
+        if other_countries:
+            redistribution = removed_weight / len(other_countries)
+
+            for country in other_countries:
+                self.country_weights[country] += redistribution
+
+
     def build_headline(self, template, scope):
         headline = template["headline"]
         company = None
         ceo = None
+        region = None
+        country = None
 
         if "{company}" in headline:
             company = weighted_choice(self.company_weights)
@@ -140,7 +188,17 @@ class random_eventer():
             ceo = self.companies[company]
             headline = headline.replace("{ceo}", ceo)
 
-        return headline, company, ceo
+        if "{region}" in headline:
+            region = weighted_choice(self.region_weights)
+            self.rebalance_region_weights(region)
+            headline = headline.replace("{region}", region)
+
+        if "{country}" in headline:
+            country = weighted_choice(self.country_weights)
+            self.rebalance_country_weights(country)
+            headline = headline.replace("{country}", country)
+
+        return headline, company, ceo, region, country
 
 
     def generate_impact(self, template):
@@ -151,7 +209,7 @@ class random_eventer():
         scope = self.select_scope()
         template = self.select_template(scope)
 
-        headline, company, ceo = self.build_headline(template, scope)
+        headline, company, ceo, region, country = self.build_headline(template, scope)
         impact = self.generate_impact(template)
 
         self.rebalance_template_weights(scope, template["id"])
@@ -163,6 +221,8 @@ class random_eventer():
             "headline": headline,
             "company": company,
             "ceo": ceo,
+            "region": region,
+            "country": country,
             "impact": impact,
             "duration_ticks": template["duration_ticks"],
             "target_tag": template.get("target_tag"),
@@ -201,6 +261,8 @@ class random_eventer():
             "scope_weights": self.scope_weights,
             "template_weights": self.template_weights,
             "company_weights": self.company_weights,
+            "region_weights": self.region_weights,
+            "country_weights": self.country_weights,
             "event_queue": self.event_list
         }
 
@@ -222,6 +284,8 @@ class random_eventer():
             "scope_weights",
             "template_weights",
             "company_weights",
+            "region_weights",
+            "country_weights",
             "event_queue"
         }
 
@@ -231,6 +295,15 @@ class random_eventer():
         self.scope_weights = state["scope_weights"]
         self.template_weights = state["template_weights"]
         self.company_weights = state["company_weights"]
+        self.region_weights = state["region_weights"]
+        self.country_weights = state["country_weights"]
+
+        for template in self.templates:
+            scope = template["scope"]
+            template_id = template["id"]
+            self.template_weights.setdefault(scope, {})
+            self.template_weights[scope].setdefault(template_id, 1.0)
+
         self.event_list = state["event_queue"]
 
         return True
