@@ -19,3 +19,6 @@ class Assets:
 
     def getAssetPath(self,name):
         return self.assets.get(name)
+
+    def getAssetPathList(self,nameList):
+        return [ self.assets.get(name) for n in nameList ]
