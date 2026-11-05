@@ -29,7 +29,7 @@ class MultiView(ctk.CTkFrame):
         self.engine.username = username
         self.engine.database.connectToDatabase(self.codeEntry.get())
         self.connectedView.updateRoomCode(self.codeEntry.get())
-        self.connectedView.tkraise()
+        self.connectedView.start(self.codeEntry.get())
         self.showConnView()
 
     def disconnectCallback(self):
@@ -48,7 +48,8 @@ class MultiView(ctk.CTkFrame):
         self.showConnView()
 
     def showConnView(self):
-        self.connectedView.start(self.engine.database.code)
+        code = self.engine.database.code if self.engine.hosting else self.codeEntry.get().strip()
+        self.connectedView.start(code)
         self.connectedView.tkraise()
         self.connectedView.autoUpdate = True
         self.connectedView.refresh_ui()
@@ -121,7 +122,7 @@ class ConnectedFrame(ctk.CTkFrame):
         self.database = database
         self.engine = engine
         self.on_disconnect = on_disconnect
-        self.code = ""
+        self.code = self.database.code
         self.autoUpdate = False
         self.engine.database.roomReadyCallback = self.updateRoomCode
         self.createConnectedMenu()
@@ -145,7 +146,7 @@ class ConnectedFrame(ctk.CTkFrame):
         bar = ctk.CTkFrame(self.initframe, fg_color="#181a20", corner_radius=0)
         bar.grid(row=0, column=0, columnspan=2, sticky="ew", pady=(0, 2))
 
-        self.code_label = ctk.CTkLabel(bar, text=f"Room: {self.code or '------'}", font=("Arial", 20, "bold"))
+        self.code_label = ctk.CTkLabel(bar, text=f"Room: {self.code}", font=("Arial", 20, "bold"))
         self.code_label.pack(side="left", padx=12, pady=8)
 
         self.status_label = ctk.CTkLabel(bar, text="Connecting...", text_color="#848e9c", font=("Arial", 12))
@@ -209,7 +210,7 @@ class ConnectedFrame(ctk.CTkFrame):
         if db:
             if not self.code:
                 self.code = db.code
-                
+
             names = db.get("playerlist")
             names = names if names else []
             txt = ""
