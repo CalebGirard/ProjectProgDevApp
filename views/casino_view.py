@@ -79,7 +79,7 @@ class CasinoView(ctk.CTkFrame) :
             corner_radius=8,
             image=wheel_pic,
             compound="top",
-            command=lambda: print("ta mere"),
+            command=self.open_roulette,
         )
         self.btn_wheel.grid(row=0, column=0, padx=6, pady=(0, 8))
 
@@ -146,7 +146,7 @@ class Roulette(ctk.CTkFrame):
         #self.pack(fill="both", expand=True)
 
         if back_callback:
-            self.btn_back = ctk.CTkButton(self, text="← Retour Casino", command=back_callback, width=120, height=35, fg_color="gray30",hover_color="gray40")
+            self.btn_back = ctk.CTkButton(self, text="Retour Casino", command=back_callback, width=120, height=35, fg_color="gray30",hover_color="gray40")
             self.btn_back.place(x=20, y=20)
 
         self.spinning = False
@@ -241,8 +241,7 @@ class SlotMachine(ctk.CTkFrame):
         super().__init__(master, fg_color="#0b0e11")
         self.machine_running = False
         self.curr = 1
-        self.back_callback = back_callback
-        
+            
         self.image_paths = ["Assets/Casino/SlotMachine/7.png", "Assets/Casino/SlotMachine/black-hole.png",
                              "Assets/Casino/SlotMachine/cherries.png", "Assets/Casino/SlotMachine/diamond.png",
                              "Assets/Casino/SlotMachine/blossom.png","Assets/Casino/SlotMachine/crown.png",
@@ -258,17 +257,17 @@ class SlotMachine(ctk.CTkFrame):
 
         header = ctk.CTkFrame(self, fg_color="transparent")
         header.pack(fill="x", padx=28, pady=(18, 8))
-        if self.back_callback is not None:
-            ctk.CTkButton(
+        if back_callback is not None:
+            self.btn_back = ctk.CTkButton(
                 header,
-                text="<  Casino",
-                width=94,
-                height=32,
-                fg_color="#181a20",
-                hover_color="#2b313a",
-                text_color="#eaecef",
-                command=self.back_callback,
-            ).pack(side="left")
+                text="Retour Casino",
+                command=back_callback,
+                width=120,
+                height=35,
+                fg_color="gray30",
+                hover_color="gray40",
+            )
+            self.btn_back.pack(side="left")
         ctk.CTkLabel(
             header,
             text="CASINO  /  SLOT MACHINE",
@@ -367,7 +366,6 @@ class SlotMachine(ctk.CTkFrame):
         self.curr = 1
         
         # Chaque rouleau tourne un peu plus longtemps que le précédent
-        # Rouleau 1 s'arrête à 6 secondes, Rouleau 2 à 8 secondes, Rouleau 3 à 10 secondes
         self.temps_1 = 500
         self.temps_2 = 1500
         self.temps_3 = 2500
