@@ -1,15 +1,20 @@
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image
+from engine import Engine
 import random
+from assets import Assets
 
 class CasinoView(ctk.CTkFrame) :
     def __init__(self, master, controller, engine):
         super().__init__(master, fg_color="#0b0e11")
         self.controller = controller
+        self.engine = engine
         self.pack(fill="both", expand=True)
         self.casino_frames = {}
+        self.assets = Assets("Assets")
         self.create_selecter()
+        
 
     def create_selecter(self):
         self.container_casino = ctk.CTkFrame(self, fg_color="#0b0e11")
@@ -50,11 +55,11 @@ class CasinoView(ctk.CTkFrame) :
 
         try: 
             wheel_pic = ctk.CTkImage(
-                dark_image=Image.open("Assets/Casino/roulette.png"),
+                Image.open(self.assets.getAssetPath("roulette.png")),
                 size=(180, 180),
             )
             slot_pic = ctk.CTkImage(
-                dark_image=Image.open("Assets/Casino/SlotMachine.png"),
+                Image.open(self.assets.getAssetPath("SlotMachine.png")),
                 size=(180, 180),
             )
         except:
@@ -120,11 +125,11 @@ class CasinoView(ctk.CTkFrame) :
         ).grid(row=1, column=1, padx=6, sticky="n")
 
         # Initialisation de la vue SlotMachine en arrière-plan dans le conteneur
-        self.roulette_view = Roulette(self.container_casino, back_callback=self.return_menu)
+        self.roulette_view = Roulette(self.container_casino, self.engine, back_callback=self.return_menu)
         self.roulette_view.place(relx=0, rely=0, relwidth=1, relheight=1)
         self.roulette_view.lower()
 
-        self.slot_view = SlotMachine(self.container_casino, back_callback=self.return_menu)
+        self.slot_view = SlotMachine(self.container_casino, self.engine, back_callback=self.return_menu)
         self.slot_view.place(relx=0, rely=0, relwidth=1, relheight=1)
         self.slot_view.lower()
 
@@ -141,9 +146,11 @@ class CasinoView(ctk.CTkFrame) :
         self.menu_casino.tkraise()
 
 class Roulette(ctk.CTkFrame):
-    def __init__(self, master, back_callback=None):
+    def __init__(self, master, engine, back_callback=None):
         super().__init__(master, fg_color="black")
-        #self.pack(fill="both", expand=True)
+        self.engine = engine
+
+        self.assets = Assets("Assets")
 
         if back_callback:
             self.btn_back = ctk.CTkButton(self, text="Retour Casino", command=back_callback, width=120, height=35, fg_color="gray30",hover_color="gray40")
@@ -162,9 +169,17 @@ class Roulette(ctk.CTkFrame):
             ("Red", "3"), ("Black", "26")]
 
         try:
-            self.original_image = Image.open("Assets/Casino/Roulette/Roulette.png").resize((300, 300), Image.Resampling.LANCZOS)
+            self.original_image = Image.open(self.assets.getAssetPath("Roulette.png")).resize((300, 300), Image.Resampling.LANCZOS)
         except:
             self.original_image = Image.new("RGBA", (300, 300), (34, 139, 34, 255))
+
+        self.user_cash = ctk.CTkLabel(
+                    self,
+                    text=f"⭐ {str(self.engine.database.getPath(f"cash:{self.engine.username}"))} $ ⭐",
+                    font=("Arial", 20, "bold"),
+                    text_color="#0ecb81",
+                )
+        self.user_cash.pack(side="right", padx=20)
 
         self.wheel_container = ctk.CTkFrame(self, fg_color="transparent")
         self.wheel_container.pack(pady=20)
@@ -182,6 +197,18 @@ class Roulette(ctk.CTkFrame):
         self.lbl_result = ctk.CTkLabel(self, text="", font=("Arial", 28, "bold"))
         self.lbl_result.pack(pady=10)
 
+        # Bet Amount
+        tk.Label(self, text="Bet Amount:", font=("Arial", 14), fg="white", bg="#0f6321").pack()
+        self.bet_entry = tk.Entry(self, font=("Arial", 14))
+        self.bet_entry.pack(pady=6)
+
+        # Bet Color
+        tk.Label(self, text="Choose Color:", font=("Arial", 14), fg="white", bg="#0f6321").pack()
+        self.color_var = tk.StringVar(value="Red")
+        color_menu = tk.OptionMenu(self, self.color_var, "Red", "Black")
+        color_menu.config(font=("Arial", 12), bg="#006aff", fg="white", width=10)
+        color_menu.pack(pady=5)
+
         self.bind("<space>", lambda x: self.lancer_roulette())
         self.focus_set()
 
@@ -194,7 +221,24 @@ class Roulette(ctk.CTkFrame):
     def lancer_roulette(self):
         if self.spinning:
             return
+
+        try:
+            self.current_bet = int(self.bet_entry.get())
+        except ValueError:
+            self.lbl_result.configure(text="Enter valid bet !", text_color="orange")
+            return
+
+        current_cash = self.engine.database.getPath(f'cash:{self.engine.username}')
         
+        if self.current_bet > current_cash:
+            self.lbl_result.configure(text="Not enought money !", text_color="orange")
+            return
+
+        new_cash = current_cash - self.current_bet
+        self.engine.database.setPath(f'cash:{self.engine.username}', new_cash)
+        print(self.engine.database.getPath(f'cash:{self.engine.username}'))
+
+
         self.spinning = True
         self.lbl_result.configure(text="")
 
@@ -205,7 +249,6 @@ class Roulette(ctk.CTkFrame):
         target_relative_angle = winning_index * degrees_per_pocket
 
         tours_complets = 360 * 3
-
         current_mod = self.angle_actuel % 360
         extra_degrees = (target_relative_angle - current_mod) % 360
         self.degrees_left = tours_complets + extra_degrees
@@ -221,7 +264,6 @@ class Roulette(ctk.CTkFrame):
             self.update_wheel_image(self.angle_actuel % 360)
             self.after(15, self.animer_etape)
         else:
-            # Fin de l'animation : on cale l'image pile sur la case gagnante
             winning_index = next(i for i, (col, num) in enumerate(self.roulette_wheel) if num == self.winning_number and col == self.winning_color)
             degrees_per_pocket = 360 / len(self.roulette_wheel)
             
@@ -235,18 +277,39 @@ class Roulette(ctk.CTkFrame):
         text_color = "red" if color == "Red" else ("green" if color == "Green" else "white")
         self.lbl_result.configure(text=f"Résultat : {number} ({color})", text_color=text_color)
 
+        # Vérification si le joueur a gagné (comparaison avec la valeur de la StringVar)
+        if color == self.color_var.get():
+            if color == "green":
+                player_prize = self.engine.database.getPath(f'cash:{self.engine.username}')
+                winnings = self.current_bet * 36
+                player_prize += winnings
+                self.engine.database.setPath(f'cash:{self.engine.username}', player_prize)
+                print(self.engine.database.getPath(f'cash:{self.engine.username}', player_prize))
+            else:
+                player_prize = self.engine.database.getPath(f'cash:{self.engine.username}')
+                winnings = self.current_bet * 2
+                player_prize += winnings
+                self.engine.database.setPath(f'cash:{self.engine.username}')
+                print(self.engine.database.getPath(f'cash:{self.engine.username}'))
+
+
+        self.spinning = False
+
+
 
 class SlotMachine(ctk.CTkFrame):
-    def __init__(self, master, back_callback=None):
+    def __init__(self, master, engine, back_callback=None):
         super().__init__(master, fg_color="#0b0e11")
+        self.engine = engine
         self.machine_running = False
         self.curr = 1
-            
-        self.image_paths = ["Assets/Casino/SlotMachine/7.png", "Assets/Casino/SlotMachine/black-hole.png",
-                             "Assets/Casino/SlotMachine/cherries.png", "Assets/Casino/SlotMachine/diamond.png",
-                             "Assets/Casino/SlotMachine/blossom.png","Assets/Casino/SlotMachine/crown.png",
-                             "Assets/Casino/SlotMachine/dvd-player.png","Assets/Casino/SlotMachine/gem.png",
-                             "Assets/Casino/SlotMachine/honeycomb.png"]
+        self.back_callback = back_callback
+
+        self.assets = Assets("Assets")
+
+        img_list = ["7.png","black-hole.png","cherries.png","diamond.png","blossom.png","crown.png","dvd-player.png","gem.png","honeycomb.png"]
+
+        self.image_paths = self.assets.getAssetPathList(img_list)
         
         self.loaded_images = []
         for path in self.image_paths:
@@ -254,6 +317,13 @@ class SlotMachine(ctk.CTkFrame):
                 self.loaded_images.append(
                     ctk.CTkImage(dark_image=symbol.copy(), size=(160, 160))
                 )
+        self.user_cash = ctk.CTkLabel(
+                    self,
+                    text=f"⭐ {str(self.engine.database.getPath(f"cash:{self.engine.username}"))} $ ⭐",
+                    font=("Arial", 20, "bold"),
+                    text_color="#0ecb81",
+                )
+        self.user_cash.pack(side="right", padx=20)
 
         header = ctk.CTkFrame(self, fg_color="transparent")
         header.pack(fill="x", padx=28, pady=(18, 8))
@@ -348,6 +418,9 @@ class SlotMachine(ctk.CTkFrame):
         self.temps_3 = 0
 
     def lancer_machine(self):
+        player_bet = self.engine.database.getPath(f"cash:{self.engine.username}")
+        player_bet -= 100
+        self.engine.database.setPath(f"cash:{self.engine.username}",player_bet)
         """Déclenche l'animation des 3 rouleaux avec des temps d'arrêt échelonnés"""
         if self.machine_running:
             if self.curr == 1:
@@ -421,12 +494,13 @@ class SlotMachine(ctk.CTkFrame):
                 text="JACKPOT!",
                 text_color="#0ecb81",
             )
-            # Code pour gain argent
+            player_prize = self.engine.database.getPath(f"cash:{self.engine.username}")
+            player_prize += 1000
+            self.engine.database.setPath(f"cash:{self.engine.username}",player_prize)
         else:
             self.result_label.configure(
                 text="NO MATCH - TRY AGAIN",
                 text_color="#f6465d",
             )
-            # code pour perte argent
         self.machine_running = False
         self.curr = 1

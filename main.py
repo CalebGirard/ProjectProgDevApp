@@ -3,7 +3,6 @@ from engine import Engine
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk
-from tkinter import PhotoImage
 
 # Views
 
@@ -24,7 +23,7 @@ class MainApp(ctk.CTk):
         self.geometry("800x600+0+0")
         self.engine = Engine()
         self.assets = Assets("Assets")
-        #self.wm_iconphoto(False,ctk.CTkImage(Image.open(self.assets.getAssetPath("snake.ico"))))
+        self.wm_iconphoto(False, ImageTk.PhotoImage(Image.open(self.assets.getAssetPath("snake.ico"))))
         self.after(0, lambda: self.state("zoomed"))
         self.configure(fg_color="black")
         self.title("Pynance Desktop")
@@ -54,19 +53,19 @@ class MainApp(ctk.CTk):
                 dark_image=Image.open(self.assets.getAssetPath("megaphone.png")), size=(24, 24)
             )
             market_pic = ctk.CTkImage(
-                dark_image=Image.open("Assets/shopping-cart.png"), size=(24, 24)
+                dark_image=Image.open(self.assets.getAssetPath("shopping-cart.png")), size=(24, 24)
             )
             trading_pic = ctk.CTkImage(
-                dark_image=Image.open("Assets/globe.png"), size=(24, 24)
+                dark_image=Image.open(self.assets.getAssetPath("globe.png")), size=(24, 24)
             )
             multi_pic = ctk.CTkImage(
-                dark_image=Image.open("Assets/users-alt.png"), size=(24, 24)
+                dark_image=Image.open(self.assets.getAssetPath("users-alt.png")), size=(24, 24)
             )
             bank_pic = ctk.CTkImage(
-                dark_image=Image.open("Assets/bank.png"), size=(24, 24)
+                dark_image=Image.open(self.assets.getAssetPath("bank.png")), size=(24, 24)
             )
             settings = ctk.CTkImage(
-                dark_image=Image.open("Assets/settings.png"), size=(24, 24)
+                dark_image=Image.open(self.assets.getAssetPath("settings.png")), size=(24, 24)
             )
         except:
             logo = None
