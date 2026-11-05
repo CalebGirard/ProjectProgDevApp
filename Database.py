@@ -14,9 +14,11 @@ def threadsafe(fn):
     @functools.wraps(fn)
     def wrapper(self, *args, **kwargs):
         coro = fn(self, *args, **kwargs)
-        if threading.current_thread() is self._thread:
-            return coro
-        return asyncio.run_coroutine_threadsafe(coro, self.loop)
+        try:
+            asyncio.get_running_loop()
+        except RuntimeError:
+            return asyncio.run_coroutine_threadsafe(coro, self.loop)
+        return asyncio.ensure_future(coro)
     return wrapper
 
 class Database:

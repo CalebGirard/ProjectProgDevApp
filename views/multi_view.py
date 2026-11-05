@@ -166,7 +166,7 @@ class ConnectedFrame(ctk.CTkFrame):
         self.chat_send_btn = ctk.CTkButton(chat, text="Send Message", width=100, fg_color="#2b313a",hover_color="#0f5509", command=self.sendChat)
         self.chat_send_btn.pack(side="right", padx=12, pady=8)
 
-    def sendChat(self):
+    def sendChat(self, event=None):
         if self.engine.hosting:
             self.engine.rawMsgCallback("host",{"type":"raw","data":self.chat_entry.get()})
         else:
