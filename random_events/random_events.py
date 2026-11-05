@@ -31,6 +31,7 @@ import json
 import random
 import pandas as pd
 import csv
+import re
 from pathlib import Path
 
 def weighted_choice(weights):
@@ -63,8 +64,6 @@ class random_eventer():
 
         with (data_directory / "company_ceos.json").open("r", encoding = "utf-8") as company_file:
             self.companies = json.load(company_file)
-        
-        self.company_weights = {company_name: 1.0 for company_name in self.companies}
 
         with (data_directory / "regions.json").open("r", encoding = "utf-8") as region_file:
             region_data = json.load(region_file)
@@ -76,14 +75,36 @@ class random_eventer():
             elif isinstance(section, list):
                 regions.extend(section)
 
-        self.region_weights = {region: 1.0 for region in regions}
-
         countries = []
+        self.country_capitals = {}
         with (data_directory / "country-list.csv").open("r", encoding = "utf-8") as country_file:
             for row in csv.DictReader(country_file):
                 countries.append(row["country"])
+                self.country_capitals[row["country"]] = row["capital"]
 
-        self.country_weights = {country: 1.0 for country in dict.fromkeys(countries)}
+        self.subdivision_capitals = {}
+        with (data_directory / "subdivisions.json").open("r", encoding = "utf-8") as subdivision_file:
+            subdivision_data = json.load(subdivision_file)
+
+        subdivisions = []
+        for subdivision_group in subdivision_data:
+            if isinstance(subdivision_group, dict):
+                for subdivision, capital in subdivision_group.items():
+                    subdivisions.append(subdivision)
+                    self.subdivision_capitals[subdivision] = capital
+
+        tags = []
+        with (data_directory / "tags.csv").open("r", encoding = "utf-8") as tag_file:
+            for row in csv.DictReader(tag_file):
+                tags.append(row["tag"])
+
+        self.variable_weights = {
+            "company": {company_name: 1.0 for company_name in self.companies},
+            "region": {region: 1.0 for region in dict.fromkeys(regions)},
+            "country": {country: 1.0 for country in dict.fromkeys(countries)},
+            "subdivision": {subdivision: 1.0 for subdivision in dict.fromkeys(subdivisions)},
+            "tag": {tag: 1.0 for tag in dict.fromkeys(tags)}
+        }
 
         self.scope_weights = {
             "minor" : 70.0,
@@ -133,72 +154,125 @@ class random_eventer():
                 weights[template_id] += redistribution
 
 
-    def rebalance_company_weights(self, selected_company):
-        removed_weight = self.company_weights[selected_company] / 2
-        self.company_weights[selected_company] -= removed_weight
+    def rebalance_variable(self, variable_name, selected_value):
+        weights = self.variable_weights[variable_name]
+        removed_weight = weights[selected_value] / 2
+        weights[selected_value] -= removed_weight
 
-        other_companies = [company for company in self.company_weights if company != selected_company]
+        other_values = [
+            value for value in weights
+            if value != selected_value
+        ]
 
-        if other_companies:
-            redistribution = removed_weight/len(other_companies)
+        if other_values:
+            redistribution = removed_weight / len(other_values)
 
-            for company in other_companies:
-                self.company_weights[company] += redistribution
-
-
-    def rebalance_region_weights(self, selected_region):
-        removed_weight = self.region_weights[selected_region] / 2
-        self.region_weights[selected_region] -= removed_weight
-
-        other_regions = [region for region in self.region_weights if region != selected_region]
-
-        if other_regions:
-            redistribution = removed_weight / len(other_regions)
-
-            for region in other_regions:
-                self.region_weights[region] += redistribution
+            for value in other_values:
+                weights[value] += redistribution
 
 
-    def rebalance_country_weights(self, selected_country):
-        removed_weight = self.country_weights[selected_country] / 2
-        self.country_weights[selected_country] -= removed_weight
+    def resolve_template_variables(self, template):
+        text_fields = [
+            template.get("headline", ""),
+            template.get("target", ""),
+            template.get("target_tag", "")
+        ]
+        placeholders = set()
 
-        other_countries = [country for country in self.country_weights if country != selected_country]
+        for text in text_fields:
+            placeholders.update(re.findall(r"\{([^{}]+)\}", text))
 
-        if other_countries:
-            redistribution = removed_weight / len(other_countries)
+        selected_values = {}
 
-            for country in other_countries:
-                self.country_weights[country] += redistribution
+        if (
+            "capital" in placeholders
+            and "country" in placeholders
+            and "country" not in selected_values
+        ):
+            country = weighted_choice(self.variable_weights["country"])
+            self.rebalance_variable("country", country)
+            selected_values["country"] = country
+
+        if (
+            "capital" in placeholders
+            and "subdivision" in placeholders
+            and "subdivision" not in selected_values
+        ):
+            subdivision = weighted_choice(self.variable_weights["subdivision"])
+            self.rebalance_variable("subdivision", subdivision)
+            selected_values["subdivision"] = subdivision
+
+        for variable_name in placeholders:
+            if variable_name == "capital":
+                if "country" in selected_values:
+                    selected_values["capital"] = self.country_capitals[
+                        selected_values["country"]
+                    ]
+                elif "subdivision" in selected_values:
+                    selected_values["capital"] = self.subdivision_capitals[
+                        selected_values["subdivision"]
+                    ]
+                else:
+                    raise ValueError(
+                        "{capital} requires {country} or {subdivision} in the template"
+                    )
+                continue
+
+            if variable_name in ("country-capital", "country_capital"):
+                if "country" not in selected_values:
+                    country = weighted_choice(self.variable_weights["country"])
+                    self.rebalance_variable("country", country)
+                    selected_values["country"] = country
+
+                selected_values[variable_name] = self.country_capitals[selected_values["country"]]
+                continue
+
+            if variable_name in ("subdivision-capital", "subdivision_capital"):
+                if "subdivision" not in selected_values:
+                    subdivision = weighted_choice(self.variable_weights["subdivision"])
+                    self.rebalance_variable("subdivision", subdivision)
+                    selected_values["subdivision"] = subdivision
+
+                selected_values[variable_name] = self.subdivision_capitals[selected_values["subdivision"]]
+                continue
+
+            if variable_name == "ceo":
+                if "company" not in selected_values:
+                    company = weighted_choice(self.variable_weights["company"])
+                    self.rebalance_variable("company", company)
+                    selected_values["company"] = company
+
+                ceo = self.companies[selected_values["company"]]
+                selected_values["ceo"] = ceo
+                continue
+
+            if variable_name == "company" and "company" in selected_values:
+                continue
+
+            if variable_name not in self.variable_weights:
+                raise ValueError(
+                    "No probability source exists for variable: "
+                    + variable_name
+                )
+
+            value = weighted_choice(self.variable_weights[variable_name])
+            self.rebalance_variable(variable_name, value)
+            selected_values[variable_name] = value
+
+        return selected_values
 
 
-    def build_headline(self, template, scope):
-        headline = template["headline"]
-        company = None
-        ceo = None
-        region = None
-        country = None
+    def resolve_string(self, value, selected_values):
+        if not isinstance(value, str):
+            return value
 
-        if "{company}" in headline:
-            company = weighted_choice(self.company_weights)
-            self.rebalance_company_weights(company)
-            headline = headline.replace("{company}", company)
+        for variable_name, selected_value in selected_values.items():
+            value = value.replace(
+                "{" + variable_name + "}",
+                selected_value
+            )
 
-        if "{ceo}" in headline:
-            ceo = self.companies[company]
-            headline = headline.replace("{ceo}", ceo)
-
-        if "{region}" in headline:
-            region = weighted_choice(self.region_weights)
-            self.rebalance_region_weights(region)
-            headline = headline.replace("{region}", region)
-
-        if "{country}" in headline:
-            country = weighted_choice(self.country_weights)
-            self.rebalance_country_weights(country)
-            headline = headline.replace("{country}", country)
-
-        return headline, company, ceo, region, country
+        return value
 
 
     def generate_impact(self, template):
@@ -208,24 +282,29 @@ class random_eventer():
     def build_event(self):
         scope = self.select_scope()
         template = self.select_template(scope)
-
-        headline, company, ceo, region, country = self.build_headline(template, scope)
+        selected_values = self.resolve_template_variables(template)
         impact = self.generate_impact(template)
 
         self.rebalance_template_weights(scope, template["id"])
 
-
         return {
             "template_id": template["id"],
             "scope": scope,
-            "headline": headline,
-            "company": company,
-            "ceo": ceo,
-            "region": region,
-            "country": country,
+            "headline": self.resolve_string(
+                template["headline"],
+                selected_values
+            ),
             "impact": impact,
             "duration_ticks": template["duration_ticks"],
-            "target_tag": template.get("target_tag"),
+            "target": self.resolve_string(
+                template.get("target"),
+                selected_values
+            ),
+            "target_tag": self.resolve_string(
+                template.get("target_tag"),
+                selected_values
+            ),
+            "variables": selected_values,
             "play_probability": {
                 "minor": 0.70,
                 "major": 0.45,
@@ -239,7 +318,11 @@ class random_eventer():
         stocks = market.stocks
 
         if event["scope"] == "minor":
-            return [stock for stock in stocks.values() if stock.name == event["company"]]
+            company = event["variables"].get("company")
+            return [
+                stock for stock in stocks.values()
+                if stock.name == company
+            ]
 
         if event["scope"] == "major":
             target_tag = event["target_tag"]
@@ -260,9 +343,7 @@ class random_eventer():
         state = {
             "scope_weights": self.scope_weights,
             "template_weights": self.template_weights,
-            "company_weights": self.company_weights,
-            "region_weights": self.region_weights,
-            "country_weights": self.country_weights,
+            "variable_weights": self.variable_weights,
             "event_queue": self.event_list
         }
 
@@ -283,9 +364,6 @@ class random_eventer():
         required_keys = {
             "scope_weights",
             "template_weights",
-            "company_weights",
-            "region_weights",
-            "country_weights",
             "event_queue"
         }
 
@@ -294,9 +372,22 @@ class random_eventer():
 
         self.scope_weights = state["scope_weights"]
         self.template_weights = state["template_weights"]
-        self.company_weights = state["company_weights"]
-        self.region_weights = state["region_weights"]
-        self.country_weights = state["country_weights"]
+
+        if "variable_weights" in state:
+            saved_variable_weights = state["variable_weights"]
+        else:
+            saved_variable_weights = {
+                "company": state.get("company_weights", self.variable_weights["company"]),
+                "region": state.get("region_weights", self.variable_weights["region"]),
+                "country": state.get("country_weights", self.variable_weights["country"])
+            }
+
+        for variable_name, default_weights in self.variable_weights.items():
+            saved_weights = saved_variable_weights.get(variable_name, {})
+            self.variable_weights[variable_name] = {
+                value: float(saved_weights.get(value, 1.0))
+                for value in default_weights
+            }
 
         for template in self.templates:
             scope = template["scope"]
@@ -305,6 +396,24 @@ class random_eventer():
             self.template_weights[scope].setdefault(template_id, 1.0)
 
         self.event_list = state["event_queue"]
+
+        for event in self.event_list:
+            if "variables" not in event:
+                event["variables"] = {}
+
+                for variable_name in (
+                    "company",
+                    "ceo",
+                    "region",
+                    "country",
+                    "country_capital",
+                    "subdivision",
+                    "subdivision_capital",
+                    "tag",
+                    "capital"
+                ):
+                    if event.get(variable_name) is not None:
+                        event["variables"][variable_name] = event[variable_name]
 
         return True
 
