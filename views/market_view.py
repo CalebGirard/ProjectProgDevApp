@@ -312,7 +312,7 @@ class MarketView(ctk.CTkFrame):
         user_cash = self.engine.database.getPath("cash:host")
         spending = user_cash - x * self.current_stock.price
 
-        if user_cash > spending :
+        if user_cash > spending:
             return
         self.engine.database.setPath("cash:host", spending)
         if x <= 0:
