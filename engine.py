@@ -5,10 +5,12 @@ from random_events.random_events import random_eventer
 
 class Engine:
     def __init__(self):
+        self.username = "host"
         self.database = Database("host",True)
         self.database.rawMsgCallback = self.rawMsgCallback
         self.database.newConnCallback = self.newPlayer
         self.database.startThread()
+        self.database.setPath("cash:host",200)
         self.hosting = True
         self.market = Market(200)
         self.eventer = random_eventer(chaos = 1.0)
@@ -18,9 +20,10 @@ class Engine:
         self.userbase.build_T2s()
         self.userbase.build_T3s()
         self.userbase.build_T4s()
-        self.database.setPath(f"cash:host",200)
 
     def rebuild(self):
+        self.username = "host"
+        self.database.setPath("cash:host",200)
         self.hosting = True
         self.market = Market(200)
         self.eventer = random_eventer(chaos = 1.0)
@@ -30,7 +33,6 @@ class Engine:
         self.userbase.build_T2s()
         self.userbase.build_T3s()
         self.userbase.build_T4s()
-        self.database.setPath("cash:host",200)
 
     def newPlayer(self,username):
         self.database.setPath(f"cash:{username}",200)

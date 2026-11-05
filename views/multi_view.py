@@ -24,6 +24,7 @@ class MultiView(ctk.CTkFrame):
         self.engine.database.killDatabase()
         self.engine.database.setHost(False)
         self.engine.database.setUsername(self.usernameEntry.get())
+        self.engine.username = self.usernameEntry.get()
         self.engine.database.connectToDatabase(self.codeEntry.get())
         self.after(5000,self.showConnView)
 
