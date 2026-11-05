@@ -216,3 +216,9 @@ class ConnectedFrame(ctk.CTkFrame):
 
         if self.autoUpdate:
             self.after(1000, self.refresh_ui)
+
+
+
+
+
+            
