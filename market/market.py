@@ -98,6 +98,20 @@ class Market:
         for stock in self.stocks.values():
             stock.update()
 
+    def setPrices(self,prices):
+        if not prices:
+            return
+
+        for t, price in prices.items():
+            self.stocks[t].price = price
+
+    def addHist(self,lastHist):
+        if not lastHist:
+            return
+
+        for t, price in lastHist.items():
+            self.stocks[t].history.append(price)
+
     def __repr__(self):
         return str(self.stocks)
 

@@ -1,0 +1,202 @@
+[
+  {
+    "id": "event_earnings_blowout",
+    "scope": "minor",
+    "target": "{company}",
+    "headline": "{company} brise toutes les attentes dans ses derniers résultats trimestriels! ",
+    "impact_range": [0.12, 0.28],
+    "duration_ticks": 2
+  },
+  {
+    "id": "event_country_epidemy",
+    "scope": "global",
+    "target_tag": "{country}",
+    "headline": "{country} a une épidémie de kwyjibo.",
+    "impact_range": [-0.18, -0.07],
+    "duration_ticks": 3
+  },
+  {
+    "id": "Pied_Saint_Pierre_Plamondon",
+    "scope": "global",
+    "target": "{country}",
+    "headline": "Paul Saint-Pierre Plamondon offre sa bénédiction à {country}, l'humanité est sauvée!",
+    "impact_range": [0.37, 0.59],
+    "duration_ticks": 4
+  },
+  {
+    "id": "event_ceo_statement",
+    "scope": "minor",
+    "target": "{company}",
+    "headline": "le pdg de {company}, {ceo}, annonce une nouvelle stratégie.",
+    "impact_range": [-0.05, 0.08],
+    "duration_ticks": 2
+  },
+  {
+    "id": "event_sector_outlook",
+    "scope": "major",
+    "target_tag": "{company_tag}",
+    "headline": "Le futur des entreprises dans le domaine de {company_tag} reste incertain.",
+    "impact_range": [-0.12, 0.12],
+    "duration_ticks": 3
+  },
+  {
+    "id": "event_region_conflict",
+    "scope": "global",
+    "target_tag": "{region}",
+    "headline": "Un astéroïde frappe l'{region}.",
+    "impact_range": [-0.18, -0.07],
+    "duration_ticks": 3
+  },
+  {
+    "id": "event_country_tariffs",
+    "scope": "global",
+    "target_tag": "{country}",
+    "headline": "{country} annonce de nouveaux tariffs touchant absolument tout le monde. Même toi.",
+    "impact_range": [-0.15, -0.05],
+    "duration_ticks": 3
+  },
+  {
+    "id": "ceo_embarrassing",
+    "scope": "minor",
+    "target": "{company}",
+    "headline": "{ceo}, PDG de {company}, vient de relâcher une grande bombe nucléaire de vérité (giga truth nuke) ",
+    "impact_range": [0.54, 0.72],
+    "duration_ticks": 2
+  },
+  {
+    "id": "rats_rats_rats",
+    "scope": "major",
+    "target": "{company_tag}",
+    "headline": "les entreprises du secteur de {company_tag} sont aggressées par l'empire viltrumite!",
+    "impact_range": [-0.34, -0.45],
+    "duration_ticks": 2
+  },
+  {
+    "id": "event_ceo_photos_leaked",
+    "scope": "minor",
+    "target": "{company}",
+    "headline": "les photos des pieds de {ceo} sont dévoilées au grand public; les investisseurs de {company} sont pris de panique!",
+    "impact_range": [-0.09, -0.21],
+    "duration_ticks": 2
+  },
+  {
+    "id": "event_product_recall",
+    "scope": "minor",
+    "target": "{company}",
+    "headline": "{company} annonce le rappel massif d'un produit défectueux.",
+    "impact_range": [-0.16, -0.06],
+    "duration_ticks": 3
+  },
+  {
+    "id": "event_new_patent",
+    "scope": "minor",
+    "target": "{company}",
+    "headline": "{company} obtient un brevet majeur susceptible de transformer son prochain produit.",
+    "impact_range": [0.08, 0.19],
+    "duration_ticks": 2
+  },
+  {
+    "id": "event_lawsuit",
+    "scope": "minor",
+    "target": "{company}",
+    "headline": "{company} fait face à une poursuite judiciaire qui inquiète les investisseurs.",
+    "impact_range": [-0.14, -0.04],
+    "duration_ticks": 3
+  },
+  {
+    "id": "event_ceo_succession",
+    "scope": "minor",
+    "target": "{company}",
+    "headline": "{ceo}, PDG de {company}, annonce sa retraite et ouvre une période d'incertitude.",
+    "impact_range": [-0.10, 0.05],
+    "duration_ticks": 4
+  },
+  {
+    "id": "event_factory_expansion",
+    "scope": "minor",
+    "target": "{company}",
+    "headline": "{company} inaugure une nouvelle usine et augmente sa capacité de production.",
+    "impact_range": [0.06, 0.16],
+    "duration_ticks": 3
+  },
+  {
+    "id": "event_sector_scandal",
+    "scope": "major",
+    "target_tag": "{company_tag}",
+    "headline": "Le secteur {company_tag} est secoué par un nouveau scandale.",
+    "impact_range": [-0.16, -0.05],
+    "duration_ticks": 3
+  },
+  {
+    "id": "event_sector_innovation",
+    "scope": "major",
+    "target_tag": "{company_tag}",
+    "headline": "Une innovation révolutionnaire stimule l'ensemble du secteur {company_tag}.",
+    "impact_range": [0.08, 0.21],
+    "duration_ticks": 4
+  },
+  {
+    "id": "event_sector_regulation",
+    "scope": "major",
+    "target_tag": "{company_tag}",
+    "headline": "De nouvelles réglementations viennent compliquer la situation des entreprises {company_tag}.",
+    "impact_range": [-0.13, -0.03],
+    "duration_ticks": 4
+  },
+  {
+    "id": "event_sector_merger",
+    "scope": "major",
+    "target_tag": "{company_tag}",
+    "headline": "Une vague de consolidations transforme le secteur {company_tag}.",
+    "impact_range": [-0.07, 0.17],
+    "duration_ticks": 3
+  },
+  {
+    "id": "event_sector_shortage",
+    "scope": "major",
+    "target_tag": "{company_tag}",
+    "headline": "Une pénurie de composants affecte fortement les entreprises du secteur {company_tag}.",
+    "impact_range": [-0.19, -0.08],
+    "duration_ticks": 3
+  },
+  {
+    "id": "event_oil_crisis",
+    "scope": "global",
+    "target_tag": "{region}",
+    "headline": "Une crise énergétique majeure frappe la région {region} et bouleverse les marchés.",
+    "impact_range": [-0.16, -0.06],
+    "duration_ticks": 4
+  },
+  {
+    "id": "event_trade_agreement",
+    "scope": "global",
+    "target_tag": "{country}",
+    "headline": "{country} signe un nouvel accord commercial qui rassure les marchés mondiaux.",
+    "impact_range": [0.05, 0.14],
+    "duration_ticks": 3
+  },
+  {
+    "id": "event_world_recession",
+    "scope": "global",
+    "target_tag": "{region}",
+    "headline": "La croissance ralentit dans toute la région {region}, déclenchant des inquiétudes à l'échelle mondiale.",
+    "impact_range": [-0.20, -0.08],
+    "duration_ticks": 5
+  },
+  {
+    "id": "event_subdivision_infrastructure",
+    "scope": "global",
+    "target_tag": "{subdivision}",
+    "headline": "Un vaste programme d'infrastructures est annoncé à {capital}, dans la subdivision de {subdivision}.",
+    "impact_range": [0.07, 0.18],
+    "duration_ticks": 4
+  },
+  {
+    "id": "event_ceo_nigerian_prince",
+    "scope": "minor",
+    "target": "{company}",
+    "headline": "{ceo}, PDG de {company}, donne une partie importante de sa fortune à un prince nigérian déshérité et fait chuter la confiance des investisseurs.",
+    "impact_range": [-0.22, -0.08],
+    "duration_ticks": 3
+  }
+]
