@@ -8,32 +8,33 @@
     "duration_ticks": 2
   },
   {
-    "id": "event_sector_ban",
+    "id": "event_country_epidemu",
     "scope": "major",
-    "target_tag": "{company}",
-    "headline": "{company} imposes restrictions on the tech sector.",
+    "target_tag": "{country}",
+    "headline": "{country} a une épidémie de kwyjibo.",
     "impact_range": [-0.18, -0.07],
     "duration_ticks": 3
   },
   {
-    "id": "solar_flare",
+    "id": "Pied_Saint_Pierre_Plamondon",
     "scope": "global",
-    "headline": "A geomagnetic solar storm disrupts trading.",
-    "impact_range": [-0.18, -0.07],
+    "target": "{country}",
+    "headline": "Paul Saint-Pierre Plamondon offre sa bénédiction à {country}, l'humanité est sauvée!",
+    "impact_range": [0.37, 0.59],
     "duration_ticks": 4
   },
   {
     "id": "event_ceo_statement",
     "scope": "minor",
     "target": "{company}",
-    "headline": "{company}'s CEO {ceo} announces a new strategy.",
+    "headline": "le pdg de {company}, {ceo}, annonce une nouvelle stratégie.",
     "impact_range": [-0.05, 0.08],
     "duration_ticks": 2
   },
   {
     "id": "event_region_conflict",
     "scope": "major",
-    "target_tag": "{country}",
+    "target_tag": "{region}",
     "headline": "A military conflict disrupts trade across {region}.",
     "impact_range": [-0.18, -0.07],
     "duration_ticks": 3
