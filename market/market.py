@@ -113,6 +113,31 @@ class Market:
         for t, price in lastHist.items():
             self.stocks[t].history.append(price)
 
+    def snapshot(self):
+        return {
+            t: {
+                "name": s.name, "shares": s.shares, "currency": s.currency,
+                "tags": s.tags, "volatility": s.volatility, "drift": s.drift,
+                "impact": s.impact, "price": s.price,
+                "history": [round(p, 4) for p in s.history],
+            }
+            for t, s in self.stocks.items()
+        }
+
+    def load_snapshot(self, stocks):
+        self.stocks = {
+            t: Stock(d["name"], t, d["shares"], d["price"], d["history"], d["impact"],
+                    d["currency"], d["tags"], d["volatility"], d["drift"])
+            for t, d in stocks.items()
+        }
+
+    def apply_tick(self, prices):
+        for t, price in prices.items():
+            stock = self.stocks.get(t)
+            if stock:
+                stock.price = price
+                stock.history.append(price)
+
     def __repr__(self):
         return str(self.stocks)
 

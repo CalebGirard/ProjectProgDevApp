@@ -2,6 +2,7 @@ from Users.userbase import userbase
 from market.market import Market
 from Database import Database
 from random_events.random_events import random_eventer
+import time
 
 class Engine:
     def __init__(self, starting_cash_def=50000, market_def=200, chaos_def=1.0, nbusers_def = 500, diff_mul_def = 1.0):
@@ -9,6 +10,7 @@ class Engine:
         self.database = Database("host",True)
         self.database.rawMsgCallback = self.rawMsgCallback
         self.database.newConnCallback = self.newPlayer
+        self.onMarketLoaded = None
         self.database.startThread()
         self.config = {
             "num_stocks": market_def,
@@ -32,6 +34,8 @@ class Engine:
         self.eventer = random_eventer(chaos = self.config["chaos"], market = self.market)
         self.iteration = 0
         self.userbase = userbase(self.config["num_users"], self.config["difficulty"])
+        self.snapshot_id = None
+        self.needSnapshot = True
         self.userbase.build_T1s()
         self.userbase.build_T2s()
         self.userbase.build_T3s()
@@ -44,6 +48,7 @@ class Engine:
         if len(messages) >= 40:
             messages.pop(0)
         self.database.set("messages",messages)
+        self.needSnapshot = True
 
     def rawMsgCallback(self,username, msg):
         if msg["data"].startswith("/buy"):
@@ -79,17 +84,29 @@ class Engine:
                 })
             
             self.market.update()
-            prices = {t: s.price for t, s in self.market.stocks.items()}
-            history = {t: s.history[-1] for t, s in self.market.stocks.items()}
-            self.database.set("lastHist",history)
-            self.database.set("prices", prices)
+            if self.needSnapshot:
+                self.needSnapshot = False
+                self.database.set("market", {
+                    "id": time.time(),
+                    "iteration": self.iteration,
+                    "stocks": self.market.snapshot(),
+                })
+                self.database.set("tick", {
+                    "iteration": self.iteration,
+                    "prices": {t: s.price for t, s in self.market.stocks.items()},
+                })
         else:
-            prices = self.database.get("prices")
-            lastHist = self.database.get("lastHist")
-            if prices:
-                self.market.setPrices(prices)
-            if lastHist:
-                self.market.addHist(lastHist)
+            snap = self.database.get("market")
+            if snap and snap["id"] != self.snapshot_id:
+                self.market.load_snapshot(snap["stocks"])
+                self.snapshot_id = snap["id"]
+                self.iteration = snap["iteration"]
+                if self.onMarketLoaded:
+                    self.onMarketLoaded()
+            td = self.database.get("tick")
+            if self.snapshot_id and td and td["iteration"] > self.iteration:
+                self.iteration = td["iteration"]
+                self.market.apply_tick(td["prices"])
 
     def _apply_event(self, event):
         if self.hosting:
