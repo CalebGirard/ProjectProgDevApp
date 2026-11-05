@@ -160,7 +160,7 @@ class ConnectedFrame(ctk.CTkFrame):
         ctk.CTkLabel(chat, text="Live chat", font=("Arial", 14, "bold")).pack(anchor="w", padx=12, pady=(10, 4))
         self.chat_box = ctk.CTkTextbox(chat, fg_color="#121418", text_color="#eaecef", font=("Consolas", 12),state="disabled")
         self.chat_box.pack(fill="both", expand=True, padx=8, pady=(0, 8))
-        self.chat_entry = ctk.CTkEntry(chat, fg_color="#121418", text_color="#eaecef", font=("Consolas", 12))
+        self.chat_entry = ctk.CTkEntry(chat, fg_color="#121418",height=48, text_color="#eaecef", font=("Consolas", 12))
         self.chat_entry.pack(fill="both", expand=True, padx=8, pady=(0, 8))
         self.chat_entry.bind("<Return>", self.sendChat)
         self.chat_send_btn = ctk.CTkButton(chat, text="Send Message", width=100, fg_color="#2b313a",hover_color="#0f5509", command=self.sendChat)
