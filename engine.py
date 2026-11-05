@@ -41,6 +41,24 @@ class Engine:
         self.userbase.build_T3s()
         self.userbase.build_T4s()
 
+    def sell(self,username,ticker,x):
+        current_stock = self.market.get_stock_by_ticker(ticker)
+        user_cash = self.database.getPath(f"cash:{username}")
+        spending = user_cash + x * current_stock.price
+        self.database.setPath(f"cash:{username}", spending)
+        current_stock.sell(x)
+
+    def buy(self,username,ticker,x):
+            current_stock = self.market.get_stock_by_ticker(ticker)
+            user_cash = self.database.getPath(f"cash:{username}")
+            spending = user_cash - x * current_stock.price
+    
+            if user_cash > spending:
+                return
+            
+            self.database.setPath(f"cash:{username}", spending)
+            current_stock.buy(x)
+
     def newPlayer(self,username):
         self.database.setPath(f"cash:{username}", self.config["starting_cash"])
         if self.market and self.market.stocks:
@@ -64,10 +82,10 @@ class Engine:
     def rawMsgCallback(self,username, msg):
         if msg["data"].startswith("/buy"):
             data = msg["data"].removeprefix("/buy ").split(" ")
-            # Finish implementation of buy command
+            self.buy(username,data[0],int(data[1]))
         elif msg["data"].startswith("/sell"):
             data = msg["data"].removeprefix("/sell ").split(" ")
-            # Finish implementation of buy command
+            self.sell(username,data[0],int(data[1]))
         else:
             messages = list(self.database.get("messages") or [])
             messages.append({"username": username, "message": msg["data"]})
