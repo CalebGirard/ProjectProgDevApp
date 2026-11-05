@@ -21,5 +21,13 @@
     "headline": "A geomagnetic solar storm disrupts trading.",
     "impact_range": [-0.18, -0.07],
     "duration_ticks": 4
-  }
+  },
+  {
+  "id": "event_ceo_statement",
+  "scope": "minor",
+  "target": "{company}",
+  "headline": "{company}'s CEO {ceo} announces a new strategy.",
+  "impact_range": [-0.05, 0.08],
+  "duration_ticks": 2
+}
 ]
