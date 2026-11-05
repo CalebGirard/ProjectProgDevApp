@@ -11,6 +11,7 @@ class Engine:
         self.database.newConnCallback = self.newPlayer
         self.database.startThread()
         self.database.setPath("cash:host",200)
+        self.database.set("messages",[])
         self.hosting = True
         self.market = Market(200)
         self.eventer = random_eventer(chaos = 1.0, market = self.market)
@@ -24,6 +25,7 @@ class Engine:
     def rebuild(self):
         self.username = "host"
         self.database.setPath("cash:host",200)
+        self.database.set("messages",[])
         self.hosting = True
         self.market = Market(200)
         self.eventer = random_eventer(chaos = 1.0, market = self.market)
@@ -36,8 +38,11 @@ class Engine:
 
     def newPlayer(self,username):
         self.database.setPath(f"cash:{username}",200)
+        messages = list(self.database.get("messages") or [])
+        messages.append({"username": "[Notification]", "message": f"{username}, just joined !"})
+        self.database.set("messages",messages)
 
-    def rawMsgCallback(self,msg):
+    def rawMsgCallback(self,username, msg):
         if msg["data"].startswith("/buy"):
             data = msg["data"].removeprefix("/buy ").split(" ")
             # Finish implementation of buy command
@@ -45,8 +50,9 @@ class Engine:
             data = msg["data"].removeprefix("/sell ").split(" ")
             # Finish implementation of buy command
         else:
-            # Implement chat function
-            pass
+            messages = list(self.database.get("messages") or [])
+            messages.append({"username": username, "message": msg["data"]})
+            self.database.set("messages",messages)
 
     def tick(self):
         """Advances the simulation by 1 time step."""

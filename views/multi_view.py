@@ -2,6 +2,7 @@ import customtkinter as ctk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 from engine import Engine
+from Database import Database
 
 class MultiView(ctk.CTkFrame):
     def __init__(self, master, controller, engine:Engine):
@@ -10,7 +11,7 @@ class MultiView(ctk.CTkFrame):
         self.engine = engine
         self.autoUpdate = False
         
-        self.connectedView = ConnectedFrame(self,self.engine.database,self.disconnectCallback)
+        self.connectedView = ConnectedFrame(self,self.engine.database,engine,self.disconnectCallback)
         self.connectedView.place(relx=0, rely=0, relwidth=1, relheight=1)
         self.connectedView.lower()
 
@@ -112,12 +113,18 @@ class MultiView(ctk.CTkFrame):
         self.codeEntry.bind("<Return>", lambda e: self.connectGame())
 
 class ConnectedFrame(ctk.CTkFrame):
-    def __init__(self, master, database=None, on_disconnect=None):
+    def __init__(self, master, database:Database=None, engine:Engine=None, on_disconnect=None):
         super().__init__(master, fg_color="#0b0e11")
         self.database = database
+        self.engine = engine
         self.on_disconnect = on_disconnect
         self.code = ""
         self.autoUpdate = False
+
+    def copyCode(self):
+        self.clipboard_clear()
+        self.clipboard_append(self.code)
+        print("Code coppied to clipboard")
 
     def createConnectedMenu(self):
         self.initframe = ctk.CTkFrame(self, fg_color="#0b0e11")
@@ -135,20 +142,36 @@ class ConnectedFrame(ctk.CTkFrame):
         self.status_label = ctk.CTkLabel(bar, text="Connecting...", text_color="#848e9c", font=("Arial", 12))
         self.status_label.pack(side="left", padx=12)
 
+        ctk.CTkButton(bar, text="Copy Room Code", width=100, fg_color="#2b313a",hover_color="#227700", command=self.copyCode).pack(side="left", padx=12, pady=8)
+
         ctk.CTkButton(bar, text="Disconnect", width=100, fg_color="#2b313a",hover_color="#f6465d", command=self.disconnect,).pack(side="right", padx=12, pady=8)
 
         players = ctk.CTkFrame(self.initframe, fg_color="#181a20", corner_radius=6)
         players.grid(row=1, column=0, sticky="nsew", padx=(6, 3), pady=3)
+
         ctk.CTkLabel(players, text="Players", font=("Arial", 14, "bold")).pack( anchor="w", padx=12, pady=(10, 4))
+
         self.players_box = ctk.CTkTextbox(players, fg_color="#121418", text_color="#eaecef", font=("Consolas", 12))
         self.players_box.pack(fill="both", expand=True, padx=8, pady=(0, 8))
 
         chat = ctk.CTkFrame(self.initframe, fg_color="#181a20", corner_radius=6)
         chat.grid(row=1, column=1, sticky="nsew", padx=(3, 6), pady=3)
-        ctk.CTkLabel(chat, text="Live chat", font=("Arial", 14, "bold")).pack(anchor="w", padx=12, pady=(10, 4))
-        self.chat_box = ctk.CTkTextbox(chat, fg_color="#121418", text_color="#eaecef", font=("Consolas", 12))
-        self.chat_box.pack(fill="both", expand=True, padx=8, pady=(0, 8))
 
+        ctk.CTkLabel(chat, text="Live chat", font=("Arial", 14, "bold")).pack(anchor="w", padx=12, pady=(10, 4))
+        self.chat_box = ctk.CTkTextbox(chat, fg_color="#121418", text_color="#eaecef", font=("Consolas", 12),state="disabled")
+        self.chat_box.pack(fill="both", expand=True, padx=8, pady=(0, 8))
+        self.chat_entry = ctk.CTkEntry(chat, fg_color="#121418", text_color="#eaecef", font=("Consolas", 12))
+        self.chat_entry.pack(fill="both", expand=True, padx=8, pady=(0, 8))
+        self.chat_entry.bind("<Return>", self.sendChat)
+        self.chat_send_btn = ctk.CTkButton(chat, text="Send Message", width=100, fg_color="#2b313a",hover_color="#0f5509", command=self.sendChat)
+        self.chat_send_btn.pack(side="right", padx=12, pady=8)
+
+    def sendChat(self):
+        if self.engine.hosting:
+            self.engine.rawMsgCallback("host",{"type":"raw","data":self.chat_entry.get()})
+        else:
+            self.database.sendAsClient(self.chat_entry.get())
+        
     def start(self, code=""):
         self.code = code
         if not hasattr(self, "initframe"):
@@ -172,20 +195,24 @@ class ConnectedFrame(ctk.CTkFrame):
         box.configure(state="disabled")
 
     def refresh_ui(self):
-        if not self.autoUpdate:
-            return
         db = self.database
         if db:
             names = [db.username] + (list(db.connections.keys()) if db.host else [])
-            self._set_text(
-                self.players_box, "\n".join(f"{n}{' (host)' if db.host and n == db.username else ''}" for n in names
-            ))
+
+            txt = ""
+            for n in names:
+                txt += f"{n}{' (host)' if db.host and n == db.username else ''}" + "\n"
+            self._set_text(self.players_box, txt)
+            
             connected = db.host and db.sigRoomRunning or db.canSend
-            self.status_label.configure(
-                text="Connected" if connected else "Waiting...",
-                text_color="#0ecb81" if connected else "#848e9c",
-            )
-            #chat = db.get("chat") or {}
-            #self._set_text(self.chat_box, "\n".join(f"{m['user']}: {m['text']}" for m in chat[-40:]))
-            #self.chat_box.see("end") 
-        self.after(1000, self.refresh_ui)
+            self.status_label.configure(text="Connected" if connected else "Waiting...",text_color="#0ecb81" if connected else "#848e9c")
+
+            chat = db.get("messages") or []
+            txt = ""
+            for msg in chat[-40:]:
+                txt += msg["username"] + " > " + msg["message"] + "\n"
+            self._set_text(self.chat_box, txt)
+            self.chat_box.see("end") 
+
+        if self.autoUpdate:
+            self.after(10, self.refresh_ui)

@@ -278,7 +278,7 @@ class Database:
             except:
                 message = {"type": "raw", "data": message}
                 if self.rawMsgCallback:
-                    self.rawMsgCallback(message)
+                    self.rawMsgCallback(username,message)
 
             if self.host:
                 self.requestQueue.put_nowait(message)
