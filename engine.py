@@ -53,7 +53,7 @@ class Engine:
         playerlist = list(self.database.get("playerlist") or [])
         playerlist.append(username)
         self.database.set("playerlist",playerlist)
-        
+
         messages = list(self.database.get("messages") or [])
         messages.append({"username": "[Notification]", "message": f"{username} just joined !"})
         if len(messages) >= 40:
@@ -102,10 +102,10 @@ class Engine:
                     "iteration": self.iteration,
                     "stocks": self.market.snapshot(),
                 })
-                self.database.set("tick", {
-                    "iteration": self.iteration,
-                    "prices": {t: s.price for t, s in self.market.stocks.items()},
-                })
+            self.database.set("tick", {
+                "iteration": self.iteration,
+                "prices": {t: s.price for t, s in self.market.stocks.items()},
+            })
         else:
             snap = self.database.get("market")
             if snap and snap.get("id") != self.snapshot_id:
