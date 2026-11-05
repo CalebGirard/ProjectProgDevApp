@@ -44,9 +44,9 @@ class Database:
         self.channels = {}
         self.clientPc = None
 
-        # TODO: Add callbacks for rawMessage and connection fails
         self.rawMsgCallback = None
         self.connFailedCallback = None
+        self.newConnCallback = None
         
     @threadsafe
     async def init(self):
@@ -97,6 +97,8 @@ class Database:
             self.connections[data["username"]] = pc
             self.channels[data["username"]] = channel
             print("New client successfully connected!")
+            if self.newConnCallback:
+                self.newConnCallback(data["username"])
 
     async def sigIceGather(self):
         creds = requests.get("https://"+SERVER+"/turn-cred?username="+self.username)
@@ -142,6 +144,8 @@ class Database:
         self.webs = await ws.connect("wss://"+SERVER+"/ws?id="+code)
         data = json.loads(await self.webs.recv())
         if data["type"] != "successful_connection":
+            if self.connFailedCallback:
+                self.connFailedCallback()
             return False
         self.sigRoomRunning = True
         asyncio.create_task(self.signalRecv())
@@ -273,6 +277,8 @@ class Database:
                 message = json.loads(message)
             except:
                 message = {"type": "raw", "data": message}
+                if self.rawMsgCallback:
+                    self.rawMsgCallback(message)
 
             if self.host:
                 self.requestQueue.put_nowait(message)
@@ -361,6 +367,7 @@ class Database:
             await self.netWait("conf")
         self.clientPc.close()
         self.canSend = False
+        self.data = {}
 
     def killDatabase(self):
         if not self.host:

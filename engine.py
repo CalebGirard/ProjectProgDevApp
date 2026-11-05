@@ -6,8 +6,9 @@ from random_events.random_events import random_eventer
 class Engine:
     def __init__(self):
         self.database = Database("host",True)
+        self.database.rawMsgCallback = self.rawMsgCallback
+        self.database.newConnCallback = self.newPlayer
         self.database.startThread()
-        self.database.init()
         self.hosting = True
         self.market = Market(200)
         self.eventer = random_eventer(chaos = 1.0)
@@ -17,7 +18,34 @@ class Engine:
         self.userbase.build_T2s()
         self.userbase.build_T3s()
         self.userbase.build_T4s()
-        
+        self.database.setPath(f"cash:host",200)
+
+    def rebuild(self):
+        self.hosting = True
+        self.market = Market(200)
+        self.eventer = random_eventer(chaos = 1.0)
+        self.iteration = 0
+        self.userbase = userbase(500, 0.1)
+        self.userbase.build_T1s()
+        self.userbase.build_T2s()
+        self.userbase.build_T3s()
+        self.userbase.build_T4s()
+        self.database.setPath("cash:host",200)
+
+    def newPlayer(self,username):
+        self.database.setPath(f"cash:{username}",200)
+
+    def rawMsgCallback(self,msg):
+        if msg["data"].startswith("/buy"):
+            data = msg["data"].removeprefix("/buy ").split(" ")
+            # Finish implementation of buy command
+        elif msg["data"].startswith("/sell"):
+            data = msg["data"].removeprefix("/sell ").split(" ")
+            # Finish implementation of buy command
+        else:
+            # Implement chat function
+            pass
+
     def tick(self):
         """Advances the simulation by 1 time step."""
         if self.hosting:
@@ -26,13 +54,16 @@ class Engine:
             played_event = self.eventer.update(current_iteration = self.iteration, check_interval = 10, market = self.market)
 
             if played_event is not None:
-                print(played_event["headline"])
+                self.database.broadcast(played_event["headline"])
             
             self.market.update()
             prices = {t: s.price for t, s in self.market.stocks.items()}
+            history = {t: s.history[-1] for t, s in self.market.stocks.items()}
+            self.database.set("lastHist",history)
             self.database.set("prices", prices)
         else:
-            pass
+            self.market.setPrices(self.database.get("prices"))
+            self.market.addHist(self.database.get("lastHist"))
 
     def _apply_event(self, event):
         if self.hosting:
