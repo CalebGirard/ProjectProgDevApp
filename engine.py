@@ -18,7 +18,6 @@ class Engine:
         self.userbase.build_T3s()
         self.userbase.build_T4s()
         
-
     def tick(self):
         """Advances the simulation by 1 time step."""
         if self.hosting:
