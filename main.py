@@ -15,10 +15,6 @@ from views.casino_view import CasinoView
 from views.users_view import UsersView
 from views.settings_view import SettingsView
 
-
-
-from casino import Casino
-
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
