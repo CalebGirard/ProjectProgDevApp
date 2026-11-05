@@ -61,9 +61,9 @@ class random_eventer():
             self.templates = json.load(template_file)
 
         with (data_directory / "company_ceos.json").open("r", encoding = "utf-8") as company_file:
-                    companies = json.load(company_file)
+            self.companies = json.load(company_file)
         
-        self.company_weights = {company_name: 1.0 for company_name in companies}
+        self.company_weights = {company_name: 1.0 for company_name in self.companies}
 
         self.scope_weights = {
             "minor" : 70.0,
@@ -84,9 +84,6 @@ class random_eventer():
         if not self.load_state():
             self.event_list = [self.build_event() for _ in range (5)]
             self.write_state()
-
-        
-           
 
 
     def select_scope(self):
@@ -115,6 +112,7 @@ class random_eventer():
             for template_id in sibling_ids:
                 weights[template_id] += redistribution
 
+
     def rebalance_company_weights(self, selected_company):
         removed_weight = self.company_weights[selected_company] / 2
         self.company_weights[selected_company] -= removed_weight
@@ -130,32 +128,41 @@ class random_eventer():
 
     def build_headline(self, template, scope):
         headline = template["headline"]
+        company = None
+        ceo = None
 
         if "{company}" in headline:
             company = weighted_choice(self.company_weights)
             self.rebalance_company_weights(company)
             headline = headline.replace("{company}", company)
-        else: 
-            company = None
-        return headline, company
+
+        if "{ceo}" in headline:
+            ceo = self.companies[company]
+            headline = headline.replace("{ceo}", ceo)
+
+        return headline, company, ceo
+
 
     def generate_impact(self, template):
         return random.uniform(*template["impact_range"]) * self.chaos
+
 
     def build_event(self):
         scope = self.select_scope()
         template = self.select_template(scope)
 
-        headline, company = self.build_headline(template, scope)
+        headline, company, ceo = self.build_headline(template, scope)
         impact = self.generate_impact(template)
 
         self.rebalance_template_weights(scope, template["id"])
+
 
         return {
             "template_id": template["id"],
             "scope": scope,
             "headline": headline,
             "company": company,
+            "ceo": ceo,
             "impact": impact,
             "duration_ticks": template["duration_ticks"],
             "target_tag": template.get("target_tag"),
@@ -166,6 +173,7 @@ class random_eventer():
             }[scope],
             "failure_increase": 0.10
         }
+
 
     def resolve_targets(self, event, market):
         stocks = market.stocks
@@ -179,6 +187,7 @@ class random_eventer():
             return [stock for stock in stocks.values() if target_tag in stock.tags]
 
         return list(stocks.values())
+
 
     def apply_event(self, event, market):
         for stock in self.resolve_targets(event, market):
@@ -197,6 +206,7 @@ class random_eventer():
 
         with self.state_file.open("w", encoding = "utf-8") as state_file:
             json.dump(state, state_file, indent = 2, ensure_ascii = False)
+
     
     def load_state(self):
         if not self.state_file.exists():
@@ -224,6 +234,7 @@ class random_eventer():
         self.event_list = state["event_queue"]
 
         return True
+
 
     def update(self, current_iteration, check_interval, market=None):
         return self.process_event_queue( check_interval = check_interval, current_iteration=current_iteration, market = market)
@@ -253,4 +264,3 @@ class random_eventer():
 
         self.write_state()
         return None
-
