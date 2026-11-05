@@ -4,9 +4,22 @@ import websockets as ws
 import aiortc
 from aiortc import RTCSessionDescription, RTCPeerConnection
 from pandas import DataFrame
+import threading
+import functools
 
 SERVER = "0x1.lxsdev.net"
 TURNSERVER = "turn:turn.lxsdev.net:3478"
+
+def threadsafe(fn):
+    @functools.wraps(fn)
+    def wrapper(self, *args, **kwargs):
+        coro = fn(self, *args, **kwargs)
+        try:
+            asyncio.get_running_loop()
+        except RuntimeError:
+            return asyncio.run_coroutine_threadsafe(coro, self.loop)
+        return asyncio.ensure_future(coro)
+    return wrapper
 
 class Database:
     def __init__(self,username:str, host:bool=False):
@@ -33,9 +46,12 @@ class Database:
         self.channels = {}
         self.clientPc = None
 
+        self.rawMsgCallback = None
+        self.connFailedCallback = None
+        self.newConnCallback = None
+        
     async def init(self):
         asyncio.create_task(self.handleRequests())
-        await self.openRoom()
 
     # Signaling Module
 
@@ -82,6 +98,8 @@ class Database:
             self.connections[data["username"]] = pc
             self.channels[data["username"]] = channel
             print("New client successfully connected!")
+            if self.newConnCallback:
+                self.newConnCallback(data["username"])
 
     async def sigIceGather(self):
         creds = requests.get("https://"+SERVER+"/turn-cred?username="+self.username)
@@ -97,7 +115,8 @@ class Database:
             )
         ]
         return ice
-
+    
+    @threadsafe
     async def openRoom(self):
         if not self.host:
             return
@@ -118,13 +137,16 @@ class Database:
             await self.webs.close()
             self.webs = None
             return False
-
+        
+    @threadsafe
     async def connectToDatabase(self,code:str):
         if self.host:
             return
         self.webs = await ws.connect("wss://"+SERVER+"/ws?id="+code)
         data = json.loads(await self.webs.recv())
         if data["type"] != "successful_connection":
+            if self.connFailedCallback:
+                self.connFailedCallback()
             return False
         self.sigRoomRunning = True
         asyncio.create_task(self.signalRecv())
@@ -154,18 +176,15 @@ class Database:
         return True
 
     # Request Module
-
-    async def getPath(self, path:str):
-        path = self.splitPath(path)
-        if not path:
-            return None
+    def getPath(self, path: str):
         dt = self.data
-        for p in path[:-1]:
-            if not isinstance(dt, dict):
+        for p in self.splitPath(path):
+            if not isinstance(dt, dict) or p not in dt:
                 return None
-            dt = dt.get(p)
-        return dt[path[-1]]
-
+            dt = dt[p]
+        return dt
+    
+    @threadsafe
     async def setPath(self,path:str,value):
         if self.host:
             path = self.splitPath(path)
@@ -175,20 +194,24 @@ class Database:
             for p in path[:-1]:
                 dt = dt.setdefault(p, {})
             dt[path[-1]] = value
-            await self.broadcast(json.dumps({"type":"sync","data":{"key":path[0],"value":self.data[path[0]]}}))
+            if self.connections:
+                await self.broadcast(json.dumps({"type":"sync","data":{"key":path[0],"value":self.data[path[0]]}}))
         elif self.clientPc:
             await self.sendAsClient(json.dumps({"type":"set_path","username":self.username,"data":{"path":path,"value":value}}))
 
-    async def get(self, key:str):
+    def get(self, key:str):
         return self.data.get(key)
 
+    @threadsafe
     async def set(self, key:str, value):
         if self.host:
             self.data[key] = value
-            await self.broadcast(json.dumps({"type":"sync","data":{"key":key,"value":value}}))
+            if self.connections:
+                await self.broadcast(json.dumps({"type":"sync","data":{"key":key,"value":value}}))
         elif self.clientPc:
             await self.sendAsClient(json.dumps({"type":"set","username":self.username,"data":{"key":key,"value":value}}))
 
+    @threadsafe
     async def opData(self, key:str, value , op:str):
         if self.host:
             try:
@@ -204,7 +227,8 @@ class Database:
                     self.data[key] //= value
                 elif op == "%":
                     self.data[key] %= value
-                await self.broadcast(json.dumps({"type":"sync","data":{"key":key,"value":self.data[key]}}))
+                if self.connections:
+                    await self.broadcast(json.dumps({"type":"sync","data":{"key":key,"value":self.data[key]}}))
                 return True
             except Exception as e:
                 print("Op data error ->",e)
@@ -212,16 +236,18 @@ class Database:
         elif self.clientPc:
             await self.sendAsClient(json.dumps({"type":"op_data","username":self.username,"data":{"key":key,"value":value,"op":op}}))
 
+    @threadsafe
     async def setDataframe(self, key:str, dataframe):
         if self.host:
             if type(dataframe) == DataFrame:
                 dataframe = dataframe.to_dict()
             self.data[key] = dataframe
-            await self.broadcast(json.dumps({"type":"sync","data":{"key":key,"value":dataframe}}))
+            if self.connections:
+                await self.broadcast(json.dumps({"type":"sync","data":{"key":key,"value":dataframe}}))
         elif self.clientPc:
             await self.sendAsClient(json.dumps({"type":"set_df","username":self.username,"data":{"key":key,"df":dataframe.to_dict()}}))
 
-    async def getDataframe(self, key:str):
+    def getDataframe(self, key:str):
         if self.data.get(key):
             return pd.DataFrame(self.data.get(key))
         return None
@@ -252,6 +278,8 @@ class Database:
                 message = json.loads(message)
             except:
                 message = {"type": "raw", "data": message}
+                if self.rawMsgCallback:
+                    self.rawMsgCallback(username,message)
 
             if self.host:
                 self.requestQueue.put_nowait(message)
@@ -259,9 +287,11 @@ class Database:
                 self.waitQueue.put_nowait(message)
                 self.netProcess(message)
 
+    @threadsafe
     async def sendAsHost(self, data, username:str):
         self.channels[username].send(data)
 
+    @threadsafe
     async def sendAsClient(self, data):
         if self.host or not self.clientPc:
             return
@@ -269,6 +299,7 @@ class Database:
             await asyncio.sleep(0.03)
         self.channels[self.username].send(data)
 
+    @threadsafe
     async def broadcast(self, data, excep:str=None):
         if not self.host:
             return
@@ -319,7 +350,6 @@ class Database:
         if self.host:
             return
         if data["type"] == "sync":
-            print("received sync ->",data)
             self.data[data["data"]["key"]] = data["data"]["value"]
         elif data["type"] == "database_close":
             asyncio.create_task(self.disconnect(False))
@@ -328,6 +358,7 @@ class Database:
             self.data = data["data"]
             print("Database initiated ...")
 
+    @threadsafe
     async def disconnect(self,notify:bool=True):
         if self.host or not self.clientPc:
             return
@@ -336,15 +367,36 @@ class Database:
             await self.netWait("conf")
         self.clientPc.close()
         self.canSend = False
+        self.data = {}
 
     def killDatabase(self):
         if not self.host:
             return
         self.broadcast(json.dumps({"type":"database_close"}))
+        self.data = {}
 
     # Utilities
 
     def splitPath(self, path:str):
         path = path.split(":")
         return path
+
+    def setHost(self,host:bool):
+        self.host = host
+
+    def setUsername(self,username:str):
+        self.username = username
+
+    def startThread(self):
+        self.loop = asyncio.new_event_loop()
+        self._thread = threading.Thread(target=self._run, daemon=True)
+        self._thread.start()
+
+    def _run(self):
+        asyncio.set_event_loop(self.loop)
+        self.loop.create_task(self.init())
+        self.loop.run_forever()
+
+    def run(self, coro):
+        return asyncio.run_coroutine_threadsafe(coro, self.loop)
             

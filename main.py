@@ -1,10 +1,9 @@
-from logging import root
-
 from engine import Engine
 
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk
+from tkinter import 
 
 # Views
 
@@ -12,25 +11,25 @@ from views.market_view import MarketView
 from views.shop_view import ShopView
 from views.bank_view import BankView
 from views.casino_view import CasinoView
-from views.users_view import UsersView
+from views.multi_view import MultiView
 from views.settings_view import SettingsView
+from Assets import Assets
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
-
 
 class MainApp(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.geometry("800x600+0+0")
         self.engine = Engine()
-        self.iconbitmap("Assets/snake.ico")
+        self.assets = Assets("Assets")
+        self.wm_iconphoto(False,PhotoImage(self.assets.getAssetPath("snake.png")))
         self.after(0, lambda: self.state("zoomed"))
         self.configure(fg_color="black")
         self.title("Pynance Desktop")
         self.menu()
         self.run_clock()
-
 
     def menu(self):
         self.grid_rowconfigure(0, weight=1)
@@ -49,10 +48,10 @@ class MainApp(ctk.CTk):
 
         try:
             logo = ctk.CTkImage(
-                dark_image=Image.open("Assets/snake.ico"), size=(24, 24)
+                dark_image=Image.open(self.assets.getAssetPath("snake.ico")), size=(24, 24)
             )
             casino_pic = ctk.CTkImage(
-                dark_image=Image.open("Assets/megaphone.png"), size=(24, 24)
+                dark_image=Image.open(self.assets.getAssetPath("megaphone.png")), size=(24, 24)
             )
             market_pic = ctk.CTkImage(
                 dark_image=Image.open("Assets/shopping-cart.png"), size=(24, 24)
@@ -160,7 +159,7 @@ class MainApp(ctk.CTk):
             "Shop": ShopView,
             "Market": MarketView,
             "Bank": BankView,
-            "Multi": UsersView,
+            "Multi": MultiView,
             "Settings": SettingsView,
         }
 
@@ -205,10 +204,8 @@ class MainApp(ctk.CTk):
 
         self.after(2000, self.run_clock)
 
-
     def destroy(self):
         self.quit()
-
 
 if __name__ == "__main__":
     app = MainApp()
