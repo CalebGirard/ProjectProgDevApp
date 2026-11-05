@@ -13,6 +13,8 @@ class MultiView(ctk.CTkFrame):
         self.connectedView = ConnectedFrame(self)
         self.connectedView.lower()
 
+        self.engine.database.connFailedCallback = self.disconnectCallback
+
         self.createInitMenu()
 
     def connectGame(self):
@@ -24,8 +26,19 @@ class MultiView(ctk.CTkFrame):
         self.engine.database.connectToDatabase(self.codeEntry.get())
         self.after(5000,self.showConnView)
 
+    def disconnectCallback(self):
+        self.engine.database.setUsername("host")
+        if self.engine.hosting:
+            self.engine.database.killDatabase()
+        else:
+            self.engine.database.disconnect(True)
+            self.engine.database.setHost(True)
+        self.engine.rebuild()
+        self.connectedView.lower()
+
     def hostGame(self):
         self.engine.database.openRoom()
+        self.connectedView = self.engine.database.code
         self.after(1000,self.showConnView)
 
     def showConnView(self):
@@ -104,9 +117,12 @@ class ConnectedFrame(ctk.CTkFrame):
         self.grid_rowconfigure(1, weight=3)     # Main chart row
         self.grid_rowconfigure(2, weight=1)     # News / bottom tabs row
 
+        self.code = ""
         self.autoUpdate = False
+
+    def createConnectedMenu(self):
+        
         
     def update(self):
-
         if self.autoUpdate:
             self.after(1000,self.update)

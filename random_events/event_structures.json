@@ -1,0 +1,58 @@
+[
+  {
+    "id": "event_earnings_blowout",
+    "scope": "minor",
+    "target": "{company}",
+    "headline": "{company} brise toutes les attentes dans ses derniers résultats trimestriels! ",
+    "impact_range": [0.12, 0.28],
+    "duration_ticks": 2
+  },
+  {
+    "id": "event_country_epidemy",
+    "scope": "global",
+    "target_tag": "{country}",
+    "headline": "{country} a une épidémie de kwyjibo.",
+    "impact_range": [-0.18, -0.07],
+    "duration_ticks": 3
+  },
+  {
+    "id": "Pied_Saint_Pierre_Plamondon",
+    "scope": "global",
+    "target": "{country}",
+    "headline": "Paul Saint-Pierre Plamondon offre sa bénédiction à {country}, l'humanité est sauvée!",
+    "impact_range": [0.37, 0.59],
+    "duration_ticks": 4
+  },
+  {
+    "id": "event_ceo_statement",
+    "scope": "minor",
+    "target": "{company}",
+    "headline": "le pdg de {company}, {ceo}, annonce une nouvelle stratégie.",
+    "impact_range": [-0.05, 0.08],
+    "duration_ticks": 2
+  },
+  {
+    "id": "event_sector_outlook",
+    "scope": "major",
+    "target_tag": "{company_tag}",
+    "headline": "Le futur de {company} reste incertain.",
+    "impact_range": [-0.12, 0.12],
+    "duration_ticks": 3
+  },
+  {
+    "id": "event_region_conflict",
+    "scope": "global",
+    "target_tag": "{region}",
+    "headline": "Un astéroïde frappe l'{region}.",
+    "impact_range": [-0.18, -0.07],
+    "duration_ticks": 3
+  },
+  {
+    "id": "event_country_tariffs",
+    "scope": "global",
+    "target_tag": "{country}",
+    "headline": "{country} annonce de nouveaux tariffs touchant absolument tout le monde. Même toi.",
+    "impact_range": [-0.15, -0.05],
+    "duration_ticks": 3
+  }
+]
