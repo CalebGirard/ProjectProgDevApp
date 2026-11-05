@@ -243,7 +243,6 @@ class SlotMachine(ctk.CTkFrame):
         super().__init__(master, fg_color="#0b0e11")
         self.machine_running = False
         self.curr = 1
-<<<<<<< HEAD
         self.back_callback = back_callback
 
         self.assets = Assets("Assets")
@@ -251,16 +250,7 @@ class SlotMachine(ctk.CTkFrame):
         img_list = ["7.png","black-hole.png","cherries.png","diamond.png","blossom.png","crown.png","dvd-player.png","gem.png","honeycomb.png"]
 
         self.image_paths = self.assets.getAssetPathList(img_list)
-
-=======
-            
-        self.image_paths = ["Assets/Casino/SlotMachine/7.png", "Assets/Casino/SlotMachine/black-hole.png",
-                             "Assets/Casino/SlotMachine/cherries.png", "Assets/Casino/SlotMachine/diamond.png",
-                             "Assets/Casino/SlotMachine/blossom.png","Assets/Casino/SlotMachine/crown.png",
-                             "Assets/Casino/SlotMachine/dvd-player.png","Assets/Casino/SlotMachine/gem.png",
-                             "Assets/Casino/SlotMachine/honeycomb.png"]
         
->>>>>>> 8c164602a2a08f09f1d0e81de7183027bce9fa24
         self.loaded_images = []
         for path in self.image_paths:
             with Image.open(path) as symbol:

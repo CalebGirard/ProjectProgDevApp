@@ -3,10 +3,6 @@ from engine import Engine
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk
-<<<<<<< HEAD
-=======
-from tkinter import PhotoImage
->>>>>>> 8c164602a2a08f09f1d0e81de7183027bce9fa24
 
 # Views
 
@@ -27,11 +23,7 @@ class MainApp(ctk.CTk):
         self.geometry("800x600+0+0")
         self.engine = Engine()
         self.assets = Assets("Assets")
-<<<<<<< HEAD
         self.wm_iconphoto(False, ImageTk.PhotoImage(Image.open(self.assets.getAssetPath("snake.ico"))))
-=======
-        #self.wm_iconphoto(False,ctk.CTkImage(Image.open(self.assets.getAssetPath("snake.ico"))))
->>>>>>> 8c164602a2a08f09f1d0e81de7183027bce9fa24
         self.after(0, lambda: self.state("zoomed"))
         self.configure(fg_color="black")
         self.title("Pynance Desktop")
