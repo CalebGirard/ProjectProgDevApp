@@ -40,6 +40,8 @@ class Engine:
         self.database.setPath(f"cash:{username}",200)
         messages = list(self.database.get("messages") or [])
         messages.append({"username": "[Notification]", "message": f"{username}, just joined !"})
+        if len(messages) >= 40:
+            messages.pop[0]
         self.database.set("messages",messages)
 
     def rawMsgCallback(self,username, msg):
@@ -52,6 +54,8 @@ class Engine:
         else:
             messages = list(self.database.get("messages") or [])
             messages.append({"username": username, "message": msg["data"]})
+            if len(messages) >= 40:
+                messages.pop[0]
             self.database.set("messages",messages)
 
     def tick(self):
