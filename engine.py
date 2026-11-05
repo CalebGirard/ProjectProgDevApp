@@ -25,8 +25,8 @@ class Engine:
     def rebuild(self, config_changes=None):
         if config_changes:
             self.config.update(config_changes)
-
         self.username = "host"
+        self.database.set("playerlist",[self.username])
         self.database.setPath("cash:host", self.config["starting_cash"])
         self.database.set("messages",[])
         self.hosting = True
@@ -43,7 +43,6 @@ class Engine:
 
     def newPlayer(self,username):
         self.database.setPath(f"cash:{username}", self.config["starting_cash"])
-    
         if self.market and self.market.stocks:
             self.database.set("market", {
                 "id": time.time(),
@@ -51,6 +50,10 @@ class Engine:
                 "stocks": self.market.snapshot(),
             })
 
+        playerlist = list(self.database.get("playerlist") or [])
+        playerlist.append(username)
+        self.database.set("playerlist",playerlist)
+        
         messages = list(self.database.get("messages") or [])
         messages.append({"username": "[Notification]", "message": f"{username} just joined !"})
         if len(messages) >= 40:
@@ -105,14 +108,17 @@ class Engine:
                 })
         else:
             snap = self.database.get("market")
-            if snap and snap["id"] != self.snapshot_id:
+            if snap and snap.get("id") != self.snapshot_id:
+                if not self.market:
+                    self.market = Market(len(snap["stocks"]))
                 self.market.load_snapshot(snap["stocks"])
                 self.snapshot_id = snap["id"]
                 self.iteration = snap["iteration"]
                 if self.onMarketLoaded:
                     self.onMarketLoaded()
+            
             td = self.database.get("tick")
-            if self.snapshot_id and td and td["iteration"] > self.iteration:
+            if td and td.get("iteration", 0) > self.iteration and self.market:
                 self.iteration = td["iteration"]
                 self.market.apply_tick(td["prices"])
 

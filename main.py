@@ -13,6 +13,7 @@ from views.casino_view import CasinoView
 from views.multi_view import MultiView
 from views.settings_view import SettingsView
 from assets import Assets
+import logging
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
