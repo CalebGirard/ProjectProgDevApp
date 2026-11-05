@@ -3,6 +3,7 @@ from engine import Engine
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk
+from tkinter import 
 
 # Views
 
@@ -13,17 +14,15 @@ from views.casino_view import CasinoView
 from views.multi_view import MultiView
 from views.settings_view import SettingsView
 
-
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
-
 
 class MainApp(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.geometry("800x600+0+0")
         self.engine = Engine()
-        self.iconbitmap("Assets/snake.ico")
+        self.wm_iconphoto(False,PhotoImage(os.path.join(self.current_dir, "Assets", "snake.png")))
         self.after(0, lambda: self.state("zoomed"))
         self.configure(fg_color="black")
         self.title("Pynance Desktop")
