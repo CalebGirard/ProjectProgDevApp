@@ -55,7 +55,7 @@ class Engine:
             messages = list(self.database.get("messages") or [])
             messages.append({"username": username, "message": msg["data"]})
             if len(messages) >= 40:
-                messages.pop[0]
+                messages.pop(0)
             self.database.set("messages",messages)
 
     def tick(self):
