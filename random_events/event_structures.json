@@ -67,7 +67,7 @@
     "id": "rats_rats_rats",
     "scope": "major",
     "target": "{company_tag}",
-    "headline": "{company} commet un suicide industriel en relâchant des rats chez ses concurrents! ",
+    "headline": "les entreprises du secteur de {company_tag} sont aggressées par l'empire viltrumite!",
     "impact_range": [-0.34, -0.45],
     "duration_ticks": 2
   },
@@ -75,7 +75,7 @@
     "id": "event_ceo_photos_leaked",
     "scope": "minor",
     "target": "{company}",
-    "headline": "les photos des pieds de {ceo} sont dévoilées au grand public; les investisseurs sont pris de panique!",
+    "headline": "les photos des pieds de {ceo} sont dévoilées au grand public; les investisseurs de {company} sont pris de panique!",
     "impact_range": [-0.09, -0.21],
     "duration_ticks": 2
   },
@@ -190,5 +190,13 @@
     "headline": "Un vaste programme d'infrastructures est annoncé à {capital}, dans la subdivision de {subdivision}.",
     "impact_range": [0.07, 0.18],
     "duration_ticks": 4
+  },
+  {
+    "id": "event_ceo_nigerian_prince",
+    "scope": "minor",
+    "target": "{company}",
+    "headline": "{ceo}, PDG de {company}, donne une partie importante de sa fortune à un prince nigérian déshérité et fait chuter la confiance des investisseurs.",
+    "impact_range": [-0.22, -0.08],
+    "duration_ticks": 3
   }
 ]
