@@ -10,8 +10,8 @@ class CasinoView(ctk.CTkFrame) :
         self.controller = controller
         self.pack(fill="both", expand=True)
         self.casino_frames = {}
-        self.create_selecter()
         self.assets = Assets("Assets")
+        self.create_selecter()
 
     def create_selecter(self):
         self.container_casino = ctk.CTkFrame(self, fg_color="#0b0e11")
@@ -52,11 +52,11 @@ class CasinoView(ctk.CTkFrame) :
 
         try: 
             wheel_pic = ctk.CTkImage(
-                dark_image=Image.open(self.assets.getAssetPath("roulette.png")),
+                Image.open(self.assets.getAssetPath("roulette.png")),
                 size=(180, 180),
             )
             slot_pic = ctk.CTkImage(
-                dark_image=Image.open(self.assets.getAssetPath("SlotMachine.png")),
+                Image.open(self.assets.getAssetPath("SlotMachine.png")),
                 size=(180, 180),
             )
         except:
@@ -147,6 +147,8 @@ class Roulette(ctk.CTkFrame):
         super().__init__(master, fg_color="black")
         #self.pack(fill="both", expand=True)
 
+        self.assets = Assets("Assets")
+
         if back_callback:
             self.btn_back = ctk.CTkButton(self, text="Retour Casino", command=back_callback, width=120, height=35, fg_color="gray30",hover_color="gray40")
             self.btn_back.place(x=20, y=20)
@@ -164,7 +166,7 @@ class Roulette(ctk.CTkFrame):
             ("Red", "3"), ("Black", "26")]
 
         try:
-            self.original_image = Image.open("Assets/Casino/Roulette/Roulette.png").resize((300, 300), Image.Resampling.LANCZOS)
+            self.original_image = Image.open(self.assets.getAssetPath("Roulette.png")).resize((300, 300), Image.Resampling.LANCZOS)
         except:
             self.original_image = Image.new("RGBA", (300, 300), (34, 139, 34, 255))
 
