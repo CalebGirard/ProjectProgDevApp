@@ -349,7 +349,6 @@ class Database:
         if self.host:
             return
         if data["type"] == "sync":
-            print("received sync ->",data)
             self.data[data["data"]["key"]] = data["data"]["value"]
         elif data["type"] == "database_close":
             asyncio.create_task(self.disconnect(False))
