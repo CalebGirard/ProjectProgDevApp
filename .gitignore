@@ -76,6 +76,9 @@ docs/_build/
 .pybuilder/
 target/
 
+# Generated random-event runtime state
+random_events/event_state.json
+
 # Jupyter Notebook
 .ipynb_checkpoints
 
