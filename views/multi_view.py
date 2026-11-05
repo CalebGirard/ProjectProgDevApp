@@ -207,6 +207,9 @@ class ConnectedFrame(ctk.CTkFrame):
     def refresh_ui(self):
         db = self.database
         if db:
+            if not self.code:
+                self.code = db.code
+                
             names = db.get("playerlist")
             names = names if names else []
             txt = ""
