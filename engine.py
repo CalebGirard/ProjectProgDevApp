@@ -4,33 +4,34 @@ from Database import Database
 from random_events.random_events import random_eventer
 
 class Engine:
-    def __init__(self):
+    def __init__(self, starting_cash_def=50000, market_def=200, chaos_def=1.0, nbusers_def = 500, diff_mul_def = 1.0):
         self.username = "host"
         self.database = Database("host",True)
         self.database.rawMsgCallback = self.rawMsgCallback
         self.database.newConnCallback = self.newPlayer
         self.database.startThread()
-        self.database.setPath("cash:host",200)
-        self.database.set("messages",[])
-        self.hosting = True
-        self.market = Market(200)
-        self.eventer = random_eventer(chaos = 1.0, market = self.market)
-        self.iteration = 0
-        self.userbase = userbase(500, 0.1)
-        self.userbase.build_T1s()
-        self.userbase.build_T2s()
-        self.userbase.build_T3s()
-        self.userbase.build_T4s()
+        self.config = {
+            "num_stocks": market_def,
+            "num_users": nbusers_def,
+            "chaos": chaos_def,        
+            "difficulty": diff_mul_def,
+            "starting_cash":starting_cash_def
+        }
+        self.rebuild()
 
-    def rebuild(self):
+
+    def rebuild(self, config_changes=None):
+        if config_changes:
+            self.config.update(config_changes)
+
         self.username = "host"
-        self.database.setPath("cash:host",200)
+        self.database.setPath("cash:host", self.config["starting_cash"])
         self.database.set("messages",[])
         self.hosting = True
-        self.market = Market(200)
-        self.eventer = random_eventer(chaos = 1.0, market = self.market)
+        self.market = Market(self.config["num_stocks"])
+        self.eventer = random_eventer(chaos = self.config["chaos"], market = self.market)
         self.iteration = 0
-        self.userbase = userbase(500, 0.1)
+        self.userbase = userbase(self.config["num_users"], self.config["difficulty"])
         self.userbase.build_T1s()
         self.userbase.build_T2s()
         self.userbase.build_T3s()

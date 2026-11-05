@@ -404,6 +404,15 @@ class MarketView(ctk.CTkFrame):
         for spine in self.ax.spines.values():
             spine.set_color("#2b313a")
 
+    def reset(self):
+        self.current_stock = list(self.engine.market.stocks.values())[0]
+        
+        new_options = self.engine.market.get_names()
+        self.name_select.configure(values=new_options)
+        self.name_select.set(new_options[0] if new_options else "")
+        
+        self.refresh()
+
 
 def number_formatter(valeur):
     valeur = float(valeur)
