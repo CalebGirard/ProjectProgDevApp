@@ -55,6 +55,13 @@ class MarketView(ctk.CTkFrame):
         self.graph_area_builder()
         self.order_panel_builder()
         self.bottom_tabs_builder()
+        self.engine.onMarketLoaded = self.reload_stocks
+
+    def reload_stocks(self):
+        options = self._get_dropdown_options()
+        self.name_select.configure(values=options)
+        self.name_select.set(options[0])
+        self.switch_data(options[0])
 
     def _get_dropdown_options(self):
         # Format: "Apple (AAPL)"
