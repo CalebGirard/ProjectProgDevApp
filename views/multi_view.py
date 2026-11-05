@@ -215,4 +215,4 @@ class ConnectedFrame(ctk.CTkFrame):
             self.chat_box.see("end") 
 
         if self.autoUpdate:
-            self.after(10, self.refresh_ui)
+            self.after(1000, self.refresh_ui)
