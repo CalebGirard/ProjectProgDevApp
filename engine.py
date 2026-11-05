@@ -5,32 +5,34 @@ from random_events.random_events import random_eventer
 
 class Engine:
     def __init__(self):
+        self.username = "host"
         self.database = Database("host",True)
         self.database.rawMsgCallback = self.rawMsgCallback
         self.database.newConnCallback = self.newPlayer
         self.database.startThread()
+        self.database.setPath("cash:host",200)
         self.hosting = True
         self.market = Market(200)
-        self.eventer = random_eventer(chaos = 1.0)
+        self.eventer = random_eventer(chaos = 1.0, market = self.market)
         self.iteration = 0
         self.userbase = userbase(500, 0.1)
         self.userbase.build_T1s()
         self.userbase.build_T2s()
         self.userbase.build_T3s()
         self.userbase.build_T4s()
-        self.database.setPath(f"cash:host",200)
 
     def rebuild(self):
+        self.username = "host"
+        self.database.setPath("cash:host",200)
         self.hosting = True
         self.market = Market(200)
-        self.eventer = random_eventer(chaos = 1.0)
+        self.eventer = random_eventer(chaos = 1.0, market = self.market)
         self.iteration = 0
         self.userbase = userbase(500, 0.1)
         self.userbase.build_T1s()
         self.userbase.build_T2s()
         self.userbase.build_T3s()
         self.userbase.build_T4s()
-        self.database.setPath("cash:host",200)
 
     def newPlayer(self,username):
         self.database.setPath(f"cash:{username}",200)
@@ -51,7 +53,11 @@ class Engine:
         if self.hosting:
             self.iteration += 1
 
-            played_event = self.eventer.update(current_iteration = self.iteration, check_interval = 10, market = self.market)
+            played_event = self.eventer.update(
+                current_iteration = self.iteration,
+                check_interval = 10,
+                market = self.market
+            )
 
             if self.eventer.event_list:
                 next_event = self.eventer.event_list[0]
@@ -67,8 +73,12 @@ class Engine:
             self.database.set("lastHist",history)
             self.database.set("prices", prices)
         else:
-            self.market.setPrices(self.database.get("prices"))
-            self.market.addHist(self.database.get("lastHist"))
+            prices = self.database.get("prices")
+            lastHist = self.database.get("lastHist")
+            if prices:
+                self.market.setPrices(prices)
+            if lastHist:
+                self.market.addHist(lastHist)
 
     def _apply_event(self, event):
         if self.hosting:

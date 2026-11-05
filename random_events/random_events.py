@@ -51,7 +51,7 @@ def weighted_choice(weights):
 
 class random_eventer():
 
-    def __init__(self, chaos):
+    def __init__(self, chaos, market = None):
         self.chaos = chaos
         self.event_list = []
 
@@ -113,8 +113,19 @@ class random_eventer():
             for row in csv.DictReader(tag_file):
                 tags.append(row["tag"])
 
+        available_companies = set(self.companies)
+        if market is not None:
+            available_companies = {
+                stock.name for stock in market.stocks.values()
+                if stock.name in self.companies
+            }
+
         self.variable_weights = {
-            "company": {company_name: 1.0 for company_name in self.companies},
+            "company": {
+                company_name: 1.0
+                for company_name in self.companies
+                if company_name in available_companies
+            },
             "region": {region: 1.0 for region in dict.fromkeys(regions)},
             "country": {country: 1.0 for country in dict.fromkeys(countries)},
             "subdivision": {subdivision: 1.0 for subdivision in dict.fromkeys(subdivisions)},
@@ -361,10 +372,14 @@ class random_eventer():
             company_tag = event["variables"].get("company_tag")
 
             if company is not None and company_tag is not None:
+                matching_companies = {
+                    company_name
+                    for company_name, company_record in self.company_records.items()
+                    if company_record.get("tag") == company_tag
+                }
                 return [
                     stock for stock in stocks.values()
-                    if company_tag in getattr(stock, "tags", [])
-                    or getattr(stock, "tag", None) == company_tag
+                    if stock.name in matching_companies
                 ]
 
             target_tag = event["target_tag"]
