@@ -51,10 +51,10 @@ class Engine:
         if self.hosting:
             self.iteration += 1
 
-            played_event = self.eventer.update(current_iteration = self.iteration, check_interval = 10, market = self.market)
+            #played_event = self.eventer.update(current_iteration = self.iteration, check_interval = 10, market = self.market)
 
-            if played_event is not None:
-                self.database.broadcast(played_event["headline"])
+            #if played_event is not None:
+            #    self.database.broadcast(played_event["headline"])
             
             self.market.update()
             prices = {t: s.price for t, s in self.market.stocks.items()}
@@ -62,8 +62,12 @@ class Engine:
             self.database.set("lastHist",history)
             self.database.set("prices", prices)
         else:
-            self.market.setPrices(self.database.get("prices"))
-            self.market.addHist(self.database.get("lastHist"))
+            prices = self.database.get("prices")
+            lastHist = self.database.get("lastHist")
+            if prices:
+                self.market.setPrices(prices)
+            if lastHist:
+                self.market.addHist(lastHist)
 
     def _apply_event(self, event):
         if self.hosting:
