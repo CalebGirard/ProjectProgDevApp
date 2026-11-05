@@ -2,7 +2,7 @@ import customtkinter as ctk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.patches import Rectangle
 import matplotlib.pyplot as plt
-
+from engine import Engine
 """
 
 UI STRUCTURE :
@@ -30,7 +30,7 @@ UI STRUCTURE :
 
 
 class MarketView(ctk.CTkFrame):
-    def __init__(self, master, controller, engine):
+    def __init__(self, master, controller, engine:Engine):
         super().__init__(master, fg_color="#0b0e11")
         self.controller = controller
 
@@ -316,16 +316,24 @@ class MarketView(ctk.CTkFrame):
     # Ventes et achats
 
     def sales_or_buys_executer(self, x):
-        user_cash = self.engine.database.getPath("cash:host")
+        user_cash = self.engine.database.getPath(f"cash:{self.engine.username}")
         spending = user_cash - x * self.current_stock.price
 
         if user_cash > spending:
             return
-        self.engine.database.setPath("cash:host", spending)
+        
+        self.engine.database.setPath(f"cash:{self.engine.username}", spending)
         if x <= 0:
-             self.current_stock.sell(x)
-             return
-        self.current_stock.buy(x)
+            if self.engine.hosting:
+                self.current_stock.sell(abs(x))
+                return
+            else:
+                self.engine.database.sendAsClient("/sell "+self.current_stock.ticker+" "+str(abs(x)))
+                return
+        if self.engine.hosting:
+            self.current_stock.buy(x)
+        else:
+            self.engine.database.sendAsClient("/buy "+self.current_stock.ticker+" "+str(x))
 
     def bottom_tabs_builder(self):
         # Scrollable events feed
