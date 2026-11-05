@@ -24,7 +24,7 @@ class MainApp(ctk.CTk):
         self.geometry("800x600+0+0")
         self.engine = Engine()
         self.assets = Assets("Assets")
-        #self.wm_iconphoto(False,PhotoImage(file=str(self.assets.getAssetPath("snake.png")))
+        #self.wm_iconphoto(False,ctk.CTkImage(Image.open(self.assets.getAssetPath("snake.ico"))))
         self.after(0, lambda: self.state("zoomed"))
         self.configure(fg_color="black")
         self.title("Pynance Desktop")

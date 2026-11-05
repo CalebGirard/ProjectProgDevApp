@@ -16,6 +16,6 @@ class Assets:
             self.assets_list.extend(filenames)
             for f in filenames:
                 self.assets[f] = os.path.join(dirpath,f)
-
+            
     def getAssetPath(self,name):
         return self.assets.get(name)
