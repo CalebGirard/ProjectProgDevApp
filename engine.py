@@ -53,8 +53,13 @@ class Engine:
 
             played_event = self.eventer.update(current_iteration = self.iteration, check_interval = 10, market = self.market)
 
-            if played_event is not None:
-                self.database.broadcast(played_event["headline"])
+            if self.eventer.event_list:
+                next_event = self.eventer.event_list[0]
+                self.database.set("next_event", {
+                    "headline": next_event["headline"],
+                    "scope": next_event["scope"],
+                    "play_probability": next_event["play_probability"]
+                })
             
             self.market.update()
             prices = {t: s.price for t, s in self.market.stocks.items()}
