@@ -126,7 +126,6 @@ class MarketView(ctk.CTkFrame):
         self.user_cash.pack(side="right", padx=20)
 
         
-        # Temps
 
         button_style = {
             "width": 40,
@@ -150,7 +149,7 @@ class MarketView(ctk.CTkFrame):
                 ),
                 **button_style,
             )
-            button.pack(side="right", padx=15)
+            button.pack(side="right", padx=5)
             self.time_buttons[label] = button
 
     def _filter_combobox(self, event):
