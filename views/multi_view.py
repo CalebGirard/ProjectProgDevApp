@@ -3,6 +3,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 from engine import Engine
 from Database import Database
+from random import randint
 
 class MultiView(ctk.CTkFrame):
     def __init__(self, master, controller, engine:Engine):
@@ -20,14 +21,16 @@ class MultiView(ctk.CTkFrame):
         self.createInitMenu()
 
     def connectGame(self):
-        self.connectedView.tkraise()
         self.engine.hosting = False
         self.engine.database.killDatabase()
         self.engine.database.setHost(False)
-        self.engine.database.setUsername(self.usernameEntry.get()[:20])
-        self.engine.username = self.usernameEntry.get()[:20]
+        username = self.usernameEntry.get()[:20] if self.usernameEntry.get()[:20] != "" else str(randint(100,1000000))
+        self.engine.database.setUsername(username)
+        self.engine.username = username
         self.engine.database.connectToDatabase(self.codeEntry.get())
-        self.after(500,self.showConnView)
+        self.connectedView.updateRoomCode(self.codeEntry.get())
+        self.connectedView.tkraise()
+        self.showConnView()
 
     def disconnectCallback(self):
         self.engine.database.setUsername("host")
@@ -42,7 +45,7 @@ class MultiView(ctk.CTkFrame):
     def hostGame(self):
         self.engine.database.openRoom()
         self.connectedView.code = self.engine.database.code
-        self.after(500,self.showConnView)
+        self.showConnView()
 
     def showConnView(self):
         self.connectedView.start(self.engine.database.code)
@@ -120,6 +123,12 @@ class ConnectedFrame(ctk.CTkFrame):
         self.on_disconnect = on_disconnect
         self.code = ""
         self.autoUpdate = False
+        self.engine.database.roomReadyCallback = self.updateRoomCode
+        self.createConnectedMenu()
+
+    def updateRoomCode(self,code,token=None):
+        self.code = code
+        self.code_label.configure(text=f"Room: {self.code}")
 
     def copyCode(self):
         self.clipboard_clear()
@@ -163,14 +172,15 @@ class ConnectedFrame(ctk.CTkFrame):
         self.chat_entry = ctk.CTkEntry(chat, fg_color="#121418",height=48, text_color="#eaecef", font=("Consolas", 12))
         self.chat_entry.pack(side="left",fill="x",expand=True,padx=8, pady=(0, 8))
         self.chat_entry.bind("<Return>", self.sendChat)
-        self.chat_send_btn = ctk.CTkButton(chat, text="Send Message", width=100, fg_color="#2b313a",hover_color="#0f5509", command=self.sendChat)
-        self.chat_send_btn.pack(side="right", padx=12, pady=8)
+        self.chat_send_btn = ctk.CTkButton(chat, text="Send Message",height=48, width=100, fg_color="#2b313a",hover_color="#0f5509", command=self.sendChat)
+        self.chat_send_btn.pack(side="right",fill="x", padx=12, pady=8)
 
     def sendChat(self, event=None):
         if self.engine.hosting:
             self.engine.rawMsgCallback("host",{"type":"raw","data":self.chat_entry.get()})
         else:
             self.database.sendAsClient(self.chat_entry.get())
+        self.chat_entry.set("")
         
     def start(self, code=""):
         self.code = code
@@ -197,11 +207,11 @@ class ConnectedFrame(ctk.CTkFrame):
     def refresh_ui(self):
         db = self.database
         if db:
-            names = [db.username] + (list(db.connections.keys()) if db.host else [])
-
+            names = db.get("playerlist")
+            names = names if names else []
             txt = ""
             for n in names:
-                txt += f"{n}{' (host)' if db.host and n == db.username else ''}" + "\n"
+                txt += f"{n}{' (you)' if n == db.username else ''}" + "\n"
             self._set_text(self.players_box, txt)
             
             connected = db.host and db.sigRoomRunning or db.canSend
