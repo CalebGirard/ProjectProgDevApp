@@ -7,7 +7,6 @@ class Engine:
     def __init__(self):
         self.database = Database("host",True)
         self.database.startThread()
-        self.database.init()
         self.hosting = True
         self.market = Market(200)
         self.eventer = random_eventer(chaos = 1.0)
