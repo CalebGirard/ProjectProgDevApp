@@ -373,7 +373,7 @@ class MarketView(ctk.CTkFrame):
 
         self.fig.tight_layout()
 
-        self.user_cash.configure(text=f"⭐ {str(self.engine.database.getPath(f"cash:{self.engine.username}"))} $ ⭐")
+        self.user_cash.configure(text=f"⭐ {number_formatter(self.engine.database.getPath(f"cash:{self.engine.username}"))} $ ⭐")
         self.canvas.draw()
 
     def _refresh_market_pulse(self):
