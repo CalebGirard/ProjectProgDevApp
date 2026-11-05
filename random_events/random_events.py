@@ -283,6 +283,7 @@ class random_eventer():
                 selected_values["ceo"] = ceo
                 continue
 
+
             if variable_name == "company" and "company" in selected_values:
                 continue
 
