@@ -176,6 +176,16 @@ class MainApp(ctk.CTk):
         frame = self.frames[page_name]
         frame.tkraise()
 
+        titles = {
+                    "Casino": "Application - Royal Casino",
+                    "Market": "Application - Market",
+                    "Trading": "Application - Trading",
+                    "Multi": "Application - Multiplayer",
+                    "Bank": "Application - Bank"
+                }
+        
+        self.title(titles.get(page_name, "Main Application"))
+
         if hasattr(frame, "refresh"):
             frame.refresh()
 
