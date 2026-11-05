@@ -1,589 +1,2937 @@
-{
-  "3M": "William Brown",
-  "A. O. Smith": "Kevin Wheeler",
-  "Abbott Laboratories": "Robert Ford",
-  "AbbVie": "Robert Michael",
-  "Accenture": "Julie Sweet",
-  "Adobe Inc.": "Shantanu Narayen",
-  "Advanced Micro Devices": "Lisa Su",
-  "AES Corporation": "Andrés Gluski",
-  "Aflac": "Daniel Amos",
-  "Agilent Technologies": "Padraig McDonnell",
-  "Air Products": "Eduardo Menezes",
-  "Airbnb": "Brian Chesky",
-  "Akamai Technologies": "Tom Leighton",
-  "Albemarle Corporation": "Kent Masters",
-  "Alexandria Real Estate Equities": "Peter Moglia",
-  "Align Technology": "Joseph Hogan",
-  "Allegion": "John Stone",
-  "Alliant Energy": "Lisa Barton",
-  "Allstate": "Thomas Wilson",
-  "Alphabet Inc. (Class A)": "Sundar Pichai",
-  "Alphabet Inc. (Class C)": "Sundar Pichai",
-  "Altria": "Billy Gifford",
-  "Amazon": "Andy Jassy",
-  "Amcor": "Peter Konieczny",
-  "Ameren": "Martin Lyons",
-  "American Electric Power": "Bill Fehrman",
-  "American Express": "Stephen Squeri",
-  "American International Group": "Peter Zaffino",
-  "American Tower": "Steven Vondran",
-  "American Water Works": "Susan Hardwick",
-  "Ameriprise Financial": "James Cracchiolo",
-  "Ametek": "David Zapico",
-  "Amgen": "Robert Bradway",
-  "Amphenol": "R. Adam Norwitt",
-  "Analog Devices": "Vincent Roche",
-  "Aon plc": "Greg Case",
-  "APA Corporation": "John Christmann",
-  "Apollo Global Management": "Marc Rowan",
-  "Apple Inc.": "Tim Cook",
-  "Applied Materials": "Gary Dickerson",
-  "AppLovin": "Adam Foroughi",
-  "Aptiv": "Kevin Clark",
-  "Arch Capital Group": "Nicolas Papadopoulo",
-  "Archer Daniels Midland": "Juan Luciano",
-  "Ares Management": "Michael Arougheti",
-  "Arista Networks": "Jayshree Ullal",
-  "Arthur J. Gallagher & Co.": "Patrick Gallagher",
-  "Assurant": "Keith Demmings",
-  "AT&T": "John Stankey",
-  "Atmos Energy": "Kevin Akers",
-  "Autodesk": "Andrew Anagnost",
-  "Automatic Data Processing": "Maria Black",
-  "AutoZone": "Philip Daniele",
-  "Avery Dennison": "Mitch Butier",
-  "Axon Enterprise": "Rick Smith",
-  "Baker Hughes": "Lorenzo Simonelli",
-  "Ball Corporation": "Daniel Fisher",
-  "Bank of America": "Brian Moynihan",
-  "Baxter International": "Jose Almeida",
-  "Becton Dickinson": "Tom Polen",
-  "Berkshire Hathaway": "Warren Buffett",
-  "Best Buy": "Corie Barry",
-  "Bio-Techne": "Kim Kelderman",
-  "Biogen": "Christopher Viehbacher",
-  "BlackRock": "Larry Fink",
-  "Blackstone Inc.": "Stephen Schwarzman",
-  "Block, Inc.": "Jack Dorsey",
-  "Bloom Energy": "K. R. Sridhar",
-  "BNY Mellon": "Robin Vince",
-  "Boeing": "Kelly Ortberg",
-  "Booking Holdings": "Glenn Fogel",
-  "Boston Scientific": "Michael Mahoney",
-  "Bristol Myers Squibb": "Christopher Boerner",
-  "Broadcom": "Hock Tan",
-  "Broadridge Financial Solutions": "Tim Gokey",
-  "Brown & Brown": "J. Powell Brown",
-  "Brown–Forman": "Lawson Whiting",
-  "Bunge Global": "Greg Heckman",
-  "BXP, Inc.": "Owen Thomas",
-  "C.H. Robinson": "David Bozeman",
-  "Cadence Design Systems": "Anirudh Devgan",
-  "Camden Property Trust": "Richard Campo",
-  "Capital One": "Richard Fairbank",
-  "Cardinal Health": "Jason Hollar",
-  "Carnival Corporation": "Josh Weinstein",
-  "Carrier Global": "David Gitlin",
-  "Carvana": "Ernie Garcia",
-  "Casey's": "Darren Rebelez",
-  "Caterpillar Inc.": "Jim Umpleby",
-  "Cboe Global Markets": "Fredric Tomczyk",
-  "CBRE Group": "Bob Sulentic",
-  "CDW Corporation": "Chris Leahy",
-  "Cencora": "Steven Collis",
-  "Centene Corporation": "Sarah London",
-  "CenterPoint Energy": "Jason Wells",
-  "CF Industries": "Tony Will",
-  "Charles River Laboratories": "James Foster",
-  "Charles Schwab Corporation": "Rick Wurster",
-  "Charter Communications": "Chris Winfrey",
-  "Chevron Corporation": "Mike Wirth",
-  "Chipotle Mexican Grill": "Scott Boatwright",
-  "Chubb Limited": "Evan Greenberg",
-  "Church & Dwight": "Matthew Farrell",
-  "Ciena": "Gary Smith",
-  "Cigna": "David Cordani",
-  "Cincinnati Financial": "Steven Johnston",
-  "Cintas": "Todd Schneider",
-  "Cisco": "Chuck Robbins",
-  "Citigroup": "Jane Fraser",
-  "Citizens Financial Group": "Bruce Van Saun",
-  "Clorox": "Linda Rendle",
-  "CME Group": "Terrence Duffy",
-  "CMS Energy": "Garrick Rochow",
-  "Coca-Cola Company (The)": "James Quincey",
-  "Cognizant": "Ravi Kumar",
-  "Coherent Corp.": "Jim Anderson",
-  "Coinbase": "Brian Armstrong",
-  "Colgate-Palmolive": "Noel Wallace",
-  "Comcast": "Brian Roberts",
-  "Comfort Systems USA": "Brian Lane",
-  "ConocoPhillips": "Ryan Lance",
-  "Consolidated Edison": "Timothy Cawley",
-  "Constellation Brands": "Bill Newlands",
-  "Constellation Energy": "Joe Dominguez",
-  "Cooper Companies (The)": "Al White",
-  "Copart": "Jeff Liaw",
-  "Corning Inc.": "Wendell Weeks",
-  "Corpay": "Ron Clarke",
-  "CoStar Group": "Andy Florance",
-  "Costco": "Ron Vachris",
-  "CRH plc": "Jim Mintern",
-  "CrowdStrike": "George Kurtz",
-  "Crown Castle": "Steven Moskowitz",
-  "CSX Corporation": "Joe Hinrichs",
-  "Cummins": "Jennifer Rumsey",
-  "CVS Health": "David Joyner",
-  "Danaher Corporation": "Rainer Blair",
-  "Darden Restaurants": "Rick Cardenas",
-  "Datadog": "Olivier Pomel",
-  "DaVita": "Javier Rodriguez",
-  "Deckers Brands": "Stefano Caroti",
-  "Deere & Company": "John May",
-  "Dell Technologies": "Michael Dell",
-  "Delta Air Lines": "Ed Bastian",
-  "Devon Energy": "Rick Muncrief",
-  "Dexcom": "Kevin Sayer",
-  "Diamondback Energy": "Travis Stice",
-  "Digital Realty": "Andy Power",
-  "Dollar General": "Todd Vasos",
-  "Dollar Tree": "Mike Creedon",
-  "Dominion Energy": "Robert Blue",
-  "Domino's": "Russell Weiner",
-  "DoorDash": "Tony Xu",
-  "Dover Corporation": "Richard Tobin",
-  "Dow Inc.": "Jim Fitterling",
-  "D. R. Horton": "David Auld",
-  "DTE Energy": "Jerry Norcia",
-  "Duke Energy": "Harry Sideris",
-  "DuPont": "Lori Koch",
-  "Eaton Corporation": "Craig Arnold",
-  "eBay Inc.": "Jamie Iannone",
-  "EchoStar": "Hamid Akhavan",
-  "Ecolab": "Christophe Beck",
-  "Edison International": "Pedro Pizarro",
-  "Edwards Lifesciences": "Bernard Zovighian",
-  "Elevance Health": "Gail Boudreaux",
-  "Emcor": "Anthony Guzzi",
-  "Emerson Electric": "Lal Karsanbhai",
-  "Entergy": "Drew Marsh",
-  "EOG Resources": "Ezra Yacob",
-  "EQT Corporation": "Toby Rice",
-  "Equifax": "Mark Begor",
-  "Equinix": "Adaire Fox-Martin",
-  "Erie Indemnity": "Tim NeCastro",
-  "Essex Property Trust": "Michael Schall",
-  "Estée Lauder Companies (The)": "Stéphane de La Faverie",
-  "Everest Group": "Jim Williamson",
-  "Evergy": "David Campbell",
-  "Everpure": "Charles Giancarlo",
-  "Eversource Energy": "Joe Nolan",
-  "Exelon": "Calvin Butler",
-  "Expand Energy": "Nick Dell'Osso",
-  "Expedia Group": "Ariane Gorin",
-  "Expeditors International": "Jeffrey Musser",
-  "Extra Space Storage": "Joseph Margolis",
-  "ExxonMobil": "Darren Woods",
-  "F5, Inc.": "François Locoh-Donou",
-  "FactSet": "Dennis Story",
-  "Fair Isaac": "Will Lansing",
-  "Fastenal": "Daniel Florness",
-  "Federal Realty Investment Trust": "Donald Wood",
-  "FedEx": "Raj Subramaniam",
-  "FedEx Freight": "John Smith",
-  "Ferguson Enterprises": "Kevin Murphy",
-  "Fidelity National Information Services": "Stephanie Ferris",
-  "Fifth Third Bancorp": "Tim Spence",
-  "First Solar": "Mark Widmar",
-  "FirstEnergy": "Brian Tierney",
-  "Fiserv": "Frank Bisignano",
-  "Flex Ltd.": "Revathi Advaithi",
-  "Ford Motor Company": "Jim Farley",
-  "Fortinet": "Ken Xie",
-  "Fortive": "Dave Gitlin",
-  "Fox Corporation (Class A)": "Lachlan Murdoch",
-  "Fox Corporation (Class B)": "Lachlan Murdoch",
-  "Franklin Resources": "Jenny Johnson",
-  "Freeport-McMoRan": "Kathleen Quirk",
-  "Garmin": "Cliff Pemble",
-  "Gartner": "Eugene Hall",
-  "GE Aerospace": "Larry Culp",
-  "GE HealthCare": "Peter Arduini",
-  "GE Vernova": "Scott Strazik",
-  "Gen Digital": "Vincent Pilette",
-  "Generac": "Aaron Jagdfeld",
-  "General Dynamics": "Phebe Novakovic",
-  "General Mills": "Jeff Harmening",
-  "General Motors": "Mary Barra",
-  "Genuine Parts Company": "Paul Donahue",
-  "Gilead Sciences": "Daniel O'Day",
-  "Global Payments": "Cameron Bready",
-  "Globe Life": "Frank Svoboda",
-  "GoDaddy": "Aman Bhutani",
-  "Goldman Sachs": "David Solomon",
-  "Halliburton": "Jeff Miller",
-  "Hartford (The)": "Christopher Swift",
-  "Hasbro": "Chris Cocks",
-  "HCA Healthcare": "Samuel Hazen",
-  "Healthpeak Properties": "Scott Brinker",
-  "Henry Schein": "Stanley Bergman",
-  "Hershey Company (The)": "Michele Buck",
-  "Hewlett Packard Enterprise": "Antonio Neri",
-  "Hilton Worldwide": "Chris Nassetta",
-  "Home Depot (The)": "Ted Decker",
-  "Honeywell Aerospace": "Jim Currier",
-  "Honeywell Technologies": "Vimal Kapur",
-  "Hormel Foods": "Jim Snee",
-  "Host Hotels & Resorts": "James Risoleo",
-  "Howmet Aerospace": "John Plant",
-  "HP Inc.": "Enrique Lores",
-  "Hubbell Incorporated": "Gerben Bakker",
-  "Humana": "Jim Rechtin",
-  "Huntington Bancshares": "Stephen Steinour",
-  "Huntington Ingalls Industries": "Chris Kastner",
-  "IBM": "Arvind Krishna",
-  "IDEX Corporation": "Eric Ashleman",
-  "Idexx Laboratories": "Jay Mazelsky",
-  "Illinois Tool Works": "Christopher O'Herlihy",
-  "Illumina, Inc.": "Jacob Thaysen",
-  "Incyte": "Herve Hoppenot",
-  "Ingersoll Rand": "Vicente Reynal",
-  "Insulet Corporation": "James Hollingshead",
-  "Intel": "Lip-Bu Tan",
-  "Interactive Brokers": "Milan Galik",
-  "Intercontinental Exchange": "Jeffrey Sprecher",
-  "International Flavors & Fragrances": "Erik Fyrwald",
-  "International Paper": "Andy Silvernail",
-  "Intuit": "Sasan Goodarzi",
-  "Intuitive Surgical": "David Rosa",
-  "Invesco": "Andrew Schlossberg",
-  "Invitation Homes": "Dallas Tanner",
-  "IQVIA": "Ari Bousbib",
-  "Iron Mountain": "William Meaney",
-  "J.B. Hunt": "John Roberts",
-  "Jabil": "Mike Dastoor",
-  "Jack Henry & Associates": "David Foss",
-  "Jacobs Solutions": "Bob Pragada",
-  "Johnson & Johnson": "Joaquin Duato",
-  "Johnson Controls": "Joakim Weidemanis",
-  "JPMorgan Chase": "Jamie Dimon",
-  "Kenvue": "Kirk Perry",
-  "Keurig Dr Pepper": "Tim Cofer",
-  "KeyCorp": "Chris Gorman",
-  "Keysight Technologies": "Satish Dhanasekaran",
-  "Kimberly-Clark": "Mike Hsu",
-  "Kimco Realty": "Conor Flynn",
-  "Kinder Morgan": "Kim Dang",
-  "KKR & Co.": "Scott Nuttall",
-  "KLA Corporation": "Rick Wallace",
-  "Kraft Heinz": "Carlos Abrams-Rivera",
-  "Kroger": "Ron Sargent",
-  "L3Harris": "Christopher Kubasik",
-  "Labcorp": "Adam Schechter",
-  "Lam Research": "Tim Archer",
-  "Las Vegas Sands": "Robert Goldstein",
-  "Leidos": "Tom Bell",
-  "Lennar": "Stuart Miller",
-  "Lennox International": "Alok Maskara",
-  "Lilly (Eli)": "Dave Ricks",
-  "Linde plc": "Sanjiv Lamba",
-  "Live Nation Entertainment": "Michael Rapino",
-  "Lockheed Martin": "Jim Taiclet",
-  "Loews Corporation": "James Tisch",
-  "Lowe's": "Marvin Ellison",
-  "Lululemon Athletica": "Calvin McDonald",
-  "Lumentum": "Michael Hurlston",
-  "LyondellBasell": "Peter Vanacker",
-  "M&T Bank": "Rene Jones",
-  "Marathon Petroleum": "Maryann Mannen",
-  "Marriott International": "Anthony Capuano",
-  "Marsh McLennan": "John Doyle",
-  "Martin Marietta Materials": "Ward Nye",
-  "Marvell Technology": "Matt Murphy",
-  "Masco": "Keith Allman",
-  "Mastercard": "Michael Miebach",
-  "McCormick & Company": "Brendan Foley",
-  "McDonald's": "Chris Kempczinski",
-  "McKesson": "Brian Tyler",
-  "Medtronic": "Geoff Martha",
-  "Merck & Co.": "Robert Davis",
-  "Meta Platforms": "Mark Zuckerberg",
-  "MetLife": "Michel Khalaf",
-  "Mettler Toledo": "Patrick Kaltenbach",
-  "MGM Resorts": "William Hornbuckle",
-  "Microchip Technology": "Steve Sanghi",
-  "Micron Technology": "Sanjay Mehrotra",
-  "Microsoft": "Satya Nadella",
-  "Mid-America Apartment Communities": "Eric Bolton",
-  "Moderna": "Stéphane Bancel",
-  "Mondelez International": "Dirk Van de Put",
-  "Monolithic Power Systems": "Michael Hsing",
-  "Monster Beverage": "Rodney Sacks",
-  "Moody's Corporation": "Rob Fauber",
-  "Morgan Stanley": "Ted Pick",
-  "Mosaic Company (The)": "Bruce Bodine",
-  "Motorola Solutions": "Greg Brown",
-  "MSCI": "Henry Fernandez",
-  "Nasdaq, Inc.": "Adena Friedman",
-  "NetApp": "George Kurian",
-  "Netflix": "Ted Sarandos",
-  "Newmont": "Natascha Viljoen",
-  "News Corp (Class A)": "Robert Thomson",
-  "News Corp (Class B)": "Robert Thomson",
-  "NextEra Energy": "John Ketchum",
-  "Nike, Inc.": "Elliott Hill",
-  "NiSource": "Lloyd Yates",
-  "Nordson Corporation": "Sundaram Nagarajan",
-  "Norfolk Southern": "Mark George",
-  "Northern Trust": "Michael O'Grady",
-  "Northrop Grumman": "Kathy Warden",
-  "Norwegian Cruise Line Holdings": "Harry Sommer",
-  "NRG Energy": "Larry Coben",
-  "Nucor": "Leon Topalian",
-  "Nvidia": "Jensen Huang",
-  "NVR, Inc.": "Eugene Brederson",
-  "NXP Semiconductors": "Kurt Sievers",
-  "O'Reilly Automotive": "Brad Beckham",
-  "Occidental Petroleum": "Vicki Hollub",
-  "Old Dominion": "Robert W. Fisher",
-  "Omnicom Group": "John Wren",
-  "ON Semiconductor": "Hassane El-Khoury",
-  "Oneok": "Pierce Norton",
-  "Oracle Corporation": "Safra Catz",
-  "Otis Worldwide": "Judy Marks",
-  "Paccar": "Preston Feight",
-  "Packaging Corporation of America": "Mark Kowlzan",
-  "Palantir Technologies": "Alex Karp",
-  "Palo Alto Networks": "Nikesh Arora",
-  "Parker Hannifin": "Jennifer Parmentier",
-  "Paychex": "John Gibson",
-  "PayPal": "Alex Chriss",
-  "Pentair": "John Stauch",
-  "PepsiCo": "Ramon Laguarta",
-  "Pfizer": "Albert Bourla",
-  "PG&E Corporation": "Patricia Poppe",
-  "Philip Morris International": "Jacek Olczak",
-  "Phillips 66": "Mark Lashier",
-  "Pinnacle West Capital": "Ted Geisler",
-  "PNC Financial Services": "William Demchak",
-  "PPG Industries": "Tim Knavish",
-  "PPL Corporation": "Vincent Sorgi",
-  "Principal Financial Group": "Deanna Strable",
-  "Procter & Gamble": "Jon Moeller",
-  "Progressive Corporation": "Tricia Griffith",
-  "Prologis": "Hamid Moghadam",
-  "Prudential Financial": "Charles Lowrey",
-  "Public Service Enterprise Group": "Ralph LaRossa",
-  "PTC Inc.": "Neil Barua",
-  "Public Storage": "Joseph Russell",
-  "PulteGroup": "Ryan Marshall",
-  "Quanta Services": "Duke Austin",
-  "Qualcomm": "Cristiano Amon",
-  "Quest Diagnostics": "Jim Davis",
-  "Qnity Electronics": "Ed Breen",
-  "Ralph Lauren Corporation": "Patrice Louvet",
-  "Raymond James Financial": "Paul Reilly",
-  "Reddit": "Steve Huffman",
-  "RTX Corporation": "Chris Calio",
-  "Realty Income": "Sumit Roy",
-  "Regency Centers": "Lisa Palmer",
-  "Regeneron Pharmaceuticals": "Leonard Schleifer",
-  "Regions Financial Corporation": "John Turner",
-  "Republic Services": "Jon Vander Ark",
-  "ResMed": "Michael Farrell",
-  "Revvity": "Dirk Bontridder",
-  "Robinhood Markets": "Vlad Tenev",
-  "Rockwell Automation": "Blake Moret",
-  "Rollins, Inc.": "Jerry Rollins",
-  "Roper Technologies": "Laurence Neilson",
-  "Ross Stores": "Barbara Rentler",
-  "Royal Caribbean Group": "Jason Liberty",
-  "S&P Global": "Martina Cheung",
-  "Salesforce": "Marc Benioff",
-  "Sandisk": "David Goeckeler",
-  "SBA Communications": "Brendan Cavanagh",
-  "Schlumberger": "Olivier Le Peuch",
-  "Seagate Technology": "Dave Mosley",
-  "Sempra": "Jeffrey Martin",
-  "ServiceNow": "Bill McDermott",
-  "Sherwin-Williams": "Heidi Petz",
-  "Simon Property Group": "David Simon",
-  "Skydance Corporation": "David Ellison",
-  "Skyworks Solutions": "Philip Brace",
-  "J.M. Smucker Company (The)": "Mark Smucker",
-  "Smurfit Westrock": "Tony Smurfit",
-  "Snap-on": "Nick Pinchuk",
-  "Solventum": "Bryan Hanson",
-  "Southern Company": "Chris Womack",
-  "Southwest Airlines": "Bob Jordan",
-  "Stanley Black & Decker": "Christopher Nelson",
-  "Starbucks": "Brian Niccol",
-  "State Street Corporation": "Ronald O'Hanley",
-  "Steel Dynamics": "Mark Millett",
-  "Steris": "Dan O'Boyle",
-  "Stryker Corporation": "Kevin Lobo",
-  "Supermicro": "Charles Liang",
-  "Synchrony Financial": "Brian Doubles",
-  "Synopsys": "Sassine Ghazi",
-  "Sysco": "Kevin Hourican",
-  "T-Mobile US": "Mike Sievert",
-  "T. Rowe Price": "Rob Sharps",
-  "Take-Two Interactive": "Strauss Zelnick",
-  "Tapestry, Inc.": "Joanne Crevoiserat",
-  "Targa Resources": "Matt Meloy",
-  "Target Corporation": "Brian Cornell",
-  "TE Connectivity": "Terrence Curtin",
-  "Teledyne Technologies": "Robert Mehrabian",
-  "Teradyne": "Greg Smith",
-  "Tesla, Inc.": "Elon Musk",
-  "Texas Instruments": "Haviv Ilan",
-  "Texas Pacific Land Corporation": "Ty Gasperson",
-  "Textron": "Scott Donnelly",
-  "Thermo Fisher Scientific": "Marc Casper",
-  "TJX Companies": "Ernie Herrman",
-  "TKO Group Holdings": "Ariel Emanuel",
-  "Tractor Supply": "Hal Lawton",
-  "Trane Technologies": "Dave Regnery",
-  "TransDigm Group": "Michael Lisman",
-  "Travelers Companies (The)": "Alan Schnitzer",
-  "Trimble Inc.": "Rob Painter",
-  "Truist Financial": "William Rogers",
-  "Twilio": "Khozema Shipchandler",
-  "Tyler Technologies": "Lynn Moore",
-  "Tyson Foods": "Donnie King",
-  "U.S. Bancorp": "Gunjan Kedia",
-  "Uber": "Dara Khosrowshahi",
-  "UDR, Inc.": "Tom Toomey",
-  "Ulta Beauty": "Kecia Steelman",
-  "Union Pacific Corporation": "Jim Vena",
-  "United Airlines Holdings": "Scott Kirby",
-  "United Parcel Service": "Carol Tome",
-  "United Rentals": "Matthew Flannery",
-  "UnitedHealth Group": "Andrew Witty",
-  "Universal Health Services": "Marc Miller",
-  "Valero Energy": "Lane Riggs",
-  "Veeva Systems": "Peter Gassner",
-  "Ventas": "Debra Cafaro",
-  "Veralto": "Jennifer Honeycutt",
-  "Verisign": "Jim Bidzos",
-  "Verisk Analytics": "Lee Shavel",
-  "Verizon": "Hans Vestberg",
-  "Vertex Pharmaceuticals": "Reshma Kewalramani",
-  "Vertiv": "Giordano Albertazzi",
-  "Viatris": "Scott Smith",
-  "Vici Properties": "Edward Pitoniak",
-  "Visa Inc.": "Ryan McInerney",
-  "Vistra Corp.": "Jim Burke",
-  "Vivmark Residential": "Tim Naughton",
-  "Vulcan Materials Company": "Tom Hill",
-  "W. R. Berkley Corporation": "Rob Berkley",
-  "W. W. Grainger": "D.G. Macpherson",
-  "Wabtec": "Rafael Santana",
-  "Walmart": "Doug McMillon",
-  "Walt Disney Company (The)": "Bob Iger",
-  "Waste Management": "Jim Fish",
-  "Waters Corporation": "Udit Batra",
-  "WEC Energy Group": "Scott Lauber",
-  "Wells Fargo": "Charlie Scharf",
-  "Welltower": "Shankh Mitra",
-  "West Pharmaceutical Services": "Eric Green",
-  "Western Digital": "Irving Tan",
-  "Weyerhaeuser": "Devin Stockfish",
-  "Williams-Sonoma, Inc.": "Laura Alber",
-  "Williams Companies": "Chad Zamarin",
-  "Willis Towers Watson": "Carl Hess",
-  "Workday, Inc.": "Carl Eschenbach",
-  "Wynn Resorts": "Craig Billings",
-  "Xcel Energy": "Bob Frenzel",
-  "Xylem Inc.": "Matthew Pine",
-  "Yum! Brands": "David Gibbs",
-  "Zebra Technologies": "Bill Burns",
-  "Zimmer Biomet": "Ivan Tornos",
-  "Zoetis": "Kristin Peck",
-  "Alnylam Pharmaceuticals": "Yvonne Greenstreet",
-  "Arm Holdings": "Rene Haas",
-  "ASML Holding": "Christophe Fouquet",
-  "Astera Labs": "Jitendra Mohan",
-  "Coca-Cola Europacific Partners": "Damian Gammell",
-  "CoreWeave": "Michael Intrator",
-  "Ferrovial": "Ignacio Madridejos",
-  "Mercado Libre": "Marcos Galperin",
-  "MicroStrategy": "Phong Le",
-  "Nebius Group": "Arkady Volozh",
-  "PDD Holdings": "Lei Chen",
-  "Rocket Lab": "Peter Beck",
-  "Shopify": "Tobias Lutke",
-  "Thomson Reuters": "Steve Hasker",
-  "Agnico Eagle Mines Limited": "Ammar Al-Joundi",
-  "Alimentation Couche-Tard Inc.": "Alex Miller",
-  "Bank of Montreal": "Darryl White",
-  "Bank of Nova Scotia": "Scott Thomson",
-  "Barrick Mining Corporation": "Mark Bristow",
-  "BCE Inc.": "Mirko Bibic",
-  "Brookfield Asset Management Ltd.": "Bruce Flatt",
-  "Brookfield Corporation": "Bruce Flatt",
-  "Brookfield Infrastructure Partners L.P.": "Sam Pollock",
-  "CAE Inc.": "Marc Parent",
-  "Cameco Corporation": "Tim Gitzel",
-  "Canadian Imperial Bank of Commerce": "Victor Dodig",
-  "Canadian National Railway Company": "Tracy Robinson",
-  "Canadian Natural Resources Limited": "Scott Stauth",
-  "Canadian Pacific Kansas City Limited": "Keith Creel",
-  "Canadian Tire Corporation Limited": "Greg Hicks",
-  "CCL Industries Inc.": "Geoffrey Martin",
-  "Celestica Inc.": "Rob Mionis",
-  "Cenovus Energy Inc.": "Jonathan McKenzie",
-  "CGI Inc.": "George Schindler",
-  "Constellation Software Inc.": "Mark Leonard",
-  "Dollarama Inc.": "Neil Rossy",
-  "Emera Incorporated": "Scott Balfour",
-  "Enbridge Inc.": "Greg Ebel",
-  "Fairfax Financial Holdings Limited": "Prem Watsa",
-  "First Quantum Minerals Ltd.": "Tristan Pascall",
-  "FirstService Corporation": "Scott Patterson",
-  "Fortis Inc.": "David Hutchens",
-  "Franco-Nevada Corporation": "Paul Brink",
-  "George Weston Limited": "Galyn Weston",
-  "Gildan Activewear Inc.": "Glenn Chamandy",
-  "Hydro One Limited": "David Lebeter",
-  "Imperial Oil Limited": "Brad Corson",
-  "Intact Financial Corporation": "Charles Brindamour",
-  "Kinross Gold Corporation": "J. Paul Rollinson",
-  "Loblaw Companies Limited": "Per Bank",
-  "Magna International Inc.": "Swamy Kotagiri",
-  "Manulife Financial Corporation": "Roy Gori",
-  "Metro Inc.": "Eric La Fleche",
-  "Nutrien Ltd.": "Ken Seitz",
-  "Open Text Corporation": "Mark Barrenechea",
-  "Pembina Pipeline Corporation": "Scott Burrows",
-  "Power Corporation of Canada": "Jeffrey Orr",
-  "Restaurant Brands International Inc.": "Joshua Kobza",
-  "Rogers Communications Inc.": "Tony Staffieri",
-  "Royal Bank of Canada": "Dave McKay",
-  "Saputo Inc.": "Lino Saputo",
-  "Shopify Inc.": "Tobias Lutke",
-  "Sun Life Financial Inc.": "Kevin Strain",
-  "Suncor Energy Inc.": "Rich Kruger",
-  "TC Energy Corporation": "François Poirier",
-  "Teck Resources Limited": "Jonathan Price",
-  "Telus Corporation": "Darren Entwistle",
-  "Thomson Reuters Corporation": "Steve Hasker",
-  "Toronto-Dominion Bank": "Bharat Masrani",
-  "Tourmaline Oil Corp.": "Michael Rose",
-  "Waste Connections Inc.": "Ron Mittelstaedt",
-  "Wheaton Precious Metals Corp.": "Randy Smallwood",
-  "WSP Global Inc.": "Alexandre L’Heureux",
-  "Bitcoin": "Satoshi Nakamoto",
-  "Ethereum": "Vitalik Buterin",
-  "Solana": "Anatoly Yakovenko",
-  "BNB": "Changpeng Zhao",
-  "XRP": "Brad Garlinghouse",
-  "Cardano": "Charles Hoskinson",
-  "Avalanche": "Emin Gun Sirer",
-  "Chainlink": "Sergey Nazarov",
-  "Litecoin": "Charlie Lee",
-  "Dogecoin": "Billy Markus",
-  "Shiba Inu": "Ryoshi",
-  "Tether": "Paolo Ardoino"
-}
+[
+  {
+    "company": "3M",
+    "ceo": "William Brown",
+    "tag": "industrie"
+  },
+  {
+    "company": "A. O. Smith",
+    "ceo": "Kevin Wheeler",
+    "tag": "industrie"
+  },
+  {
+    "company": "Abbott Laboratories",
+    "ceo": "Robert Ford",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "AbbVie",
+    "ceo": "Robert Michael",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "Accenture",
+    "ceo": "Julie Sweet",
+    "tag": "technologie"
+  },
+  {
+    "company": "Adobe Inc.",
+    "ceo": "Shantanu Narayen",
+    "tag": "technologie"
+  },
+  {
+    "company": "Advanced Micro Devices",
+    "ceo": "Lisa Su",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "AES Corporation",
+    "ceo": "Andrés Gluski",
+    "tag": "services publics"
+  },
+  {
+    "company": "Aflac",
+    "ceo": "Daniel Amos",
+    "tag": "assurance"
+  },
+  {
+    "company": "Agilent Technologies",
+    "ceo": "Padraig McDonnell",
+    "tag": "santé"
+  },
+  {
+    "company": "Air Products",
+    "ceo": "Eduardo Menezes",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Airbnb",
+    "ceo": "Brian Chesky",
+    "tag": "technologie"
+  },
+  {
+    "company": "Akamai Technologies",
+    "ceo": "Tom Leighton",
+    "tag": "technologie"
+  },
+  {
+    "company": "Albemarle Corporation",
+    "ceo": "Kent Masters",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Alexandria Real Estate Equities",
+    "ceo": "Peter Moglia",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Align Technology",
+    "ceo": "Joseph Hogan",
+    "tag": "santé"
+  },
+  {
+    "company": "Allegion",
+    "ceo": "John Stone",
+    "tag": "industrie"
+  },
+  {
+    "company": "Alliant Energy",
+    "ceo": "Lisa Barton",
+    "tag": "services publics"
+  },
+  {
+    "company": "Allstate",
+    "ceo": "Thomas Wilson",
+    "tag": "assurance"
+  },
+  {
+    "company": "Alphabet Inc. (Class A)",
+    "ceo": "Sundar Pichai",
+    "tag": "technologie"
+  },
+  {
+    "company": "Alphabet Inc. (Class C)",
+    "ceo": "Sundar Pichai",
+    "tag": "technologie"
+  },
+  {
+    "company": "Altria",
+    "ceo": "Billy Gifford",
+    "tag": "biens de consommation"
+  },
+  {
+    "company": "Amazon",
+    "ceo": "Andy Jassy",
+    "tag": "technologie"
+  },
+  {
+    "company": "Amcor",
+    "ceo": "Peter Konieczny",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Ameren",
+    "ceo": "Martin Lyons",
+    "tag": "services publics"
+  },
+  {
+    "company": "American Electric Power",
+    "ceo": "Bill Fehrman",
+    "tag": "services publics"
+  },
+  {
+    "company": "American Express",
+    "ceo": "Stephen Squeri",
+    "tag": "finance"
+  },
+  {
+    "company": "American International Group",
+    "ceo": "Peter Zaffino",
+    "tag": "assurance"
+  },
+  {
+    "company": "American Tower",
+    "ceo": "Steven Vondran",
+    "tag": "immobilier"
+  },
+  {
+    "company": "American Water Works",
+    "ceo": "Susan Hardwick",
+    "tag": "services publics"
+  },
+  {
+    "company": "Ameriprise Financial",
+    "ceo": "James Cracchiolo",
+    "tag": "finance"
+  },
+  {
+    "company": "Ametek",
+    "ceo": "David Zapico",
+    "tag": "industrie"
+  },
+  {
+    "company": "Amgen",
+    "ceo": "Robert Bradway",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "Amphenol",
+    "ceo": "R. Adam Norwitt",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Analog Devices",
+    "ceo": "Vincent Roche",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Aon plc",
+    "ceo": "Greg Case",
+    "tag": "assurance"
+  },
+  {
+    "company": "APA Corporation",
+    "ceo": "John Christmann",
+    "tag": "énergie"
+  },
+  {
+    "company": "Apollo Global Management",
+    "ceo": "Marc Rowan",
+    "tag": "finance"
+  },
+  {
+    "company": "Apple Inc.",
+    "ceo": "Tim Cook",
+    "tag": "technologie"
+  },
+  {
+    "company": "Applied Materials",
+    "ceo": "Gary Dickerson",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "AppLovin",
+    "ceo": "Adam Foroughi",
+    "tag": "technologie"
+  },
+  {
+    "company": "Aptiv",
+    "ceo": "Kevin Clark",
+    "tag": "automobile"
+  },
+  {
+    "company": "Arch Capital Group",
+    "ceo": "Nicolas Papadopoulo",
+    "tag": "assurance"
+  },
+  {
+    "company": "Archer Daniels Midland",
+    "ceo": "Juan Luciano",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "Ares Management",
+    "ceo": "Michael Arougheti",
+    "tag": "finance"
+  },
+  {
+    "company": "Arista Networks",
+    "ceo": "Jayshree Ullal",
+    "tag": "technologie"
+  },
+  {
+    "company": "Arthur J. Gallagher & Co.",
+    "ceo": "Patrick Gallagher",
+    "tag": "assurance"
+  },
+  {
+    "company": "Assurant",
+    "ceo": "Keith Demmings",
+    "tag": "assurance"
+  },
+  {
+    "company": "AT&T",
+    "ceo": "John Stankey",
+    "tag": "télécommunications"
+  },
+  {
+    "company": "Atmos Energy",
+    "ceo": "Kevin Akers",
+    "tag": "services publics"
+  },
+  {
+    "company": "Autodesk",
+    "ceo": "Andrew Anagnost",
+    "tag": "technologie"
+  },
+  {
+    "company": "Automatic Data Processing",
+    "ceo": "Maria Black",
+    "tag": "finance"
+  },
+  {
+    "company": "AutoZone",
+    "ceo": "Philip Daniele",
+    "tag": "automobile"
+  },
+  {
+    "company": "Avery Dennison",
+    "ceo": "Mitch Butier",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Axon Enterprise",
+    "ceo": "Rick Smith",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "Baker Hughes",
+    "ceo": "Lorenzo Simonelli",
+    "tag": "énergie"
+  },
+  {
+    "company": "Ball Corporation",
+    "ceo": "Daniel Fisher",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Bank of America",
+    "ceo": "Brian Moynihan",
+    "tag": "finance"
+  },
+  {
+    "company": "Baxter International",
+    "ceo": "Jose Almeida",
+    "tag": "santé"
+  },
+  {
+    "company": "Becton Dickinson",
+    "ceo": "Tom Polen",
+    "tag": "santé"
+  },
+  {
+    "company": "Berkshire Hathaway",
+    "ceo": "Warren Buffett",
+    "tag": "finance"
+  },
+  {
+    "company": "Best Buy",
+    "ceo": "Corie Barry",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Bio-Techne",
+    "ceo": "Kim Kelderman",
+    "tag": "santé"
+  },
+  {
+    "company": "Biogen",
+    "ceo": "Christopher Viehbacher",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "BlackRock",
+    "ceo": "Larry Fink",
+    "tag": "finance"
+  },
+  {
+    "company": "Blackstone Inc.",
+    "ceo": "Stephen Schwarzman",
+    "tag": "finance"
+  },
+  {
+    "company": "Block, Inc.",
+    "ceo": "Jack Dorsey",
+    "tag": "technologie"
+  },
+  {
+    "company": "Bloom Energy",
+    "ceo": "K. R. Sridhar",
+    "tag": "énergie"
+  },
+  {
+    "company": "BNY Mellon",
+    "ceo": "Robin Vince",
+    "tag": "finance"
+  },
+  {
+    "company": "Boeing",
+    "ceo": "Kelly Ortberg",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "Booking Holdings",
+    "ceo": "Glenn Fogel",
+    "tag": "technologie"
+  },
+  {
+    "company": "Boston Scientific",
+    "ceo": "Michael Mahoney",
+    "tag": "santé"
+  },
+  {
+    "company": "Bristol Myers Squibb",
+    "ceo": "Christopher Boerner",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "Broadcom",
+    "ceo": "Hock Tan",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Broadridge Financial Solutions",
+    "ceo": "Tim Gokey",
+    "tag": "finance"
+  },
+  {
+    "company": "Brown & Brown",
+    "ceo": "J. Powell Brown",
+    "tag": "assurance"
+  },
+  {
+    "company": "Brown–Forman",
+    "ceo": "Lawson Whiting",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "Bunge Global",
+    "ceo": "Greg Heckman",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "BXP, Inc.",
+    "ceo": "Owen Thomas",
+    "tag": "immobilier"
+  },
+  {
+    "company": "C.H. Robinson",
+    "ceo": "David Bozeman",
+    "tag": "transport et logistique"
+  },
+  {
+    "company": "Cadence Design Systems",
+    "ceo": "Anirudh Devgan",
+    "tag": "technologie"
+  },
+  {
+    "company": "Camden Property Trust",
+    "ceo": "Richard Campo",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Capital One",
+    "ceo": "Richard Fairbank",
+    "tag": "finance"
+  },
+  {
+    "company": "Cardinal Health",
+    "ceo": "Jason Hollar",
+    "tag": "santé"
+  },
+  {
+    "company": "Carnival Corporation",
+    "ceo": "Josh Weinstein",
+    "tag": "hôtellerie et loisirs"
+  },
+  {
+    "company": "Carrier Global",
+    "ceo": "David Gitlin",
+    "tag": "industrie"
+  },
+  {
+    "company": "Carvana",
+    "ceo": "Ernie Garcia",
+    "tag": "automobile"
+  },
+  {
+    "company": "Casey's",
+    "ceo": "Darren Rebelez",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Caterpillar Inc.",
+    "ceo": "Jim Umpleby",
+    "tag": "industrie"
+  },
+  {
+    "company": "Cboe Global Markets",
+    "ceo": "Fredric Tomczyk",
+    "tag": "finance"
+  },
+  {
+    "company": "CBRE Group",
+    "ceo": "Bob Sulentic",
+    "tag": "immobilier"
+  },
+  {
+    "company": "CDW Corporation",
+    "ceo": "Chris Leahy",
+    "tag": "technologie"
+  },
+  {
+    "company": "Cencora",
+    "ceo": "Steven Collis",
+    "tag": "santé"
+  },
+  {
+    "company": "Centene Corporation",
+    "ceo": "Sarah London",
+    "tag": "santé"
+  },
+  {
+    "company": "CenterPoint Energy",
+    "ceo": "Jason Wells",
+    "tag": "services publics"
+  },
+  {
+    "company": "CF Industries",
+    "ceo": "Tony Will",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Charles River Laboratories",
+    "ceo": "James Foster",
+    "tag": "santé"
+  },
+  {
+    "company": "Charles Schwab Corporation",
+    "ceo": "Rick Wurster",
+    "tag": "finance"
+  },
+  {
+    "company": "Charter Communications",
+    "ceo": "Chris Winfrey",
+    "tag": "télécommunications"
+  },
+  {
+    "company": "Chevron Corporation",
+    "ceo": "Mike Wirth",
+    "tag": "énergie"
+  },
+  {
+    "company": "Chipotle Mexican Grill",
+    "ceo": "Scott Boatwright",
+    "tag": "restauration"
+  },
+  {
+    "company": "Chubb Limited",
+    "ceo": "Evan Greenberg",
+    "tag": "assurance"
+  },
+  {
+    "company": "Church & Dwight",
+    "ceo": "Matthew Farrell",
+    "tag": "biens de consommation"
+  },
+  {
+    "company": "Ciena",
+    "ceo": "Gary Smith",
+    "tag": "technologie"
+  },
+  {
+    "company": "Cigna",
+    "ceo": "David Cordani",
+    "tag": "santé"
+  },
+  {
+    "company": "Cincinnati Financial",
+    "ceo": "Steven Johnston",
+    "tag": "assurance"
+  },
+  {
+    "company": "Cintas",
+    "ceo": "Todd Schneider",
+    "tag": "industrie"
+  },
+  {
+    "company": "Cisco",
+    "ceo": "Chuck Robbins",
+    "tag": "technologie"
+  },
+  {
+    "company": "Citigroup",
+    "ceo": "Jane Fraser",
+    "tag": "finance"
+  },
+  {
+    "company": "Citizens Financial Group",
+    "ceo": "Bruce Van Saun",
+    "tag": "finance"
+  },
+  {
+    "company": "Clorox",
+    "ceo": "Linda Rendle",
+    "tag": "biens de consommation"
+  },
+  {
+    "company": "CME Group",
+    "ceo": "Terrence Duffy",
+    "tag": "finance"
+  },
+  {
+    "company": "CMS Energy",
+    "ceo": "Garrick Rochow",
+    "tag": "services publics"
+  },
+  {
+    "company": "Coca-Cola Company (The)",
+    "ceo": "James Quincey",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "Cognizant",
+    "ceo": "Ravi Kumar",
+    "tag": "technologie"
+  },
+  {
+    "company": "Coherent Corp.",
+    "ceo": "Jim Anderson",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Coinbase",
+    "ceo": "Brian Armstrong",
+    "tag": "finance"
+  },
+  {
+    "company": "Colgate-Palmolive",
+    "ceo": "Noel Wallace",
+    "tag": "biens de consommation"
+  },
+  {
+    "company": "Comcast",
+    "ceo": "Brian Roberts",
+    "tag": "télécommunications"
+  },
+  {
+    "company": "Comfort Systems USA",
+    "ceo": "Brian Lane",
+    "tag": "industrie"
+  },
+  {
+    "company": "ConocoPhillips",
+    "ceo": "Ryan Lance",
+    "tag": "énergie"
+  },
+  {
+    "company": "Consolidated Edison",
+    "ceo": "Timothy Cawley",
+    "tag": "services publics"
+  },
+  {
+    "company": "Constellation Brands",
+    "ceo": "Bill Newlands",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "Constellation Energy",
+    "ceo": "Joe Dominguez",
+    "tag": "services publics"
+  },
+  {
+    "company": "Cooper Companies (The)",
+    "ceo": "Al White",
+    "tag": "santé"
+  },
+  {
+    "company": "Copart",
+    "ceo": "Jeff Liaw",
+    "tag": "automobile"
+  },
+  {
+    "company": "Corning Inc.",
+    "ceo": "Wendell Weeks",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Corpay",
+    "ceo": "Ron Clarke",
+    "tag": "finance"
+  },
+  {
+    "company": "CoStar Group",
+    "ceo": "Andy Florance",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Costco",
+    "ceo": "Ron Vachris",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "CRH plc",
+    "ceo": "Jim Mintern",
+    "tag": "matériaux"
+  },
+  {
+    "company": "CrowdStrike",
+    "ceo": "George Kurtz",
+    "tag": "technologie"
+  },
+  {
+    "company": "Crown Castle",
+    "ceo": "Steven Moskowitz",
+    "tag": "immobilier"
+  },
+  {
+    "company": "CSX Corporation",
+    "ceo": "Joe Hinrichs",
+    "tag": "transport et logistique"
+  },
+  {
+    "company": "Cummins",
+    "ceo": "Jennifer Rumsey",
+    "tag": "industrie"
+  },
+  {
+    "company": "CVS Health",
+    "ceo": "David Joyner",
+    "tag": "santé"
+  },
+  {
+    "company": "Danaher Corporation",
+    "ceo": "Rainer Blair",
+    "tag": "santé"
+  },
+  {
+    "company": "Darden Restaurants",
+    "ceo": "Rick Cardenas",
+    "tag": "restauration"
+  },
+  {
+    "company": "Datadog",
+    "ceo": "Olivier Pomel",
+    "tag": "technologie"
+  },
+  {
+    "company": "DaVita",
+    "ceo": "Javier Rodriguez",
+    "tag": "santé"
+  },
+  {
+    "company": "Deckers Brands",
+    "ceo": "Stefano Caroti",
+    "tag": "biens de consommation"
+  },
+  {
+    "company": "Deere & Company",
+    "ceo": "John May",
+    "tag": "industrie"
+  },
+  {
+    "company": "Dell Technologies",
+    "ceo": "Michael Dell",
+    "tag": "technologie"
+  },
+  {
+    "company": "Delta Air Lines",
+    "ceo": "Ed Bastian",
+    "tag": "transport et logistique"
+  },
+  {
+    "company": "Devon Energy",
+    "ceo": "Rick Muncrief",
+    "tag": "énergie"
+  },
+  {
+    "company": "Dexcom",
+    "ceo": "Kevin Sayer",
+    "tag": "santé"
+  },
+  {
+    "company": "Diamondback Energy",
+    "ceo": "Travis Stice",
+    "tag": "énergie"
+  },
+  {
+    "company": "Digital Realty",
+    "ceo": "Andy Power",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Dollar General",
+    "ceo": "Todd Vasos",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Dollar Tree",
+    "ceo": "Mike Creedon",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Dominion Energy",
+    "ceo": "Robert Blue",
+    "tag": "services publics"
+  },
+  {
+    "company": "Domino's",
+    "ceo": "Russell Weiner",
+    "tag": "restauration"
+  },
+  {
+    "company": "DoorDash",
+    "ceo": "Tony Xu",
+    "tag": "technologie"
+  },
+  {
+    "company": "Dover Corporation",
+    "ceo": "Richard Tobin",
+    "tag": "industrie"
+  },
+  {
+    "company": "Dow Inc.",
+    "ceo": "Jim Fitterling",
+    "tag": "matériaux"
+  },
+  {
+    "company": "D. R. Horton",
+    "ceo": "David Auld",
+    "tag": "construction résidentielle"
+  },
+  {
+    "company": "DTE Energy",
+    "ceo": "Jerry Norcia",
+    "tag": "services publics"
+  },
+  {
+    "company": "Duke Energy",
+    "ceo": "Harry Sideris",
+    "tag": "services publics"
+  },
+  {
+    "company": "DuPont",
+    "ceo": "Lori Koch",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Eaton Corporation",
+    "ceo": "Craig Arnold",
+    "tag": "industrie"
+  },
+  {
+    "company": "eBay Inc.",
+    "ceo": "Jamie Iannone",
+    "tag": "technologie"
+  },
+  {
+    "company": "EchoStar",
+    "ceo": "Hamid Akhavan",
+    "tag": "télécommunications"
+  },
+  {
+    "company": "Ecolab",
+    "ceo": "Christophe Beck",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Edison International",
+    "ceo": "Pedro Pizarro",
+    "tag": "services publics"
+  },
+  {
+    "company": "Edwards Lifesciences",
+    "ceo": "Bernard Zovighian",
+    "tag": "santé"
+  },
+  {
+    "company": "Elevance Health",
+    "ceo": "Gail Boudreaux",
+    "tag": "santé"
+  },
+  {
+    "company": "Emcor",
+    "ceo": "Anthony Guzzi",
+    "tag": "industrie"
+  },
+  {
+    "company": "Emerson Electric",
+    "ceo": "Lal Karsanbhai",
+    "tag": "industrie"
+  },
+  {
+    "company": "Entergy",
+    "ceo": "Drew Marsh",
+    "tag": "services publics"
+  },
+  {
+    "company": "EOG Resources",
+    "ceo": "Ezra Yacob",
+    "tag": "énergie"
+  },
+  {
+    "company": "EQT Corporation",
+    "ceo": "Toby Rice",
+    "tag": "énergie"
+  },
+  {
+    "company": "Equifax",
+    "ceo": "Mark Begor",
+    "tag": "finance"
+  },
+  {
+    "company": "Equinix",
+    "ceo": "Adaire Fox-Martin",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Erie Indemnity",
+    "ceo": "Tim NeCastro",
+    "tag": "assurance"
+  },
+  {
+    "company": "Essex Property Trust",
+    "ceo": "Michael Schall",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Estée Lauder Companies (The)",
+    "ceo": "Stéphane de La Faverie",
+    "tag": "biens de consommation"
+  },
+  {
+    "company": "Everest Group",
+    "ceo": "Jim Williamson",
+    "tag": "assurance"
+  },
+  {
+    "company": "Evergy",
+    "ceo": "David Campbell",
+    "tag": "services publics"
+  },
+  {
+    "company": "Everpure",
+    "ceo": "Charles Giancarlo",
+    "tag": "technologie"
+  },
+  {
+    "company": "Eversource Energy",
+    "ceo": "Joe Nolan",
+    "tag": "services publics"
+  },
+  {
+    "company": "Exelon",
+    "ceo": "Calvin Butler",
+    "tag": "services publics"
+  },
+  {
+    "company": "Expand Energy",
+    "ceo": "Nick Dell'Osso",
+    "tag": "énergie"
+  },
+  {
+    "company": "Expedia Group",
+    "ceo": "Ariane Gorin",
+    "tag": "technologie"
+  },
+  {
+    "company": "Expeditors International",
+    "ceo": "Jeffrey Musser",
+    "tag": "transport et logistique"
+  },
+  {
+    "company": "Extra Space Storage",
+    "ceo": "Joseph Margolis",
+    "tag": "immobilier"
+  },
+  {
+    "company": "ExxonMobil",
+    "ceo": "Darren Woods",
+    "tag": "énergie"
+  },
+  {
+    "company": "F5, Inc.",
+    "ceo": "François Locoh-Donou",
+    "tag": "technologie"
+  },
+  {
+    "company": "FactSet",
+    "ceo": "Dennis Story",
+    "tag": "finance"
+  },
+  {
+    "company": "Fair Isaac",
+    "ceo": "Will Lansing",
+    "tag": "finance"
+  },
+  {
+    "company": "Fastenal",
+    "ceo": "Daniel Florness",
+    "tag": "industrie"
+  },
+  {
+    "company": "Federal Realty Investment Trust",
+    "ceo": "Donald Wood",
+    "tag": "immobilier"
+  },
+  {
+    "company": "FedEx",
+    "ceo": "Raj Subramaniam",
+    "tag": "transport et logistique"
+  },
+  {
+    "company": "FedEx Freight",
+    "ceo": "John Smith",
+    "tag": "transport et logistique"
+  },
+  {
+    "company": "Ferguson Enterprises",
+    "ceo": "Kevin Murphy",
+    "tag": "industrie"
+  },
+  {
+    "company": "Fidelity National Information Services",
+    "ceo": "Stephanie Ferris",
+    "tag": "finance"
+  },
+  {
+    "company": "Fifth Third Bancorp",
+    "ceo": "Tim Spence",
+    "tag": "finance"
+  },
+  {
+    "company": "First Solar",
+    "ceo": "Mark Widmar",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "FirstEnergy",
+    "ceo": "Brian Tierney",
+    "tag": "services publics"
+  },
+  {
+    "company": "Fiserv",
+    "ceo": "Frank Bisignano",
+    "tag": "finance"
+  },
+  {
+    "company": "Flex Ltd.",
+    "ceo": "Revathi Advaithi",
+    "tag": "technologie"
+  },
+  {
+    "company": "Ford Motor Company",
+    "ceo": "Jim Farley",
+    "tag": "automobile"
+  },
+  {
+    "company": "Fortinet",
+    "ceo": "Ken Xie",
+    "tag": "technologie"
+  },
+  {
+    "company": "Fortive",
+    "ceo": "Dave Gitlin",
+    "tag": "technologie"
+  },
+  {
+    "company": "Fox Corporation (Class A)",
+    "ceo": "Lachlan Murdoch",
+    "tag": "médias et divertissement"
+  },
+  {
+    "company": "Fox Corporation (Class B)",
+    "ceo": "Lachlan Murdoch",
+    "tag": "médias et divertissement"
+  },
+  {
+    "company": "Franklin Resources",
+    "ceo": "Jenny Johnson",
+    "tag": "finance"
+  },
+  {
+    "company": "Freeport-McMoRan",
+    "ceo": "Kathleen Quirk",
+    "tag": "mines et métaux"
+  },
+  {
+    "company": "Garmin",
+    "ceo": "Cliff Pemble",
+    "tag": "technologie"
+  },
+  {
+    "company": "Gartner",
+    "ceo": "Eugene Hall",
+    "tag": "technologie"
+  },
+  {
+    "company": "GE Aerospace",
+    "ceo": "Larry Culp",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "GE HealthCare",
+    "ceo": "Peter Arduini",
+    "tag": "santé"
+  },
+  {
+    "company": "GE Vernova",
+    "ceo": "Scott Strazik",
+    "tag": "énergie"
+  },
+  {
+    "company": "Gen Digital",
+    "ceo": "Vincent Pilette",
+    "tag": "technologie"
+  },
+  {
+    "company": "Generac",
+    "ceo": "Aaron Jagdfeld",
+    "tag": "industrie"
+  },
+  {
+    "company": "General Dynamics",
+    "ceo": "Phebe Novakovic",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "General Mills",
+    "ceo": "Jeff Harmening",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "General Motors",
+    "ceo": "Mary Barra",
+    "tag": "automobile"
+  },
+  {
+    "company": "Genuine Parts Company",
+    "ceo": "Paul Donahue",
+    "tag": "automobile"
+  },
+  {
+    "company": "Gilead Sciences",
+    "ceo": "Daniel O'Day",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "Global Payments",
+    "ceo": "Cameron Bready",
+    "tag": "finance"
+  },
+  {
+    "company": "Globe Life",
+    "ceo": "Frank Svoboda",
+    "tag": "assurance"
+  },
+  {
+    "company": "GoDaddy",
+    "ceo": "Aman Bhutani",
+    "tag": "technologie"
+  },
+  {
+    "company": "Goldman Sachs",
+    "ceo": "David Solomon",
+    "tag": "finance"
+  },
+  {
+    "company": "Halliburton",
+    "ceo": "Jeff Miller",
+    "tag": "énergie"
+  },
+  {
+    "company": "Hartford (The)",
+    "ceo": "Christopher Swift",
+    "tag": "assurance"
+  },
+  {
+    "company": "Hasbro",
+    "ceo": "Chris Cocks",
+    "tag": "médias et divertissement"
+  },
+  {
+    "company": "HCA Healthcare",
+    "ceo": "Samuel Hazen",
+    "tag": "santé"
+  },
+  {
+    "company": "Healthpeak Properties",
+    "ceo": "Scott Brinker",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Henry Schein",
+    "ceo": "Stanley Bergman",
+    "tag": "santé"
+  },
+  {
+    "company": "Hershey Company (The)",
+    "ceo": "Michele Buck",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "Hewlett Packard Enterprise",
+    "ceo": "Antonio Neri",
+    "tag": "technologie"
+  },
+  {
+    "company": "Hilton Worldwide",
+    "ceo": "Chris Nassetta",
+    "tag": "hôtellerie et loisirs"
+  },
+  {
+    "company": "Home Depot (The)",
+    "ceo": "Ted Decker",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Honeywell Aerospace",
+    "ceo": "Jim Currier",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "Honeywell Technologies",
+    "ceo": "Vimal Kapur",
+    "tag": "industrie"
+  },
+  {
+    "company": "Hormel Foods",
+    "ceo": "Jim Snee",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "Host Hotels & Resorts",
+    "ceo": "James Risoleo",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Howmet Aerospace",
+    "ceo": "John Plant",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "HP Inc.",
+    "ceo": "Enrique Lores",
+    "tag": "technologie"
+  },
+  {
+    "company": "Hubbell Incorporated",
+    "ceo": "Gerben Bakker",
+    "tag": "industrie"
+  },
+  {
+    "company": "Humana",
+    "ceo": "Jim Rechtin",
+    "tag": "santé"
+  },
+  {
+    "company": "Huntington Bancshares",
+    "ceo": "Stephen Steinour",
+    "tag": "finance"
+  },
+  {
+    "company": "Huntington Ingalls Industries",
+    "ceo": "Chris Kastner",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "IBM",
+    "ceo": "Arvind Krishna",
+    "tag": "technologie"
+  },
+  {
+    "company": "IDEX Corporation",
+    "ceo": "Eric Ashleman",
+    "tag": "industrie"
+  },
+  {
+    "company": "Idexx Laboratories",
+    "ceo": "Jay Mazelsky",
+    "tag": "santé"
+  },
+  {
+    "company": "Illinois Tool Works",
+    "ceo": "Christopher O'Herlihy",
+    "tag": "industrie"
+  },
+  {
+    "company": "Illumina, Inc.",
+    "ceo": "Jacob Thaysen",
+    "tag": "santé"
+  },
+  {
+    "company": "Incyte",
+    "ceo": "Herve Hoppenot",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "Ingersoll Rand",
+    "ceo": "Vicente Reynal",
+    "tag": "industrie"
+  },
+  {
+    "company": "Insulet Corporation",
+    "ceo": "James Hollingshead",
+    "tag": "santé"
+  },
+  {
+    "company": "Intel",
+    "ceo": "Lip-Bu Tan",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Interactive Brokers",
+    "ceo": "Milan Galik",
+    "tag": "finance"
+  },
+  {
+    "company": "Intercontinental Exchange",
+    "ceo": "Jeffrey Sprecher",
+    "tag": "finance"
+  },
+  {
+    "company": "International Flavors & Fragrances",
+    "ceo": "Erik Fyrwald",
+    "tag": "matériaux"
+  },
+  {
+    "company": "International Paper",
+    "ceo": "Andy Silvernail",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Intuit",
+    "ceo": "Sasan Goodarzi",
+    "tag": "technologie"
+  },
+  {
+    "company": "Intuitive Surgical",
+    "ceo": "David Rosa",
+    "tag": "santé"
+  },
+  {
+    "company": "Invesco",
+    "ceo": "Andrew Schlossberg",
+    "tag": "finance"
+  },
+  {
+    "company": "Invitation Homes",
+    "ceo": "Dallas Tanner",
+    "tag": "immobilier"
+  },
+  {
+    "company": "IQVIA",
+    "ceo": "Ari Bousbib",
+    "tag": "santé"
+  },
+  {
+    "company": "Iron Mountain",
+    "ceo": "William Meaney",
+    "tag": "immobilier"
+  },
+  {
+    "company": "J.B. Hunt",
+    "ceo": "John Roberts",
+    "tag": "transport et logistique"
+  },
+  {
+    "company": "Jabil",
+    "ceo": "Mike Dastoor",
+    "tag": "technologie"
+  },
+  {
+    "company": "Jack Henry & Associates",
+    "ceo": "David Foss",
+    "tag": "technologie"
+  },
+  {
+    "company": "Jacobs Solutions",
+    "ceo": "Bob Pragada",
+    "tag": "industrie"
+  },
+  {
+    "company": "Johnson & Johnson",
+    "ceo": "Joaquin Duato",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "Johnson Controls",
+    "ceo": "Joakim Weidemanis",
+    "tag": "industrie"
+  },
+  {
+    "company": "JPMorgan Chase",
+    "ceo": "Jamie Dimon",
+    "tag": "finance"
+  },
+  {
+    "company": "Kenvue",
+    "ceo": "Kirk Perry",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "Keurig Dr Pepper",
+    "ceo": "Tim Cofer",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "KeyCorp",
+    "ceo": "Chris Gorman",
+    "tag": "finance"
+  },
+  {
+    "company": "Keysight Technologies",
+    "ceo": "Satish Dhanasekaran",
+    "tag": "technologie"
+  },
+  {
+    "company": "Kimberly-Clark",
+    "ceo": "Mike Hsu",
+    "tag": "biens de consommation"
+  },
+  {
+    "company": "Kimco Realty",
+    "ceo": "Conor Flynn",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Kinder Morgan",
+    "ceo": "Kim Dang",
+    "tag": "énergie"
+  },
+  {
+    "company": "KKR & Co.",
+    "ceo": "Scott Nuttall",
+    "tag": "finance"
+  },
+  {
+    "company": "KLA Corporation",
+    "ceo": "Rick Wallace",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Kraft Heinz",
+    "ceo": "Carlos Abrams-Rivera",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "Kroger",
+    "ceo": "Ron Sargent",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "L3Harris",
+    "ceo": "Christopher Kubasik",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "Labcorp",
+    "ceo": "Adam Schechter",
+    "tag": "santé"
+  },
+  {
+    "company": "Lam Research",
+    "ceo": "Tim Archer",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Las Vegas Sands",
+    "ceo": "Robert Goldstein",
+    "tag": "hôtellerie et loisirs"
+  },
+  {
+    "company": "Leidos",
+    "ceo": "Tom Bell",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "Lennar",
+    "ceo": "Stuart Miller",
+    "tag": "construction résidentielle"
+  },
+  {
+    "company": "Lennox International",
+    "ceo": "Alok Maskara",
+    "tag": "industrie"
+  },
+  {
+    "company": "Lilly (Eli)",
+    "ceo": "Dave Ricks",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "Linde plc",
+    "ceo": "Sanjiv Lamba",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Live Nation Entertainment",
+    "ceo": "Michael Rapino",
+    "tag": "médias et divertissement"
+  },
+  {
+    "company": "Lockheed Martin",
+    "ceo": "Jim Taiclet",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "Loews Corporation",
+    "ceo": "James Tisch",
+    "tag": "finance"
+  },
+  {
+    "company": "Lowe's",
+    "ceo": "Marvin Ellison",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Lululemon Athletica",
+    "ceo": "Calvin McDonald",
+    "tag": "biens de consommation"
+  },
+  {
+    "company": "Lumentum",
+    "ceo": "Michael Hurlston",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "LyondellBasell",
+    "ceo": "Peter Vanacker",
+    "tag": "matériaux"
+  },
+  {
+    "company": "M&T Bank",
+    "ceo": "Rene Jones",
+    "tag": "finance"
+  },
+  {
+    "company": "Marathon Petroleum",
+    "ceo": "Maryann Mannen",
+    "tag": "énergie"
+  },
+  {
+    "company": "Marriott International",
+    "ceo": "Anthony Capuano",
+    "tag": "hôtellerie et loisirs"
+  },
+  {
+    "company": "Marsh McLennan",
+    "ceo": "John Doyle",
+    "tag": "assurance"
+  },
+  {
+    "company": "Martin Marietta Materials",
+    "ceo": "Ward Nye",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Marvell Technology",
+    "ceo": "Matt Murphy",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Masco",
+    "ceo": "Keith Allman",
+    "tag": "industrie"
+  },
+  {
+    "company": "Mastercard",
+    "ceo": "Michael Miebach",
+    "tag": "finance"
+  },
+  {
+    "company": "McCormick & Company",
+    "ceo": "Brendan Foley",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "McDonald's",
+    "ceo": "Chris Kempczinski",
+    "tag": "restauration"
+  },
+  {
+    "company": "McKesson",
+    "ceo": "Brian Tyler",
+    "tag": "santé"
+  },
+  {
+    "company": "Medtronic",
+    "ceo": "Geoff Martha",
+    "tag": "santé"
+  },
+  {
+    "company": "Merck & Co.",
+    "ceo": "Robert Davis",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "Meta Platforms",
+    "ceo": "Mark Zuckerberg",
+    "tag": "technologie"
+  },
+  {
+    "company": "MetLife",
+    "ceo": "Michel Khalaf",
+    "tag": "assurance"
+  },
+  {
+    "company": "Mettler Toledo",
+    "ceo": "Patrick Kaltenbach",
+    "tag": "santé"
+  },
+  {
+    "company": "MGM Resorts",
+    "ceo": "William Hornbuckle",
+    "tag": "hôtellerie et loisirs"
+  },
+  {
+    "company": "Microchip Technology",
+    "ceo": "Steve Sanghi",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Micron Technology",
+    "ceo": "Sanjay Mehrotra",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Microsoft",
+    "ceo": "Satya Nadella",
+    "tag": "technologie"
+  },
+  {
+    "company": "Mid-America Apartment Communities",
+    "ceo": "Eric Bolton",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Moderna",
+    "ceo": "Stéphane Bancel",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "Mondelez International",
+    "ceo": "Dirk Van de Put",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "Monolithic Power Systems",
+    "ceo": "Michael Hsing",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Monster Beverage",
+    "ceo": "Rodney Sacks",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "Moody's Corporation",
+    "ceo": "Rob Fauber",
+    "tag": "finance"
+  },
+  {
+    "company": "Morgan Stanley",
+    "ceo": "Ted Pick",
+    "tag": "finance"
+  },
+  {
+    "company": "Mosaic Company (The)",
+    "ceo": "Bruce Bodine",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Motorola Solutions",
+    "ceo": "Greg Brown",
+    "tag": "technologie"
+  },
+  {
+    "company": "MSCI",
+    "ceo": "Henry Fernandez",
+    "tag": "finance"
+  },
+  {
+    "company": "Nasdaq, Inc.",
+    "ceo": "Adena Friedman",
+    "tag": "finance"
+  },
+  {
+    "company": "NetApp",
+    "ceo": "George Kurian",
+    "tag": "technologie"
+  },
+  {
+    "company": "Netflix",
+    "ceo": "Ted Sarandos",
+    "tag": "médias et divertissement"
+  },
+  {
+    "company": "Newmont",
+    "ceo": "Natascha Viljoen",
+    "tag": "mines et métaux"
+  },
+  {
+    "company": "News Corp (Class A)",
+    "ceo": "Robert Thomson",
+    "tag": "médias et divertissement"
+  },
+  {
+    "company": "News Corp (Class B)",
+    "ceo": "Robert Thomson",
+    "tag": "médias et divertissement"
+  },
+  {
+    "company": "NextEra Energy",
+    "ceo": "John Ketchum",
+    "tag": "services publics"
+  },
+  {
+    "company": "Nike, Inc.",
+    "ceo": "Elliott Hill",
+    "tag": "biens de consommation"
+  },
+  {
+    "company": "NiSource",
+    "ceo": "Lloyd Yates",
+    "tag": "services publics"
+  },
+  {
+    "company": "Nordson Corporation",
+    "ceo": "Sundaram Nagarajan",
+    "tag": "industrie"
+  },
+  {
+    "company": "Norfolk Southern",
+    "ceo": "Mark George",
+    "tag": "transport et logistique"
+  },
+  {
+    "company": "Northern Trust",
+    "ceo": "Michael O'Grady",
+    "tag": "finance"
+  },
+  {
+    "company": "Northrop Grumman",
+    "ceo": "Kathy Warden",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "Norwegian Cruise Line Holdings",
+    "ceo": "Harry Sommer",
+    "tag": "hôtellerie et loisirs"
+  },
+  {
+    "company": "NRG Energy",
+    "ceo": "Larry Coben",
+    "tag": "services publics"
+  },
+  {
+    "company": "Nucor",
+    "ceo": "Leon Topalian",
+    "tag": "mines et métaux"
+  },
+  {
+    "company": "Nvidia",
+    "ceo": "Jensen Huang",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "NVR, Inc.",
+    "ceo": "Eugene Brederson",
+    "tag": "construction résidentielle"
+  },
+  {
+    "company": "NXP Semiconductors",
+    "ceo": "Kurt Sievers",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "O'Reilly Automotive",
+    "ceo": "Brad Beckham",
+    "tag": "automobile"
+  },
+  {
+    "company": "Occidental Petroleum",
+    "ceo": "Vicki Hollub",
+    "tag": "énergie"
+  },
+  {
+    "company": "Old Dominion",
+    "ceo": "Robert W. Fisher",
+    "tag": "transport et logistique"
+  },
+  {
+    "company": "Omnicom Group",
+    "ceo": "John Wren",
+    "tag": "médias et divertissement"
+  },
+  {
+    "company": "ON Semiconductor",
+    "ceo": "Hassane El-Khoury",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Oneok",
+    "ceo": "Pierce Norton",
+    "tag": "énergie"
+  },
+  {
+    "company": "Oracle Corporation",
+    "ceo": "Safra Catz",
+    "tag": "technologie"
+  },
+  {
+    "company": "Otis Worldwide",
+    "ceo": "Judy Marks",
+    "tag": "industrie"
+  },
+  {
+    "company": "Paccar",
+    "ceo": "Preston Feight",
+    "tag": "industrie"
+  },
+  {
+    "company": "Packaging Corporation of America",
+    "ceo": "Mark Kowlzan",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Palantir Technologies",
+    "ceo": "Alex Karp",
+    "tag": "technologie"
+  },
+  {
+    "company": "Palo Alto Networks",
+    "ceo": "Nikesh Arora",
+    "tag": "technologie"
+  },
+  {
+    "company": "Parker Hannifin",
+    "ceo": "Jennifer Parmentier",
+    "tag": "industrie"
+  },
+  {
+    "company": "Paychex",
+    "ceo": "John Gibson",
+    "tag": "finance"
+  },
+  {
+    "company": "PayPal",
+    "ceo": "Alex Chriss",
+    "tag": "finance"
+  },
+  {
+    "company": "Pentair",
+    "ceo": "John Stauch",
+    "tag": "industrie"
+  },
+  {
+    "company": "PepsiCo",
+    "ceo": "Ramon Laguarta",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "Pfizer",
+    "ceo": "Albert Bourla",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "PG&E Corporation",
+    "ceo": "Patricia Poppe",
+    "tag": "services publics"
+  },
+  {
+    "company": "Philip Morris International",
+    "ceo": "Jacek Olczak",
+    "tag": "biens de consommation"
+  },
+  {
+    "company": "Phillips 66",
+    "ceo": "Mark Lashier",
+    "tag": "énergie"
+  },
+  {
+    "company": "Pinnacle West Capital",
+    "ceo": "Ted Geisler",
+    "tag": "services publics"
+  },
+  {
+    "company": "PNC Financial Services",
+    "ceo": "William Demchak",
+    "tag": "finance"
+  },
+  {
+    "company": "PPG Industries",
+    "ceo": "Tim Knavish",
+    "tag": "matériaux"
+  },
+  {
+    "company": "PPL Corporation",
+    "ceo": "Vincent Sorgi",
+    "tag": "services publics"
+  },
+  {
+    "company": "Principal Financial Group",
+    "ceo": "Deanna Strable",
+    "tag": "assurance"
+  },
+  {
+    "company": "Procter & Gamble",
+    "ceo": "Jon Moeller",
+    "tag": "biens de consommation"
+  },
+  {
+    "company": "Progressive Corporation",
+    "ceo": "Tricia Griffith",
+    "tag": "assurance"
+  },
+  {
+    "company": "Prologis",
+    "ceo": "Hamid Moghadam",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Prudential Financial",
+    "ceo": "Charles Lowrey",
+    "tag": "assurance"
+  },
+  {
+    "company": "Public Service Enterprise Group",
+    "ceo": "Ralph LaRossa",
+    "tag": "services publics"
+  },
+  {
+    "company": "PTC Inc.",
+    "ceo": "Neil Barua",
+    "tag": "technologie"
+  },
+  {
+    "company": "Public Storage",
+    "ceo": "Joseph Russell",
+    "tag": "immobilier"
+  },
+  {
+    "company": "PulteGroup",
+    "ceo": "Ryan Marshall",
+    "tag": "construction résidentielle"
+  },
+  {
+    "company": "Quanta Services",
+    "ceo": "Duke Austin",
+    "tag": "industrie"
+  },
+  {
+    "company": "Qualcomm",
+    "ceo": "Cristiano Amon",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Quest Diagnostics",
+    "ceo": "Jim Davis",
+    "tag": "santé"
+  },
+  {
+    "company": "Qnity Electronics",
+    "ceo": "Ed Breen",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Ralph Lauren Corporation",
+    "ceo": "Patrice Louvet",
+    "tag": "biens de consommation"
+  },
+  {
+    "company": "Raymond James Financial",
+    "ceo": "Paul Reilly",
+    "tag": "finance"
+  },
+  {
+    "company": "Reddit",
+    "ceo": "Steve Huffman",
+    "tag": "technologie"
+  },
+  {
+    "company": "RTX Corporation",
+    "ceo": "Chris Calio",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "Realty Income",
+    "ceo": "Sumit Roy",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Regency Centers",
+    "ceo": "Lisa Palmer",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Regeneron Pharmaceuticals",
+    "ceo": "Leonard Schleifer",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "Regions Financial Corporation",
+    "ceo": "John Turner",
+    "tag": "finance"
+  },
+  {
+    "company": "Republic Services",
+    "ceo": "Jon Vander Ark",
+    "tag": "services publics"
+  },
+  {
+    "company": "ResMed",
+    "ceo": "Michael Farrell",
+    "tag": "santé"
+  },
+  {
+    "company": "Revvity",
+    "ceo": "Dirk Bontridder",
+    "tag": "santé"
+  },
+  {
+    "company": "Robinhood Markets",
+    "ceo": "Vlad Tenev",
+    "tag": "finance"
+  },
+  {
+    "company": "Rockwell Automation",
+    "ceo": "Blake Moret",
+    "tag": "industrie"
+  },
+  {
+    "company": "Rollins, Inc.",
+    "ceo": "Jerry Rollins",
+    "tag": "industrie"
+  },
+  {
+    "company": "Roper Technologies",
+    "ceo": "Laurence Neilson",
+    "tag": "technologie"
+  },
+  {
+    "company": "Ross Stores",
+    "ceo": "Barbara Rentler",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Royal Caribbean Group",
+    "ceo": "Jason Liberty",
+    "tag": "hôtellerie et loisirs"
+  },
+  {
+    "company": "S&P Global",
+    "ceo": "Martina Cheung",
+    "tag": "finance"
+  },
+  {
+    "company": "Salesforce",
+    "ceo": "Marc Benioff",
+    "tag": "technologie"
+  },
+  {
+    "company": "Sandisk",
+    "ceo": "David Goeckeler",
+    "tag": "technologie"
+  },
+  {
+    "company": "SBA Communications",
+    "ceo": "Brendan Cavanagh",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Schlumberger",
+    "ceo": "Olivier Le Peuch",
+    "tag": "énergie"
+  },
+  {
+    "company": "Seagate Technology",
+    "ceo": "Dave Mosley",
+    "tag": "technologie"
+  },
+  {
+    "company": "Sempra",
+    "ceo": "Jeffrey Martin",
+    "tag": "services publics"
+  },
+  {
+    "company": "ServiceNow",
+    "ceo": "Bill McDermott",
+    "tag": "technologie"
+  },
+  {
+    "company": "Sherwin-Williams",
+    "ceo": "Heidi Petz",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Simon Property Group",
+    "ceo": "David Simon",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Skydance Corporation",
+    "ceo": "David Ellison",
+    "tag": "médias et divertissement"
+  },
+  {
+    "company": "Skyworks Solutions",
+    "ceo": "Philip Brace",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "J.M. Smucker Company (The)",
+    "ceo": "Mark Smucker",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "Smurfit Westrock",
+    "ceo": "Tony Smurfit",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Snap-on",
+    "ceo": "Nick Pinchuk",
+    "tag": "industrie"
+  },
+  {
+    "company": "Solventum",
+    "ceo": "Bryan Hanson",
+    "tag": "santé"
+  },
+  {
+    "company": "Southern Company",
+    "ceo": "Chris Womack",
+    "tag": "services publics"
+  },
+  {
+    "company": "Southwest Airlines",
+    "ceo": "Bob Jordan",
+    "tag": "transport et logistique"
+  },
+  {
+    "company": "Stanley Black & Decker",
+    "ceo": "Christopher Nelson",
+    "tag": "industrie"
+  },
+  {
+    "company": "Starbucks",
+    "ceo": "Brian Niccol",
+    "tag": "restauration"
+  },
+  {
+    "company": "State Street Corporation",
+    "ceo": "Ronald O'Hanley",
+    "tag": "finance"
+  },
+  {
+    "company": "Steel Dynamics",
+    "ceo": "Mark Millett",
+    "tag": "mines et métaux"
+  },
+  {
+    "company": "Steris",
+    "ceo": "Dan O'Boyle",
+    "tag": "santé"
+  },
+  {
+    "company": "Stryker Corporation",
+    "ceo": "Kevin Lobo",
+    "tag": "santé"
+  },
+  {
+    "company": "Supermicro",
+    "ceo": "Charles Liang",
+    "tag": "technologie"
+  },
+  {
+    "company": "Synchrony Financial",
+    "ceo": "Brian Doubles",
+    "tag": "finance"
+  },
+  {
+    "company": "Synopsys",
+    "ceo": "Sassine Ghazi",
+    "tag": "technologie"
+  },
+  {
+    "company": "Sysco",
+    "ceo": "Kevin Hourican",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "T-Mobile US",
+    "ceo": "Mike Sievert",
+    "tag": "télécommunications"
+  },
+  {
+    "company": "T. Rowe Price",
+    "ceo": "Rob Sharps",
+    "tag": "finance"
+  },
+  {
+    "company": "Take-Two Interactive",
+    "ceo": "Strauss Zelnick",
+    "tag": "médias et divertissement"
+  },
+  {
+    "company": "Tapestry, Inc.",
+    "ceo": "Joanne Crevoiserat",
+    "tag": "biens de consommation"
+  },
+  {
+    "company": "Targa Resources",
+    "ceo": "Matt Meloy",
+    "tag": "énergie"
+  },
+  {
+    "company": "Target Corporation",
+    "ceo": "Brian Cornell",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "TE Connectivity",
+    "ceo": "Terrence Curtin",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Teledyne Technologies",
+    "ceo": "Robert Mehrabian",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "Teradyne",
+    "ceo": "Greg Smith",
+    "tag": "technologie"
+  },
+  {
+    "company": "Tesla, Inc.",
+    "ceo": "Elon Musk",
+    "tag": "automobile"
+  },
+  {
+    "company": "Texas Instruments",
+    "ceo": "Haviv Ilan",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Texas Pacific Land Corporation",
+    "ceo": "Ty Gasperson",
+    "tag": "énergie"
+  },
+  {
+    "company": "Textron",
+    "ceo": "Scott Donnelly",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "Thermo Fisher Scientific",
+    "ceo": "Marc Casper",
+    "tag": "santé"
+  },
+  {
+    "company": "TJX Companies",
+    "ceo": "Ernie Herrman",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "TKO Group Holdings",
+    "ceo": "Ariel Emanuel",
+    "tag": "médias et divertissement"
+  },
+  {
+    "company": "Tractor Supply",
+    "ceo": "Hal Lawton",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Trane Technologies",
+    "ceo": "Dave Regnery",
+    "tag": "industrie"
+  },
+  {
+    "company": "TransDigm Group",
+    "ceo": "Michael Lisman",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "Travelers Companies (The)",
+    "ceo": "Alan Schnitzer",
+    "tag": "assurance"
+  },
+  {
+    "company": "Trimble Inc.",
+    "ceo": "Rob Painter",
+    "tag": "technologie"
+  },
+  {
+    "company": "Truist Financial",
+    "ceo": "William Rogers",
+    "tag": "finance"
+  },
+  {
+    "company": "Twilio",
+    "ceo": "Khozema Shipchandler",
+    "tag": "technologie"
+  },
+  {
+    "company": "Tyler Technologies",
+    "ceo": "Lynn Moore",
+    "tag": "technologie"
+  },
+  {
+    "company": "Tyson Foods",
+    "ceo": "Donnie King",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "U.S. Bancorp",
+    "ceo": "Gunjan Kedia",
+    "tag": "finance"
+  },
+  {
+    "company": "Uber",
+    "ceo": "Dara Khosrowshahi",
+    "tag": "technologie"
+  },
+  {
+    "company": "UDR, Inc.",
+    "ceo": "Tom Toomey",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Ulta Beauty",
+    "ceo": "Kecia Steelman",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Union Pacific Corporation",
+    "ceo": "Jim Vena",
+    "tag": "transport et logistique"
+  },
+  {
+    "company": "United Airlines Holdings",
+    "ceo": "Scott Kirby",
+    "tag": "transport et logistique"
+  },
+  {
+    "company": "United Parcel Service",
+    "ceo": "Carol Tome",
+    "tag": "transport et logistique"
+  },
+  {
+    "company": "United Rentals",
+    "ceo": "Matthew Flannery",
+    "tag": "industrie"
+  },
+  {
+    "company": "UnitedHealth Group",
+    "ceo": "Andrew Witty",
+    "tag": "santé"
+  },
+  {
+    "company": "Universal Health Services",
+    "ceo": "Marc Miller",
+    "tag": "santé"
+  },
+  {
+    "company": "Valero Energy",
+    "ceo": "Lane Riggs",
+    "tag": "énergie"
+  },
+  {
+    "company": "Veeva Systems",
+    "ceo": "Peter Gassner",
+    "tag": "santé"
+  },
+  {
+    "company": "Ventas",
+    "ceo": "Debra Cafaro",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Veralto",
+    "ceo": "Jennifer Honeycutt",
+    "tag": "industrie"
+  },
+  {
+    "company": "Verisign",
+    "ceo": "Jim Bidzos",
+    "tag": "technologie"
+  },
+  {
+    "company": "Verisk Analytics",
+    "ceo": "Lee Shavel",
+    "tag": "finance"
+  },
+  {
+    "company": "Verizon",
+    "ceo": "Hans Vestberg",
+    "tag": "télécommunications"
+  },
+  {
+    "company": "Vertex Pharmaceuticals",
+    "ceo": "Reshma Kewalramani",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "Vertiv",
+    "ceo": "Giordano Albertazzi",
+    "tag": "industrie"
+  },
+  {
+    "company": "Viatris",
+    "ceo": "Scott Smith",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "Vici Properties",
+    "ceo": "Edward Pitoniak",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Visa Inc.",
+    "ceo": "Ryan McInerney",
+    "tag": "finance"
+  },
+  {
+    "company": "Vistra Corp.",
+    "ceo": "Jim Burke",
+    "tag": "services publics"
+  },
+  {
+    "company": "Vivmark Residential",
+    "ceo": "Tim Naughton",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Vulcan Materials Company",
+    "ceo": "Tom Hill",
+    "tag": "matériaux"
+  },
+  {
+    "company": "W. R. Berkley Corporation",
+    "ceo": "Rob Berkley",
+    "tag": "assurance"
+  },
+  {
+    "company": "W. W. Grainger",
+    "ceo": "D.G. Macpherson",
+    "tag": "industrie"
+  },
+  {
+    "company": "Wabtec",
+    "ceo": "Rafael Santana",
+    "tag": "industrie"
+  },
+  {
+    "company": "Walmart",
+    "ceo": "Doug McMillon",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Walt Disney Company (The)",
+    "ceo": "Bob Iger",
+    "tag": "médias et divertissement"
+  },
+  {
+    "company": "Waste Management",
+    "ceo": "Jim Fish",
+    "tag": "services publics"
+  },
+  {
+    "company": "Waters Corporation",
+    "ceo": "Udit Batra",
+    "tag": "santé"
+  },
+  {
+    "company": "WEC Energy Group",
+    "ceo": "Scott Lauber",
+    "tag": "services publics"
+  },
+  {
+    "company": "Wells Fargo",
+    "ceo": "Charlie Scharf",
+    "tag": "finance"
+  },
+  {
+    "company": "Welltower",
+    "ceo": "Shankh Mitra",
+    "tag": "immobilier"
+  },
+  {
+    "company": "West Pharmaceutical Services",
+    "ceo": "Eric Green",
+    "tag": "santé"
+  },
+  {
+    "company": "Western Digital",
+    "ceo": "Irving Tan",
+    "tag": "technologie"
+  },
+  {
+    "company": "Weyerhaeuser",
+    "ceo": "Devin Stockfish",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Williams-Sonoma, Inc.",
+    "ceo": "Laura Alber",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Williams Companies",
+    "ceo": "Chad Zamarin",
+    "tag": "énergie"
+  },
+  {
+    "company": "Willis Towers Watson",
+    "ceo": "Carl Hess",
+    "tag": "assurance"
+  },
+  {
+    "company": "Workday, Inc.",
+    "ceo": "Carl Eschenbach",
+    "tag": "technologie"
+  },
+  {
+    "company": "Wynn Resorts",
+    "ceo": "Craig Billings",
+    "tag": "hôtellerie et loisirs"
+  },
+  {
+    "company": "Xcel Energy",
+    "ceo": "Bob Frenzel",
+    "tag": "services publics"
+  },
+  {
+    "company": "Xylem Inc.",
+    "ceo": "Matthew Pine",
+    "tag": "industrie"
+  },
+  {
+    "company": "Yum! Brands",
+    "ceo": "David Gibbs",
+    "tag": "restauration"
+  },
+  {
+    "company": "Zebra Technologies",
+    "ceo": "Bill Burns",
+    "tag": "technologie"
+  },
+  {
+    "company": "Zimmer Biomet",
+    "ceo": "Ivan Tornos",
+    "tag": "santé"
+  },
+  {
+    "company": "Zoetis",
+    "ceo": "Kristin Peck",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "Alnylam Pharmaceuticals",
+    "ceo": "Yvonne Greenstreet",
+    "tag": "pharmaceutique"
+  },
+  {
+    "company": "Arm Holdings",
+    "ceo": "Rene Haas",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "ASML Holding",
+    "ceo": "Christophe Fouquet",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Astera Labs",
+    "ceo": "Jitendra Mohan",
+    "tag": "semi-conducteurs"
+  },
+  {
+    "company": "Coca-Cola Europacific Partners",
+    "ceo": "Damian Gammell",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "CoreWeave",
+    "ceo": "Michael Intrator",
+    "tag": "technologie"
+  },
+  {
+    "company": "Ferrovial",
+    "ceo": "Ignacio Madridejos",
+    "tag": "industrie"
+  },
+  {
+    "company": "Mercado Libre",
+    "ceo": "Marcos Galperin",
+    "tag": "technologie"
+  },
+  {
+    "company": "MicroStrategy",
+    "ceo": "Phong Le",
+    "tag": "finance"
+  },
+  {
+    "company": "Nebius Group",
+    "ceo": "Arkady Volozh",
+    "tag": "technologie"
+  },
+  {
+    "company": "PDD Holdings",
+    "ceo": "Lei Chen",
+    "tag": "technologie"
+  },
+  {
+    "company": "Rocket Lab",
+    "ceo": "Peter Beck",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "Shopify",
+    "ceo": "Tobias Lutke",
+    "tag": "technologie"
+  },
+  {
+    "company": "Thomson Reuters",
+    "ceo": "Steve Hasker",
+    "tag": "finance"
+  },
+  {
+    "company": "Agnico Eagle Mines Limited",
+    "ceo": "Ammar Al-Joundi",
+    "tag": "mines et métaux"
+  },
+  {
+    "company": "Alimentation Couche-Tard Inc.",
+    "ceo": "Alex Miller",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Bank of Montreal",
+    "ceo": "Darryl White",
+    "tag": "finance"
+  },
+  {
+    "company": "Bank of Nova Scotia",
+    "ceo": "Scott Thomson",
+    "tag": "finance"
+  },
+  {
+    "company": "Barrick Mining Corporation",
+    "ceo": "Mark Bristow",
+    "tag": "mines et métaux"
+  },
+  {
+    "company": "BCE Inc.",
+    "ceo": "Mirko Bibic",
+    "tag": "télécommunications"
+  },
+  {
+    "company": "Brookfield Asset Management Ltd.",
+    "ceo": "Bruce Flatt",
+    "tag": "finance"
+  },
+  {
+    "company": "Brookfield Corporation",
+    "ceo": "Bruce Flatt",
+    "tag": "finance"
+  },
+  {
+    "company": "Brookfield Infrastructure Partners L.P.",
+    "ceo": "Sam Pollock",
+    "tag": "immobilier"
+  },
+  {
+    "company": "CAE Inc.",
+    "ceo": "Marc Parent",
+    "tag": "aérospatiale et défense"
+  },
+  {
+    "company": "Cameco Corporation",
+    "ceo": "Tim Gitzel",
+    "tag": "énergie"
+  },
+  {
+    "company": "Canadian Imperial Bank of Commerce",
+    "ceo": "Victor Dodig",
+    "tag": "finance"
+  },
+  {
+    "company": "Canadian National Railway Company",
+    "ceo": "Tracy Robinson",
+    "tag": "transport et logistique"
+  },
+  {
+    "company": "Canadian Natural Resources Limited",
+    "ceo": "Scott Stauth",
+    "tag": "énergie"
+  },
+  {
+    "company": "Canadian Pacific Kansas City Limited",
+    "ceo": "Keith Creel",
+    "tag": "transport et logistique"
+  },
+  {
+    "company": "Canadian Tire Corporation Limited",
+    "ceo": "Greg Hicks",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "CCL Industries Inc.",
+    "ceo": "Geoffrey Martin",
+    "tag": "industrie"
+  },
+  {
+    "company": "Celestica Inc.",
+    "ceo": "Rob Mionis",
+    "tag": "technologie"
+  },
+  {
+    "company": "Cenovus Energy Inc.",
+    "ceo": "Jonathan McKenzie",
+    "tag": "énergie"
+  },
+  {
+    "company": "CGI Inc.",
+    "ceo": "George Schindler",
+    "tag": "technologie"
+  },
+  {
+    "company": "Constellation Software Inc.",
+    "ceo": "Mark Leonard",
+    "tag": "technologie"
+  },
+  {
+    "company": "Dollarama Inc.",
+    "ceo": "Neil Rossy",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Emera Incorporated",
+    "ceo": "Scott Balfour",
+    "tag": "services publics"
+  },
+  {
+    "company": "Enbridge Inc.",
+    "ceo": "Greg Ebel",
+    "tag": "énergie"
+  },
+  {
+    "company": "Fairfax Financial Holdings Limited",
+    "ceo": "Prem Watsa",
+    "tag": "assurance"
+  },
+  {
+    "company": "First Quantum Minerals Ltd.",
+    "ceo": "Tristan Pascall",
+    "tag": "mines et métaux"
+  },
+  {
+    "company": "FirstService Corporation",
+    "ceo": "Scott Patterson",
+    "tag": "immobilier"
+  },
+  {
+    "company": "Fortis Inc.",
+    "ceo": "David Hutchens",
+    "tag": "services publics"
+  },
+  {
+    "company": "Franco-Nevada Corporation",
+    "ceo": "Paul Brink",
+    "tag": "mines et métaux"
+  },
+  {
+    "company": "George Weston Limited",
+    "ceo": "Galyn Weston",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Gildan Activewear Inc.",
+    "ceo": "Glenn Chamandy",
+    "tag": "biens de consommation"
+  },
+  {
+    "company": "Hydro One Limited",
+    "ceo": "David Lebeter",
+    "tag": "services publics"
+  },
+  {
+    "company": "Imperial Oil Limited",
+    "ceo": "Brad Corson",
+    "tag": "énergie"
+  },
+  {
+    "company": "Intact Financial Corporation",
+    "ceo": "Charles Brindamour",
+    "tag": "assurance"
+  },
+  {
+    "company": "Kinross Gold Corporation",
+    "ceo": "J. Paul Rollinson",
+    "tag": "mines et métaux"
+  },
+  {
+    "company": "Loblaw Companies Limited",
+    "ceo": "Per Bank",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Magna International Inc.",
+    "ceo": "Swamy Kotagiri",
+    "tag": "industrie"
+  },
+  {
+    "company": "Manulife Financial Corporation",
+    "ceo": "Roy Gori",
+    "tag": "assurance"
+  },
+  {
+    "company": "Metro Inc.",
+    "ceo": "Eric La Fleche",
+    "tag": "commerce de détail"
+  },
+  {
+    "company": "Nutrien Ltd.",
+    "ceo": "Ken Seitz",
+    "tag": "matériaux"
+  },
+  {
+    "company": "Open Text Corporation",
+    "ceo": "Mark Barrenechea",
+    "tag": "technologie"
+  },
+  {
+    "company": "Pembina Pipeline Corporation",
+    "ceo": "Scott Burrows",
+    "tag": "énergie"
+  },
+  {
+    "company": "Power Corporation of Canada",
+    "ceo": "Jeffrey Orr",
+    "tag": "finance"
+  },
+  {
+    "company": "Restaurant Brands International Inc.",
+    "ceo": "Joshua Kobza",
+    "tag": "restauration"
+  },
+  {
+    "company": "Rogers Communications Inc.",
+    "ceo": "Tony Staffieri",
+    "tag": "télécommunications"
+  },
+  {
+    "company": "Royal Bank of Canada",
+    "ceo": "Dave McKay",
+    "tag": "finance"
+  },
+  {
+    "company": "Saputo Inc.",
+    "ceo": "Lino Saputo",
+    "tag": "alimentation et boissons"
+  },
+  {
+    "company": "Shopify Inc.",
+    "ceo": "Tobias Lutke",
+    "tag": "technologie"
+  },
+  {
+    "company": "Sun Life Financial Inc.",
+    "ceo": "Kevin Strain",
+    "tag": "assurance"
+  },
+  {
+    "company": "Suncor Energy Inc.",
+    "ceo": "Rich Kruger",
+    "tag": "énergie"
+  },
+  {
+    "company": "TC Energy Corporation",
+    "ceo": "François Poirier",
+    "tag": "énergie"
+  },
+  {
+    "company": "Teck Resources Limited",
+    "ceo": "Jonathan Price",
+    "tag": "mines et métaux"
+  },
+  {
+    "company": "Telus Corporation",
+    "ceo": "Darren Entwistle",
+    "tag": "télécommunications"
+  },
+  {
+    "company": "Thomson Reuters Corporation",
+    "ceo": "Steve Hasker",
+    "tag": "finance"
+  },
+  {
+    "company": "Toronto-Dominion Bank",
+    "ceo": "Bharat Masrani",
+    "tag": "finance"
+  },
+  {
+    "company": "Tourmaline Oil Corp.",
+    "ceo": "Michael Rose",
+    "tag": "énergie"
+  },
+  {
+    "company": "Waste Connections Inc.",
+    "ceo": "Ron Mittelstaedt",
+    "tag": "services publics"
+  },
+  {
+    "company": "Wheaton Precious Metals Corp.",
+    "ceo": "Randy Smallwood",
+    "tag": "mines et métaux"
+  },
+  {
+    "company": "WSP Global Inc.",
+    "ceo": "Alexandre L’Heureux",
+    "tag": "industrie"
+  },
+  {
+    "company": "Bitcoin",
+    "ceo": "Satoshi Nakamoto",
+    "tag": "cryptomonnaie"
+  },
+  {
+    "company": "Ethereum",
+    "ceo": "Vitalik Buterin",
+    "tag": "cryptomonnaie"
+  },
+  {
+    "company": "Solana",
+    "ceo": "Anatoly Yakovenko",
+    "tag": "cryptomonnaie"
+  },
+  {
+    "company": "BNB",
+    "ceo": "Changpeng Zhao",
+    "tag": "cryptomonnaie"
+  },
+  {
+    "company": "XRP",
+    "ceo": "Brad Garlinghouse",
+    "tag": "cryptomonnaie"
+  },
+  {
+    "company": "Cardano",
+    "ceo": "Charles Hoskinson",
+    "tag": "cryptomonnaie"
+  },
+  {
+    "company": "Avalanche",
+    "ceo": "Emin Gun Sirer",
+    "tag": "cryptomonnaie"
+  },
+  {
+    "company": "Chainlink",
+    "ceo": "Sergey Nazarov",
+    "tag": "cryptomonnaie"
+  },
+  {
+    "company": "Litecoin",
+    "ceo": "Charlie Lee",
+    "tag": "cryptomonnaie"
+  },
+  {
+    "company": "Dogecoin",
+    "ceo": "Billy Markus",
+    "tag": "cryptomonnaie"
+  },
+  {
+    "company": "Shiba Inu",
+    "ceo": "Ryoshi",
+    "tag": "cryptomonnaie"
+  },
+  {
+    "company": "Tether",
+    "ceo": "Paolo Ardoino",
+    "tag": "cryptomonnaie"
+  }
+]

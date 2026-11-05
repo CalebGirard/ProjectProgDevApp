@@ -65,6 +65,21 @@ class random_eventer():
         with (data_directory / "company_ceos.json").open("r", encoding = "utf-8") as company_file:
             self.companies = json.load(company_file)
 
+        if isinstance(self.companies, list):
+            self.company_records = {
+                record["company"]: record
+                for record in self.companies
+            }
+            self.companies = {
+                record["company"]: record["ceo"]
+                for record in self.companies
+            }
+        else:
+            self.company_records = {
+                company: {"company": company, "ceo": ceo, "tag": None}
+                for company, ceo in self.companies.items()
+            }
+
         with (data_directory / "regions.json").open("r", encoding = "utf-8") as region_file:
             region_data = json.load(region_file)
 
@@ -203,6 +218,17 @@ class random_eventer():
             selected_values["subdivision"] = subdivision
 
         for variable_name in placeholders:
+            if variable_name == "company_tag":
+                if "company" not in selected_values:
+                    company = weighted_choice(self.variable_weights["company"])
+                    self.rebalance_variable("company", company)
+                    selected_values["company"] = company
+
+                selected_values["company_tag"] = self.company_records[
+                    selected_values["company"]
+                ].get("tag")
+                continue
+
             if variable_name == "capital":
                 if "country" in selected_values:
                     selected_values["capital"] = self.country_capitals[
@@ -247,6 +273,12 @@ class random_eventer():
                 continue
 
             if variable_name == "company" and "company" in selected_values:
+                continue
+
+            if variable_name == "country" and "country" in selected_values:
+                continue
+
+            if variable_name == "subdivision" and "subdivision" in selected_values:
                 continue
 
             if variable_name not in self.variable_weights:
@@ -325,9 +357,24 @@ class random_eventer():
             ]
 
         if event["scope"] == "major":
+            company = event["variables"].get("company")
+            company_tag = event["variables"].get("company_tag")
+
+            if company is not None and company_tag is not None:
+                return [
+                    stock for stock in stocks.values()
+                    if company_tag in getattr(stock, "tags", [])
+                    or getattr(stock, "tag", None) == company_tag
+                ]
+
             target_tag = event["target_tag"]
 
-            return [stock for stock in stocks.values() if target_tag in stock.tags]
+            if target_tag is not None:
+                return [
+                    stock for stock in stocks.values()
+                    if target_tag in getattr(stock, "tags", [])
+                    or getattr(stock, "tag", None) == target_tag
+                ]
 
         return list(stocks.values())
 
