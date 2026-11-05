@@ -66,7 +66,8 @@ class Stock:
 
 class Market:
     def __init__(self, size, impact=10):
-        self.stocks = self.create_stocks(size, impact)  # dictionnary of stocks
+        self.size = size
+        self.stocks = self.create_stocks(self.size, impact)  # dictionnary of stocks
 
     def create_stocks(self, size, impact):
         with open("./market/stocks.json", "r") as f:
