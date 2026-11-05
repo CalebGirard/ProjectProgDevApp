@@ -323,17 +323,11 @@ class MarketView(ctk.CTkFrame):
 
     def bottom_tabs_builder(self):
         # Scrollable events feed
-        news_box = ctk.CTkTextbox(
+        self.news_box = ctk.CTkTextbox(
             self, fg_color="#121418", text_color="#eaecef", font=("Consolas", 11)
         )
-        news_box.grid(row=2, column=0, sticky="nsew", padx=(6, 3), pady=(3, 6))
-        news_box.insert(
-            "end", "[10:14:02] EVENT: Tech sector rally pushes AAPL past resistance.\n"
-        )
-        news_box.insert(
-            "end", "[10:11:45] BREAKING: Central Bank holds rates steady.\n"
-        )
-        news_box.configure(state="disabled")
+        self.news_box.grid(row=2, column=0, sticky="nsew", padx=(6, 3), pady=(3, 6))
+        self.news_box.configure(state="disabled")
 
     def refresh(self):
         self.price_label.configure(text=f"${self.current_stock.price:.2f}")
@@ -341,6 +335,27 @@ class MarketView(ctk.CTkFrame):
             text=f"Last move: {_latest_change_pct(self.current_stock):+.2f}%  |  Market cap: ${number_formatter(self.current_stock.market_cap)} {self.current_stock.currency}"
         )
         self._refresh_market_pulse()
+
+        next_event = self.engine.database.get("next_event")
+        if getattr(self.engine, "hosting", False) and self.engine.eventer.event_list:
+            event = self.engine.eventer.event_list[0]
+            next_event = {
+                "headline": event["headline"],
+                "scope": event["scope"],
+                "play_probability": event["play_probability"]
+            }
+
+        self.news_box.configure(state="normal")
+        self.news_box.delete("1.0", "end")
+        if next_event:
+            self.news_box.insert(
+                "end",
+                f"{next_event['scope'].upper()} - "
+                f"{next_event['headline']}\n"
+            )
+        else:
+            self.news_box.insert("end", "No event is queued yet.\n")
+        self.news_box.configure(state="disabled")
 
         # Refresh le graphique
         self.ax.clear()

@@ -14,7 +14,7 @@ class Engine:
         self.database.set("messages",[])
         self.hosting = True
         self.market = Market(200)
-        self.eventer = random_eventer(chaos = 1.0)
+        self.eventer = random_eventer(chaos = 1.0, market = self.market)
         self.iteration = 0
         self.userbase = userbase(500, 0.1)
         self.userbase.build_T1s()
@@ -28,7 +28,7 @@ class Engine:
         self.database.set("messages",[])
         self.hosting = True
         self.market = Market(200)
-        self.eventer = random_eventer(chaos = 1.0)
+        self.eventer = random_eventer(chaos = 1.0, market = self.market)
         self.iteration = 0
         self.userbase = userbase(500, 0.1)
         self.userbase.build_T1s()
@@ -59,10 +59,19 @@ class Engine:
         if self.hosting:
             self.iteration += 1
 
-            #played_event = self.eventer.update(current_iteration = self.iteration, check_interval = 10, market = self.market)
+            played_event = self.eventer.update(
+                current_iteration = self.iteration,
+                check_interval = 10,
+                market = self.market
+            )
 
-            #if played_event is not None:
-            #    self.database.broadcast(played_event["headline"])
+            if self.eventer.event_list:
+                next_event = self.eventer.event_list[0]
+                self.database.set("next_event", {
+                    "headline": next_event["headline"],
+                    "scope": next_event["scope"],
+                    "play_probability": next_event["play_probability"]
+                })
             
             self.market.update()
             prices = {t: s.price for t, s in self.market.stocks.items()}
