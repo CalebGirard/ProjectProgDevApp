@@ -222,23 +222,22 @@ class Roulette(ctk.CTkFrame):
         if self.spinning:
             return
 
-        # Sécurisation de la saisie du pari
         try:
             self.current_bet = int(self.bet_entry.get())
         except ValueError:
-            self.lbl_result.configure(text="Entrez un montant valide !", text_color="orange")
+            self.lbl_result.configure(text="Enter valid bet !", text_color="orange")
             return
 
-        # Récupération du cash actuel
         current_cash = self.engine.database.getPath(f'cash:{self.engine.username}')
         
         if self.current_bet > current_cash:
-            self.lbl_result.configure(text="Fonds insuffisants !", text_color="orange")
+            self.lbl_result.configure(text="Not enought money !", text_color="orange")
             return
 
-        # Soustraction de la mise du solde
         new_cash = current_cash - self.current_bet
         self.engine.database.setPath(f'cash:{self.engine.username}', new_cash)
+        print(self.engine.database.getPath(f'cash:{self.engine.username}'))
+
 
         self.spinning = True
         self.lbl_result.configure(text="")
@@ -265,7 +264,6 @@ class Roulette(ctk.CTkFrame):
             self.update_wheel_image(self.angle_actuel % 360)
             self.after(15, self.animer_etape)
         else:
-            # Fin de l'animation : on cale l'image pile sur la case gagnante
             winning_index = next(i for i, (col, num) in enumerate(self.roulette_wheel) if num == self.winning_number and col == self.winning_color)
             degrees_per_pocket = 360 / len(self.roulette_wheel)
             
@@ -281,11 +279,19 @@ class Roulette(ctk.CTkFrame):
 
         # Vérification si le joueur a gagné (comparaison avec la valeur de la StringVar)
         if color == self.color_var.get():
-            player_prize = self.engine.database.getPath(f'cash:{self.engine.username}')
-            # Gain x2 sur une couleur
-            winnings = self.current_bet * 2
-            player_prize += winnings
-            self.engine.database.setPath(f'cash:{self.engine.username}', player_prize)
+            if color == "green":
+                player_prize = self.engine.database.getPath(f'cash:{self.engine.username}')
+                winnings = self.current_bet * 36
+                player_prize += winnings
+                self.engine.database.setPath(f'cash:{self.engine.username}', player_prize)
+                print(self.engine.database.getPath(f'cash:{self.engine.username}', player_prize))
+            else:
+                player_prize = self.engine.database.getPath(f'cash:{self.engine.username}')
+                winnings = self.current_bet * 2
+                player_prize += winnings
+                self.engine.database.setPath(f'cash:{self.engine.username}')
+                print(self.engine.database.getPath(f'cash:{self.engine.username}'))
+
 
         self.spinning = False
 
