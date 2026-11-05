@@ -2,6 +2,7 @@ import customtkinter as ctk
 import tkinter as tk
 from PIL import Image
 import random
+from assets import Assets
 
 class CasinoView(ctk.CTkFrame) :
     def __init__(self, master, controller, engine):
@@ -9,6 +10,7 @@ class CasinoView(ctk.CTkFrame) :
         self.controller = controller
         self.casino_frames = {}
         self.create_selecter()
+        self.assets = Assets("Assets")
 
     def create_selecter(self):
         self.container_casino = ctk.CTkFrame(self, fg_color="#0b0e11")
@@ -49,11 +51,11 @@ class CasinoView(ctk.CTkFrame) :
 
         try: 
             wheel_pic = ctk.CTkImage(
-                dark_image=Image.open("Assets/Casino/roulette.png"),
+                dark_image=Image.open(self.assets.getAssetPath("roulette.png")),
                 size=(180, 180),
             )
             slot_pic = ctk.CTkImage(
-                dark_image=Image.open("Assets/Casino/SlotMachine.png"),
+                dark_image=Image.open(self.assets.getAssetPath("SlotMachine.png")),
                 size=(180, 180),
             )
         except:
@@ -143,13 +145,13 @@ class SlotMachine(ctk.CTkFrame):
         self.machine_running = False
         self.curr = 1
         self.back_callback = back_callback
-        
-        self.image_paths = ["Assets/Casino/SlotMachine/7.png", "Assets/Casino/SlotMachine/black-hole.png",
-                             "Assets/Casino/SlotMachine/cherries.png", "Assets/Casino/SlotMachine/diamond.png",
-                             "Assets/Casino/SlotMachine/blossom.png","Assets/Casino/SlotMachine/crown.png",
-                             "Assets/Casino/SlotMachine/dvd-player.png","Assets/Casino/SlotMachine/gem.png",
-                             "Assets/Casino/SlotMachine/honeycomb.png"]
-        
+
+        self.assets = Assets("Assets")
+
+        img_list = ["7.png","black-hole.png","cherries.png","diamond.png","blossom.png","crown.png","dvd-player.png","gem.png","honeycomb.png"]
+
+        self.image_paths = self.assets.getAssetPathList(img_list)
+
         self.loaded_images = []
         for path in self.image_paths:
             with Image.open(path) as symbol:
