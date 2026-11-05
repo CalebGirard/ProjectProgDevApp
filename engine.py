@@ -10,16 +10,23 @@ class Engine:
         self.hosting = True
         self.market = Market(200)
         self.eventer = random_eventer(chaos = 1.0)
+        self.iteration = 0
         self.userbase = userbase(500, 0.1)
         self.userbase.build_T1s()
         self.userbase.build_T2s()
         self.userbase.build_T3s()
         self.userbase.build_T4s()
         
-
     def tick(self):
         """Advances the simulation by 1 time step."""
         if self.hosting:
+            self.iteration += 1
+
+            played_event = self.eventer.update(current_iteration = self.iteration, check_interval = 10, market = self.market)
+
+            if played_event is not None:
+                print(played_event["headline"])
+            
             self.market.update()
             prices = {t: s.price for t, s in self.market.stocks.items()}
             self.database.set("prices", prices)
