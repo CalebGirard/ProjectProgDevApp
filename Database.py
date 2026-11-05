@@ -50,7 +50,6 @@ class Database:
         self.connFailedCallback = None
         self.newConnCallback = None
         
-    @threadsafe
     async def init(self):
         asyncio.create_task(self.handleRequests())
 
