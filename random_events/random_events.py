@@ -467,7 +467,7 @@ class random_eventer():
 
     def update(self, current_iteration, check_interval, market=None):
         return self.process_event_queue( check_interval = check_interval, current_iteration=current_iteration, market = market)
-    
+
 
     def process_event_queue(self, check_interval, current_iteration, market = None):
         if current_iteration % check_interval != 0:
