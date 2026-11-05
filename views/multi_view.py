@@ -121,6 +121,10 @@ class ConnectedFrame(ctk.CTkFrame):
         self.code = ""
         self.autoUpdate = False
 
+    def copyCode(self):
+        self.clipboard_clear()
+        self.clipboard_append(self.code)
+
     def createConnectedMenu(self):
         self.initframe = ctk.CTkFrame(self, fg_color="#0b0e11")
         self.initframe.place(relx=0, rely=0, relwidth=1, relheight=1)
@@ -136,6 +140,8 @@ class ConnectedFrame(ctk.CTkFrame):
 
         self.status_label = ctk.CTkLabel(bar, text="Connecting...", text_color="#848e9c", font=("Arial", 12))
         self.status_label.pack(side="left", padx=12)
+
+        ctk.CTkButton(bar, text="Copy Room Code", width=100, fg_color="#2b313a",hover_color="#227700", command=lambda e: self.copyCode).pack(side="right", padx=12, pady=8)
 
         ctk.CTkButton(bar, text="Disconnect", width=100, fg_color="#2b313a",hover_color="#f6465d", command=self.disconnect,).pack(side="right", padx=12, pady=8)
 
