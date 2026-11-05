@@ -168,23 +168,38 @@ class MarketView(ctk.CTkFrame):
 
     def _build_bottom_tabs(self):
         # Scrollable events feed
-        news_box = ctk.CTkTextbox(
+        self.news_box = ctk.CTkTextbox(
             self, fg_color="#121418", text_color="#eaecef", font=("Consolas", 11)
         )
-        news_box.grid(row=2, column=0, sticky="nsew", padx=(6, 3), pady=(3, 6))
-        news_box.insert(
-            "end", "[10:14:02] EVENT: Tech sector rally pushes AAPL past resistance.\n"
-        )
-        news_box.insert(
-            "end", "[10:11:45] BREAKING: Central Bank holds rates steady.\n"
-        )
-        news_box.configure(state="disabled")
+        self.news_box.grid(row=2, column=0, sticky="nsew", padx=(6, 3), pady=(3, 6))
+        self.news_box.configure(state="disabled")
 
     def refresh(self):
         self.price_label.configure(text=f"${self.current_stock.price:.2f}")
         self.stat_text.configure(
             text=f"24h Change: {100 - self.current_stock.history[-1]/self.current_stock.history[-2]*100:.2f}%  |   Vol : ${number_formatter(self.current_stock.market_cap)} {self.current_stock.currency}"
         )
+
+        next_event = self.engine.database.get("next_event")
+        if getattr(self.engine, "hosting", False) and self.engine.eventer.event_list:
+            event = self.engine.eventer.event_list[0]
+            next_event = {
+                "headline": event["headline"],
+                "scope": event["scope"],
+                "play_probability": event["play_probability"]
+            }
+
+        self.news_box.configure(state="normal")
+        self.news_box.delete("1.0", "end")
+        if next_event:
+            self.news_box.insert(
+                "end",
+                f"{next_event['scope'].upper()} - "
+                f"{next_event['headline']}\n"
+            )
+        else:
+            self.news_box.insert("end", "No event is queued yet.\n")
+        self.news_box.configure(state="disabled")
 
         # Refresh le graphique
         self.ax.clear()
