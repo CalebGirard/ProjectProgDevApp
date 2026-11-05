@@ -54,7 +54,7 @@ class Stock:
             ),
         )
         self.history.append(self.price)
-        self.buys = self.sells = 0
+        self.bought = self.sold = 0
 
     @property
     def market_cap(self):
