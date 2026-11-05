@@ -42,7 +42,7 @@ class MarketView(ctk.CTkFrame):
 
         # Time views
 
-        self.time_views = {"1W": 7, "1M": 30, "6M": 180, "ALL": None}
+        self.time_views = {"1W": 7, "1M": 30, "6M": 180, "1Y":365, "ALL": None}
         self.current_time_view = 30
 
         # Grid configuration
