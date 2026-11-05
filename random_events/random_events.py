@@ -29,6 +29,7 @@
 
 import json
 import random
+import pandas as pd
 from pathlib import Path
 
 def weighted_choice(weights):
@@ -166,6 +167,26 @@ class random_eventer():
             "failure_increase": 0.10
         }
 
+    def resolve_targets(self, event, market):
+        stocks = market.stocks
+
+        if event["scope"] == "minor":
+            return [stock for stock in stocks.values() if stock.name == event["company"]]
+
+        if event["scope"] == "major":
+            target_tag = event["target_tag"]
+
+            return [stock for stock in stocks.values() if target_tag in stock.tags]
+
+        return list(stocks.values())
+
+    def apply_event(self, event, market):
+        for stock in self.resolve_targets(event, market):
+            stock.price = max(0.01, stock.price * (1.0 + event["impact"]))
+
+            stock.history = pd.concat([stock.history, pd.Series([stock.price])], ignore_index = True)
+
+
     def write_state(self):
         state = {
             "scope_weights": self.scope_weights,
@@ -204,7 +225,11 @@ class random_eventer():
 
         return True
 
-    def process_event_queue(self, check_interval, current_iteration):
+    def update(self, current_iteration, check_interval, market=None):
+        return self.process_event_queue( check_interval = check_interval, current_iteration=current_iteration, market = market)
+    
+
+    def process_event_queue(self, check_interval, current_iteration, market = None):
         if current_iteration % check_interval != 0:
             return None
 
@@ -216,6 +241,9 @@ class random_eventer():
         event = self.event_list[0]
 
         if random.random() <= event["play_probability"]:
+            if market is not None:
+                self.apply_event(event,market)
+
             self.event_list.pop(0)
             self.event_list.append(self.build_event())
             self.write_state()
@@ -225,3 +253,4 @@ class random_eventer():
 
         self.write_state()
         return None
+
