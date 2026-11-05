@@ -119,7 +119,7 @@ class MarketView(ctk.CTkFrame):
 
         self.user_cash = ctk.CTkLabel(
             bar,
-            text=f"⭐ ${str(self.engine.database.getPath("cash:host)"))} ⭐",
+            text=f"⭐ {str(self.engine.database.getPath(f"cash:{self.engine.username}"))} $ ⭐",
             font=("Arial", 20, "bold"),
             text_color="#0ecb81",
         )
@@ -357,6 +357,8 @@ class MarketView(ctk.CTkFrame):
         self.ax.grid(True, color="#2b313a", linestyle="--", linewidth=0.5)
 
         self.fig.tight_layout()
+
+        self.user_cash.configure(text=f"⭐ {str(self.engine.database.getPath(f"cash:{self.engine.username}"))} $ ⭐")
         self.canvas.draw()
 
     def _refresh_market_pulse(self):
