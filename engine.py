@@ -38,7 +38,7 @@ class Engine:
         self.userbase.build_T4s()
 
     def newPlayer(self,username):
-        self.database.setPath(f"cash:{username}",200)
+        self.database.setPath(f"cash:{username}",self.config["starting_cash"])
         messages = list(self.database.get("messages") or [])
         messages.append({"username": "[Notification]", "message": f"{username}, just joined !"})
         if len(messages) >= 40:
