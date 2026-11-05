@@ -399,7 +399,7 @@ class random_eventer():
         for stock in self.resolve_targets(event, market):
             stock.price = max(0.01, stock.price * (1.0 + event["impact"]))
 
-            stock.history = pd.concat([stock.history, pd.Series([stock.price])], ignore_index = True)
+            stock.history.append(stock.price)
 
 
     def write_state(self):

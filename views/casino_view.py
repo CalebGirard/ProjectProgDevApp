@@ -3,6 +3,7 @@ import tkinter as tk
 from PIL import Image
 from engine import Engine
 import random
+from assets import Assets
 
 class CasinoView(ctk.CTkFrame) :
     def __init__(self, master, controller, engine):
@@ -11,6 +12,7 @@ class CasinoView(ctk.CTkFrame) :
         self.engine = engine
         self.pack(fill="both", expand=True)
         self.casino_frames = {}
+        self.assets = Assets("Assets")
         self.create_selecter()
         
 
@@ -53,11 +55,11 @@ class CasinoView(ctk.CTkFrame) :
 
         try: 
             wheel_pic = ctk.CTkImage(
-                dark_image=Image.open("Assets/Casino/roulette.png"),
+                Image.open(self.assets.getAssetPath("roulette.png")),
                 size=(180, 180),
             )
             slot_pic = ctk.CTkImage(
-                dark_image=Image.open("Assets/Casino/SlotMachine.png"),
+                Image.open(self.assets.getAssetPath("SlotMachine.png")),
                 size=(180, 180),
             )
         except:
@@ -148,6 +150,8 @@ class Roulette(ctk.CTkFrame):
         super().__init__(master, fg_color="black")
         self.engine = engine
 
+        self.assets = Assets("Assets")
+
         if back_callback:
             self.btn_back = ctk.CTkButton(self, text="Retour Casino", command=back_callback, width=120, height=35, fg_color="gray30",hover_color="gray40")
             self.btn_back.place(x=20, y=20)
@@ -165,7 +169,7 @@ class Roulette(ctk.CTkFrame):
             ("Red", "3"), ("Black", "26")]
 
         try:
-            self.original_image = Image.open("Assets/Casino/Roulette/Roulette.png").resize((300, 300), Image.Resampling.LANCZOS)
+            self.original_image = Image.open(self.assets.getAssetPath("Roulette.png")).resize((300, 300), Image.Resampling.LANCZOS)
         except:
             self.original_image = Image.new("RGBA", (300, 300), (34, 139, 34, 255))
 
@@ -293,12 +297,13 @@ class SlotMachine(ctk.CTkFrame):
         self.engine = engine
         self.machine_running = False
         self.curr = 1
-            
-        self.image_paths = ["Assets/Casino/SlotMachine/7.png", "Assets/Casino/SlotMachine/black-hole.png",
-                             "Assets/Casino/SlotMachine/cherries.png", "Assets/Casino/SlotMachine/diamond.png",
-                             "Assets/Casino/SlotMachine/blossom.png","Assets/Casino/SlotMachine/crown.png",
-                             "Assets/Casino/SlotMachine/dvd-player.png","Assets/Casino/SlotMachine/gem.png",
-                             "Assets/Casino/SlotMachine/honeycomb.png"]
+        self.back_callback = back_callback
+
+        self.assets = Assets("Assets")
+
+        img_list = ["7.png","black-hole.png","cherries.png","diamond.png","blossom.png","crown.png","dvd-player.png","gem.png","honeycomb.png"]
+
+        self.image_paths = self.assets.getAssetPathList(img_list)
         
         self.loaded_images = []
         for path in self.image_paths:
