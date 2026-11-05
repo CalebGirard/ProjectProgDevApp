@@ -149,7 +149,7 @@ class ConnectedFrame(ctk.CTkFrame):
         self.code_label = ctk.CTkLabel(bar, text=f"Room: {self.code}", font=("Arial", 20, "bold"))
         self.code_label.pack(side="left", padx=12, pady=8)
 
-        self.status_label = ctk.CTkLabel(bar, text="Connecting...", text_color="#848e9c", font=("Arial", 12))
+        self.status_label = ctk.CTkLabel(bar, text="Connecting...", text_color="#e64b37", font=("Arial", 12))
         self.status_label.pack(side="left", padx=12)
 
         ctk.CTkButton(bar, text="Copy Room Code", width=100, fg_color="#2b313a",hover_color="#227700", command=self.copyCode).pack(side="left", padx=12, pady=8)
@@ -219,7 +219,7 @@ class ConnectedFrame(ctk.CTkFrame):
             self._set_text(self.players_box, txt)
             
             connected = db.host and db.sigRoomRunning or db.canSend
-            self.status_label.configure(text="Connected" if connected else "Waiting...",text_color="#0ecb81" if connected else "#848e9c")
+            self.status_label.configure(text="Connected" if connected else "Connecting ...",text_color="#0ecb81" if connected else "#e64b37")
 
             chat = db.get("messages") or []
             txt = ""
