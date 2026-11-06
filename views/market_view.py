@@ -379,7 +379,7 @@ class MarketView(ctk.CTkFrame):
                 f"{next_event['headline']}\n"
             )
         else:
-            self.news_box.insert("fin", "Aucun événement n’est encore en file d’attente.\n")
+            self.news_box.insert("end", "Aucun événement n’est encore en file d’attente.\n")
         self.news_box.configure(state="disabled")
 
         # Refresh le graphique
