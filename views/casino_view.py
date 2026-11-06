@@ -133,21 +133,26 @@ class CasinoView(ctk.CTkFrame) :
         self.slot_view.place(relx=0, rely=0, relwidth=1, relheight=1)
         self.slot_view.lower()
 
+    def actualize(self):
+        self.roulette_view.update_cash_display()
+        self.slot_view.update_cash_display()
+
     def open_roulette(self):
         """Roulette premier plan"""
-        self.roulette_view.tkraise()
+        self.roulette_view.show()
 
     def open_slot_machine(self):
         """Machine à sous premier plan"""
-        self.slot_view.tkraise()
+        self.slot_view.show()
 
     def return_menu(self):
         """Casino premier plan"""
+        self.actualize()
         self.menu_casino.tkraise()
 
 class Roulette(ctk.CTkFrame):
     def __init__(self, master, engine, back_callback=None):
-        super().__init__(master, fg_color="black")
+        super().__init__(master, fg_color="#0b0e11")
         self.engine = engine
 
         self.assets = Assets("Assets")
@@ -199,19 +204,23 @@ class Roulette(ctk.CTkFrame):
         self.lbl_result.pack(pady=10)
 
         # Bet Amount
-        tk.Label(self, text="Bet Amount:", font=("Arial", 14), fg="white", bg="#0f6321").pack()
-        self.bet_entry = tk.Entry(self, font=("Arial", 14))
+        ctk.CTkLabel(self, text="Bet Amount:", font=("Arial", 14)).pack()
+        self.bet_entry = ctk.CTkEntry(self, font=("Arial", 14))
         self.bet_entry.pack(pady=6)
 
         # Bet Color
-        tk.Label(self, text="Choose Color:", font=("Arial", 14), fg="white", bg="#0f6321").pack()
+        ctk.CTkLabel(self, text="Choose Color:", font=("Arial", 14)).pack()
         self.color_var = tk.StringVar(value="Red")
-        color_menu = tk.OptionMenu(self, self.color_var, "Red", "Black", "Green")
-        color_menu.config(font=("Arial", 12), bg="#006aff", fg="white", width=10)
+        color_menu = ctk.CTkOptionMenu(self, variable=self.color_var, values=["Red", "Black", "Green"])
+        color_menu.configure(font=("Arial", 12), width=10)
         color_menu.pack(pady=5)
 
         self.bind("<space>", lambda x: self.lancer_roulette())
         self.focus_set()
+
+    def show(self):
+        self.update_cash_display()
+        self.tkraise()
 
     def update_cash_display(self, cash=None):
         """Met à jour l'affichage du solde en temps réel"""
@@ -303,8 +312,6 @@ class Roulette(ctk.CTkFrame):
             self.lbl_result.configure(text=f"Perdu... ({number} {color})", text_color="red")
         self.update_cash_display(player_cash)
         self.spinning = False
-
-
 
 class SlotMachine(ctk.CTkFrame):
     def __init__(self, master, engine, back_callback=None):
@@ -431,6 +438,10 @@ class SlotMachine(ctk.CTkFrame):
         self.temps_2 = 0
         self.temps_3 = 0
 
+    def show(self):
+        self.update_cash_display()
+        self.tkraise()
+
     def update_cash_display(self, cash=None):
         """Met à jour l'affichage du solde en temps réel"""
         if cash is None:
@@ -439,14 +450,6 @@ class SlotMachine(ctk.CTkFrame):
         self.update_idletasks()
 
     def lancer_machine(self):
-        player_cash = self.engine.database.getPath(f"cash:{self.engine.username}")
-        if 100 > player_cash:
-            self.lbl_result.configure(text="Not enought money !", text_color="orange")
-            return
-        
-        player_cash -= 100
-        self.engine.database.setPath(f"cash:{self.engine.username}",player_cash)
-        self.update_cash_display(player_cash)
         """Déclenche l'animation des 3 rouleaux avec des temps d'arrêt échelonnés"""
         if self.machine_running:
             if self.curr == 1:
@@ -457,6 +460,16 @@ class SlotMachine(ctk.CTkFrame):
                 self.temps_3 = 0
             self.curr += 1
             return
+
+        player_cash = self.engine.database.getPath(f"cash:{self.engine.username}")
+        if 100 > player_cash:
+            self.lbl_result.configure(text="Not enought money !", text_color="orange")
+            return
+        
+        player_cash -= 100
+        self.engine.database.setPath(f"cash:{self.engine.username}",player_cash)
+        self.update_cash_display(player_cash)
+        
         self.result_label.configure(
             text="Spinning...",
             text_color="#848e9c",
