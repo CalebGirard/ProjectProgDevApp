@@ -24,7 +24,10 @@ class MainApp(ctk.CTk):
         self.geometry("800x600+0+0")
         self.engine = Engine()
         self.assets = Assets("Assets")
-        self.wm_iconphoto(False, ImageTk.PhotoImage(Image.open(self.assets.getAssetPath("snake.ico"))))
+        try:
+            self.iconbitmap(self.assets.getAssetPath("snake.ico"))
+        except:
+            self.wm_iconphoto(True, ImageTk.PhotoImage(Image.open(self.assets.getAssetPath("snake.png"))))
         self.after(0, lambda: self.state("zoomed"))
         self.configure(fg_color="black")
         self.title("Pynance Bureau")
