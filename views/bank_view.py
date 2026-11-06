@@ -3,6 +3,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 import math
 
+
 class BankView(ctk.CTkFrame):
     def __init__(self, master, controller, engine):
         super().__init__(master, fg_color="#0b0e11")
@@ -67,7 +68,9 @@ class BankView(ctk.CTkFrame):
         self.loans_label.pack(anchor="w", padx=16, pady=(0, 16))
 
         actions_panel = ctk.CTkFrame(self, fg_color="#181a20", corner_radius=8)
-        actions_panel.grid(row=2, column=1, columnspan=2, padx=(6, 18), pady=(0, 18), sticky="nsew")
+        actions_panel.grid(
+            row=2, column=1, columnspan=2, padx=(6, 18), pady=(0, 18), sticky="nsew"
+        )
         ctk.CTkLabel(
             actions_panel,
             text="OPÉRATIONS",
@@ -142,7 +145,9 @@ class BankView(ctk.CTkFrame):
         
         self.change_label.configure(
             text=f"{self.engine.bank.stock_change_percent:+.2f}%",
-            text_color="#0ecb81" if self.engine.bank.stock_change_percent >= 0 else "#f6465d",
+            text_color=(
+                "#0ecb81" if self.engine.bank.stock_change_percent >= 0 else "#f6465d"
+            ),
         )
         self.credit_label.configure(
             text=f"{state['credit_score']} / 100 · {vip_status}"
@@ -161,7 +166,7 @@ class BankView(ctk.CTkFrame):
                 text=f"Dette totale : ${total_loans:.2f}\n{maximum_loan_line}\n\n"
                 + "\n".join(lines),
                 text_color="#eaecef",
-            )    
+            )
 
         else:
             self.loans_label.configure(
@@ -264,5 +269,3 @@ class BankView(ctk.CTkFrame):
 
         self.engine.request_bank_action("repay_all")
         self.refresh_bank()
-
-    

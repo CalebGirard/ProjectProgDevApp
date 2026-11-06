@@ -7,10 +7,18 @@ import json
 import time
 import math
 
+
 class Engine:
-    def __init__(self, starting_cash_def=50000, market_def=200, chaos_def=1.0, nbusers_def = 500, diff_mul_def = 1.0):
+    def __init__(
+        self,
+        starting_cash_def=50000,
+        market_def=200,
+        chaos_def=1.0,
+        nbusers_def=500,
+        diff_mul_def=1.0,
+    ):
         self.username = "host"
-        self.database = Database("host",True)
+        self.database = Database("host", True)
         self.database.rawMsgCallback = self.rawMsgCallback
         self.database.newConnCallback = self.newPlayer
         self.database.bankActionCallback = self.process_bank_action
@@ -19,24 +27,23 @@ class Engine:
         self.config = {
             "num_stocks": market_def,
             "num_users": nbusers_def,
-            "chaos": chaos_def,        
+            "chaos": chaos_def,
             "difficulty": diff_mul_def,
-            "starting_cash":starting_cash_def
+            "starting_cash": starting_cash_def,
         }
         self.rebuild()
-
 
     def rebuild(self, config_changes=None):
         self.username = "host"
         if config_changes:
             self.config.update(config_changes)
         else:
-            self.database.set("playerlist",[self.username])
+            self.database.set("playerlist", [self.username])
         self.database.setPath("cash:host", self.config["starting_cash"])
-        self.database.set("messages",[])
+        self.database.set("messages", [])
         self.hosting = True
         self.market = Market(self.config["num_stocks"])
-        self.eventer = random_eventer(chaos = self.config["chaos"], market = self.market)
+        self.eventer = random_eventer(chaos=self.config["chaos"], market=self.market)
         self.iteration = 0
         self.userbase = userbase(self.config["num_users"], self.config["difficulty"])
         self.database.set("tick", {"iteration": 0, "prices": {}})
@@ -48,9 +55,8 @@ class Engine:
         self.userbase.build_T4s()
         self.bank = Bank()
         self.bank.add_player(self.username)
-        
 
-    def sell(self,username,ticker,x):
+    def sell(self, username, ticker, x):
         current_stock = self.market.get_stock_by_ticker(ticker)
         if current_stock is None or x <= 0:
             return False
@@ -75,7 +81,7 @@ class Engine:
         current_stock.sell(x)
         return True
 
-    def buy(self,username,ticker,x):
+    def buy(self, username, ticker, x):
         current_stock = self.market.get_stock_by_ticker(ticker)
         if current_stock is None or x <= 0:
             return False
@@ -94,25 +100,30 @@ class Engine:
         current_stock.buy(x)
         return True
 
-    def newPlayer(self,username):
+    def newPlayer(self, username):
         self.database.setPath(f"cash:{username}", self.config["starting_cash"])
         self.bank.add_player(username)
         if self.market and self.market.stocks:
-            self.database.set("market", {
-                "id": time.time(),
-                "iteration": self.iteration,
-                "stocks": self.market.snapshot(),
-            })
+            self.database.set(
+                "market",
+                {
+                    "id": time.time(),
+                    "iteration": self.iteration,
+                    "stocks": self.market.snapshot(),
+                },
+            )
 
         playerlist = list(self.database.get("playerlist") or [])
         playerlist.append(username)
-        self.database.set("playerlist",playerlist)
+        self.database.set("playerlist", playerlist)
 
         messages = list(self.database.get("messages") or [])
-        messages.append({"username": "[Notification]", "message": f"{username} just joined !"})
+        messages.append(
+            {"username": "[Notification]", "message": f"{username} just joined !"}
+        )
         if len(messages) >= 40:
             messages.pop(0)
-        self.database.set("messages",messages)
+        self.database.set("messages", messages)
         self.sync_bank_state()
 
     def sync_bank_state(self):
@@ -138,7 +149,7 @@ class Engine:
 
         if not math.isfinite(current_cash) or current_cash < 0:
             return False
-        
+
         if action == "take_loan":
             if not self.bank.take_loan(username, amount):
                 return False
@@ -162,7 +173,7 @@ class Engine:
             if paid_amount <= 0:
                 return False
 
-            self.database.setPath(cash_path, current_cash - paid_amount)    
+            self.database.setPath(cash_path, current_cash - paid_amount)
 
         elif action == "repay_all":
             total_loans = self.bank.get_total_loans(username)
@@ -179,29 +190,30 @@ class Engine:
         if self.hosting:
             return self.process_bank_action(self.username, action, amount)
 
-        self.database.sendAsClient(json.dumps({
-            "type": "bank_action",
-            "username": self.username,
-            "data": {
-                "action": action,
-                "amount": amount
-            }
-        }))
+        self.database.sendAsClient(
+            json.dumps(
+                {
+                    "type": "bank_action",
+                    "username": self.username,
+                    "data": {"action": action, "amount": amount},
+                }
+            )
+        )
         return True
 
-    def rawMsgCallback(self,username, msg):
+    def rawMsgCallback(self, username, msg):
         if msg["data"].startswith("/buy"):
             data = msg["data"].removeprefix("/buy ").split(" ")
-            self.buy(username,data[0],int(data[1]))
+            self.buy(username, data[0], int(data[1]))
         elif msg["data"].startswith("/sell"):
             data = msg["data"].removeprefix("/sell ").split(" ")
-            self.sell(username,data[0],int(data[1]))
+            self.sell(username, data[0], int(data[1]))
         else:
             messages = list(self.database.get("messages") or [])
             messages.append({"username": username, "message": msg["data"]})
             if len(messages) >= 40:
                 messages.pop(0)
-            self.database.set("messages",messages)
+            self.database.set("messages", messages)
 
     def tick(self):
         if self.hosting:
@@ -223,38 +235,43 @@ class Engine:
             bank_state = self.database.get("bank_state")
 
             played_event = self.eventer.update(
-                current_iteration = self.iteration,
-                check_interval = 10,
-                market = self.market
+                current_iteration=self.iteration, check_interval=10, market=self.market
             )
 
             if self.eventer.event_list:
                 next_event = self.eventer.event_list[0]
-                self.database.set("next_event", {
-                    "headline": next_event["headline"],
-                    "scope": next_event["scope"],
-                    "play_probability": next_event["play_probability"]
-                })
+                self.database.set(
+                    "next_event",
+                    {
+                        "headline": next_event["headline"],
+                        "scope": next_event["scope"],
+                        "play_probability": next_event["play_probability"],
+                    },
+                )
 
             self.userbase.update(
-                market=self.market, 
-                active_event=played_event, 
-                eventer=self.eventer
+                market=self.market, active_event=played_event, eventer=self.eventer
             )
-            
+
             self.market.update()
             if self.needSnapshot:
                 self.needSnapshot = False
-                self.database.set("market", {
-                    "id": time.time(),
-                    "iteration": self.iteration,
-                    "stocks": self.market.snapshot(),
-                })
+                self.database.set(
+                    "market",
+                    {
+                        "id": time.time(),
+                        "iteration": self.iteration,
+                        "stocks": self.market.snapshot(),
+                    },
+                )
             else:
-                self.database.set("tick", {
-                    "iteration": self.iteration,
-                    "prices": {t: s.price for t, s in self.market.stocks.items()},
-                })
+                self.database.set(
+                    "tick",
+                    {
+                        "iteration": self.iteration,
+                        "prices": {t: s.price for t, s in self.market.stocks.items()},
+                    },
+                )
         else:
             snap = self.database.get("market")
             if snap and snap.get("id") != self.snapshot_id:

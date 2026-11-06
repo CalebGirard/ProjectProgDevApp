@@ -4,7 +4,7 @@ import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk
 
-# Views
+# Vues
 
 from views.market_view import MarketView
 from views.shop_view import ShopView
@@ -18,16 +18,21 @@ import logging
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
+
 class MainApp(ctk.CTk):
     def __init__(self):
         super().__init__()
+        self.title("Pynance Desktop")
         self.geometry("800x600+0+0")
         self.engine = Engine()
         self.assets = Assets("Assets")
         try:
             self.iconbitmap(self.assets.getAssetPath("snake.ico"))
         except:
-            self.wm_iconphoto(True, ImageTk.PhotoImage(Image.open(self.assets.getAssetPath("snake.png"))))
+            self.wm_iconphoto(
+                True,
+                ImageTk.PhotoImage(Image.open(self.assets.getAssetPath("snake.png"))),
+            )
         self.after(0, lambda: self.state("zoomed"))
         self.configure(fg_color="black")
         self.title("Pynance Bureau")
@@ -51,25 +56,32 @@ class MainApp(ctk.CTk):
 
         try:
             logo = ctk.CTkImage(
-                dark_image=Image.open(self.assets.getAssetPath("snake.ico")), size=(24, 24)
+                dark_image=Image.open(self.assets.getAssetPath("snake.ico")),
+                size=(24, 24),
             )
             casino_pic = ctk.CTkImage(
-                dark_image=Image.open(self.assets.getAssetPath("megaphone.png")), size=(24, 24)
+                dark_image=Image.open(self.assets.getAssetPath("megaphone.png")),
+                size=(24, 24),
             )
             market_pic = ctk.CTkImage(
-                dark_image=Image.open(self.assets.getAssetPath("shopping-cart.png")), size=(24, 24)
+                dark_image=Image.open(self.assets.getAssetPath("shopping-cart.png")),
+                size=(24, 24),
             )
             trading_pic = ctk.CTkImage(
-                dark_image=Image.open(self.assets.getAssetPath("globe.png")), size=(24, 24)
+                dark_image=Image.open(self.assets.getAssetPath("globe.png")),
+                size=(24, 24),
             )
             multi_pic = ctk.CTkImage(
-                dark_image=Image.open(self.assets.getAssetPath("users-alt.png")), size=(24, 24)
+                dark_image=Image.open(self.assets.getAssetPath("users-alt.png")),
+                size=(24, 24),
             )
             bank_pic = ctk.CTkImage(
-                dark_image=Image.open(self.assets.getAssetPath("bank.png")), size=(24, 24)
+                dark_image=Image.open(self.assets.getAssetPath("bank.png")),
+                size=(24, 24),
             )
             settings = ctk.CTkImage(
-                dark_image=Image.open(self.assets.getAssetPath("settings.png")), size=(24, 24)
+                dark_image=Image.open(self.assets.getAssetPath("settings.png")),
+                size=(24, 24),
             )
         except:
             logo = None
@@ -156,7 +168,7 @@ class MainApp(ctk.CTk):
     def init_frames(self):
         self.container.grid_columnconfigure(0, weight=1)
         self.container.grid_rowconfigure(0, weight=1)
-        # Map a string key to the respective class
+        # Associer une clé textuelle à la classe correspondante
         page_classes = {
             "Casino": CasinoView,
             "Shop": ShopView,
@@ -167,11 +179,13 @@ class MainApp(ctk.CTk):
         }
 
         for name, FrameClass in page_classes.items():
-            # Instantiate each frame inside self.container
-            frame = FrameClass(master=self.container, controller=self, engine=self.engine)
+            # Instancier chaque cadre dans self.container
+            frame = FrameClass(
+                master=self.container, controller=self, engine=self.engine
+            )
             self.frames[name] = frame
 
-            # Stack all frames into the exact same cell
+            # Empiler tous les cadres dans la même cellule
             frame.grid(row=0, column=0, sticky="nsew")
 
     def show_frame(self, page_name: str):
@@ -180,13 +194,13 @@ class MainApp(ctk.CTk):
         frame.tkraise()
 
         titles = {
-                    "Casino": "Application - Royal Casino",
-                    "Market": "Application - Marché",
-                    "Trading": "Application - Trading",
-                    "Multi": "Application - Multijoueur",
-                    "Bank": "Application - Banque"
-                }
-        
+            "Casino": "Application - Royal Casino",
+            "Market": "Application - Marché",
+            "Trading": "Application - Trading",
+            "Multi": "Application - Multijoueur",
+            "Bank": "Application - Banque",
+        }
+
         self.title(titles.get(page_name, "Application principale"))
 
         if hasattr(frame, "refresh"):
@@ -196,9 +210,7 @@ class MainApp(ctk.CTk):
             frame.actualize()
 
         for name, button in self.navigation_buttons.items():
-            button.configure(
-                fg_color="#2d2d30" if name == page_name else "transparent"
-            )
+            button.configure(fg_color="#2d2d30" if name == page_name else "transparent")
 
     def run_clock(self):
         self.engine.tick()
@@ -212,6 +224,7 @@ class MainApp(ctk.CTk):
 
     def destroy(self):
         self.quit()
+
 
 if __name__ == "__main__":
     app = MainApp()
