@@ -4,6 +4,7 @@ from Database import Database
 from random_events.random_events import random_eventer
 from Bank.bank import Bank
 import json
+import time
 
 class Engine:
     def __init__(self, starting_cash_def=50000, market_def=200, chaos_def=1.0, nbusers_def = 500, diff_mul_def = 1.0):
