@@ -175,11 +175,12 @@ class Roulette(ctk.CTkFrame):
 
         self.user_cash = ctk.CTkLabel(
                     self,
-                    text=f"⭐ {str(self.engine.database.getPath(f"cash:{self.engine.username}"))} $ ⭐",
+                    text="",
                     font=("Arial", 20, "bold"),
                     text_color="#0ecb81",
                 )
         self.user_cash.pack(side="right", padx=20)
+        self.update_cash_display()
 
         self.wheel_container = ctk.CTkFrame(self, fg_color="transparent")
         self.wheel_container.pack(pady=20)
@@ -205,12 +206,19 @@ class Roulette(ctk.CTkFrame):
         # Bet Color
         tk.Label(self, text="Choose Color:", font=("Arial", 14), fg="white", bg="#0f6321").pack()
         self.color_var = tk.StringVar(value="Red")
-        color_menu = tk.OptionMenu(self, self.color_var, "Red", "Black")
+        color_menu = tk.OptionMenu(self, self.color_var, "Red", "Black", "Green")
         color_menu.config(font=("Arial", 12), bg="#006aff", fg="white", width=10)
         color_menu.pack(pady=5)
 
         self.bind("<space>", lambda x: self.lancer_roulette())
         self.focus_set()
+
+    def update_cash_display(self, cash=None):
+        """Met à jour l'affichage du solde en temps réel"""
+        if cash is None:
+            cash = self.engine.database.getPath(f"cash:{self.engine.username}")
+        self.user_cash.configure(text=f"⭐ {cash} $ ⭐")
+        self.update_idletasks()
 
     def update_wheel_image(self, angle):
         """Pivote l'image originale"""
@@ -237,6 +245,7 @@ class Roulette(ctk.CTkFrame):
         new_cash = current_cash - self.current_bet
         self.engine.database.setPath(f'cash:{self.engine.username}', new_cash)
         print(self.engine.database.getPath(f'cash:{self.engine.username}'))
+        self.update_cash_display(new_cash)
 
 
         self.spinning = True
@@ -277,22 +286,23 @@ class Roulette(ctk.CTkFrame):
         text_color = "red" if color == "Red" else ("green" if color == "Green" else "white")
         self.lbl_result.configure(text=f"Résultat : {number} ({color})", text_color=text_color)
 
-        # Vérification si le joueur a gagné (comparaison avec la valeur de la StringVar)
-        if color == self.color_var.get():
-            if color == "green":
-                player_prize = self.engine.database.getPath(f'cash:{self.engine.username}')
+        choix_utilisateur = self.color_var.get()
+        player_cash = self.engine.database.getPath(f'cash:{self.engine.username}')
+
+        if color == choix_utilisateur:
+            if color == "Green":
                 winnings = self.current_bet * 36
-                player_prize += winnings
-                self.engine.database.setPath(f'cash:{self.engine.username}', player_prize)
-                print(self.engine.database.getPath(f'cash:{self.engine.username}', player_prize))
+                player_cash += winnings
+                self.lbl_result.configure(text=f"INCROYABLE ! Vert ! +{winnings}$", text_color="green")
             else:
-                player_prize = self.engine.database.getPath(f'cash:{self.engine.username}')
                 winnings = self.current_bet * 2
-                player_prize += winnings
-                self.engine.database.setPath(f'cash:{self.engine.username}')
-                print(self.engine.database.getPath(f'cash:{self.engine.username}'))
-
-
+                player_cash += winnings
+                self.lbl_result.configure(text=f"Gagné ! +{winnings}$", text_color="green")
+            self.engine.database.setPath(f'cash:{self.engine.username}', player_cash)
+            
+        else:
+            self.lbl_result.configure(text=f"Perdu... ({number} {color})", text_color="red")
+        self.update_cash_display(player_cash)
         self.spinning = False
 
 
