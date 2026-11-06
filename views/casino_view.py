@@ -477,7 +477,7 @@ class SlotMachine(ctk.CTkFrame):
         self.machine_running = True
         self.curr = 1
         
-        # Chaque rouleau tourne un peu plus longtemps que le précédent
+        """Chaque rouleau tourne un peu plus longtemps que le précédent"""
         self.temps_1 = 500
         self.temps_2 = 1500
         self.temps_3 = 2500
