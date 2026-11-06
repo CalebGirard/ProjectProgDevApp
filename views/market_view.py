@@ -357,7 +357,7 @@ class MarketView(ctk.CTkFrame):
         self.price_label.configure(text=f"${self.current_stock.price:.2f}")
         self._refresh_owned_shares()
         self.stat_text.configure(
-            text=f"Dernier mouvement : {_latest_change_pct(self.current_stock):+.2f}%  |  Capitalisation boursière : ${number_formatter(self.current_stock.market_cap)} {self.current_stock.currency}"
+            text=f"Dernier mouvement : {_latest_change_pct(self.current_stock):+.2f}%  |  Capitalisation : ${number_formatter(self.current_stock.market_cap)} {self.current_stock.currency}"
         )
         self._refresh_market_pulse()
 

@@ -49,8 +49,11 @@ class Stock:
             self.price
             * (
                 1
-                + random.gauss(self.drift, self.volatility)
-                + self.impact * (self.bought - self.sold) / self.shares
+                + 0.1
+                * (
+                    random.gauss(self.drift, self.volatility)
+                    + self.impact * (self.bought - self.sold) / self.shares
+                )
             ),
         )
         self.history.append(self.price)
