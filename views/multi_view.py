@@ -306,7 +306,7 @@ class ConnectedFrame(ctk.CTkFrame):
             names = names if names else []
             txt = ""
             for n in names:
-                txt += f"{n}{' (you)' if n == db.username else ''}" + "\n"
+                txt += f"{n}{' (you) ' if n == db.username else ''} \n"
             self._set_text(self.players_box, txt)
 
             connected = db.host and db.sigRoomRunning or db.canSend
