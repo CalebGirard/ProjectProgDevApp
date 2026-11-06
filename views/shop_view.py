@@ -12,3 +12,5 @@ class ShopView(ctk.CTkFrame):
         self.grid_columnconfigure(1, weight=1)  # Order execution panel
         self.grid_rowconfigure(1, weight=3)     # Main chart row
         self.grid_rowconfigure(2, weight=1)     # News / bottom tabs row
+
+        ctk.CTkLabel(self,text="COMMING SOON",font=("Arial",20,"bold")).pack(padx=20, pady=20)
