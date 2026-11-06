@@ -43,21 +43,47 @@ class Engine:
 
     def sell(self,username,ticker,x):
         current_stock = self.market.get_stock_by_ticker(ticker)
+        if current_stock is None or x <= 0:
+            return False
+
         user_cash = self.database.getPath(f"cash:{username}")
+        if user_cash is None:
+            return False
+
+        portfolios = dict(self.database.get("portfolios") or {})
+        positions = dict(portfolios.get(username, {}))
+        owned = positions.get(ticker, 0)
+        if x > owned:
+            return False
+
         spending = user_cash + x * current_stock.price
         self.database.setPath(f"cash:{username}", spending)
+        positions[ticker] = owned - x
+        if positions[ticker] == 0:
+            del positions[ticker]
+        portfolios[username] = positions
+        self.database.set("portfolios", portfolios)
         current_stock.sell(x)
+        return True
 
     def buy(self,username,ticker,x):
-            current_stock = self.market.get_stock_by_ticker(ticker)
-            user_cash = self.database.getPath(f"cash:{username}")
-            spending = user_cash - x * current_stock.price
-    
-            if user_cash > spending:
-                return
-            
-            self.database.setPath(f"cash:{username}", spending)
-            current_stock.buy(x)
+        current_stock = self.market.get_stock_by_ticker(ticker)
+        if current_stock is None or x <= 0:
+            return False
+
+        user_cash = self.database.getPath(f"cash:{username}")
+        cost = x * current_stock.price
+        if user_cash is None or user_cash < cost:
+            return False
+
+        self.database.setPath(f"cash:{username}", user_cash - cost)
+        portfolios = dict(self.database.get("portfolios") or {})
+        positions = dict(portfolios.get(username, {}))
+        positions[ticker] = positions.get(ticker, 0) + x
+        portfolios[username] = positions
+        self.database.set("portfolios", portfolios)
+        current_stock.buy(x)
+        return True
 
     def newPlayer(self,username):
         self.database.setPath(f"cash:{username}", self.config["starting_cash"])
@@ -94,7 +120,6 @@ class Engine:
             self.database.set("messages",messages)
 
     def tick(self):
-        """Advances the simulation by 1 time step."""
         if self.hosting:
             self.iteration += 1
 
@@ -111,6 +136,12 @@ class Engine:
                     "scope": next_event["scope"],
                     "play_probability": next_event["play_probability"]
                 })
+
+            self.userbase.update(
+                market=self.market, 
+                active_event=played_event, 
+                eventer=self.eventer
+            )
             
             self.market.update()
             if self.needSnapshot:
@@ -139,8 +170,3 @@ class Engine:
             if td and td.get("iteration", 0) > self.iteration and self.market:
                 self.iteration = td["iteration"]
                 self.market.apply_tick(td["prices"])
-
-    def _apply_event(self, event):
-        if self.hosting:
-            # E.g., if event affects Tech, modify AAPL/MSFT
-            pass
