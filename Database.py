@@ -225,6 +225,7 @@ class Database:
             "type": pc.localDescription.type
         }
         await self.webs.send(json.dumps(payload))
+        await self.webs.close()
         self.clientPc = pc
         self.sigRoomRunning = False
         return True
