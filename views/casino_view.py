@@ -133,16 +133,21 @@ class CasinoView(ctk.CTkFrame) :
         self.slot_view.place(relx=0, rely=0, relwidth=1, relheight=1)
         self.slot_view.lower()
 
+    def actualize(self):
+        self.roulette_view.update_cash_display()
+        self.slot_view.update_cash_display()
+
     def open_roulette(self):
         """Roulette premier plan"""
-        self.roulette_view.tkraise()
+        self.roulette_view.show()
 
     def open_slot_machine(self):
         """Machine à sous premier plan"""
-        self.slot_view.tkraise()
+        self.slot_view.show()
 
     def return_menu(self):
         """Casino premier plan"""
+        self.actualize()
         self.menu_casino.tkraise()
 
 class Roulette(ctk.CTkFrame):
@@ -212,6 +217,10 @@ class Roulette(ctk.CTkFrame):
 
         self.bind("<space>", lambda x: self.lancer_roulette())
         self.focus_set()
+
+    def show(self):
+        self.update_cash_display()
+        self.tkraise()
 
     def update_cash_display(self, cash=None):
         """Met à jour l'affichage du solde en temps réel"""
@@ -424,6 +433,10 @@ class SlotMachine(ctk.CTkFrame):
         self.temps_1 = 0
         self.temps_2 = 0
         self.temps_3 = 0
+
+    def show(self):
+        self.update_cash_display()
+        self.tkraise()
 
     def update_cash_display(self, cash=None):
         """Met à jour l'affichage du solde en temps réel"""
