@@ -1,10 +1,10 @@
 import customtkinter as ctk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
-
+from engine import Engine
 
 class SettingsView(ctk.CTkFrame):
-    def __init__(self, master, controller, engine):
+    def __init__(self, master, controller, engine:Engine):
         super().__init__(master, fg_color="#0b0e11")
         self.controller = controller
 
@@ -124,7 +124,6 @@ class SettingsView(ctk.CTkFrame):
             entry.configure(state=state)
 
     def _apply_settings(self):
-                
         new_config = {
             "num_stocks": int(self.number_stocks_input.get().strip() or self.engine.config["num_stocks"]),
             "num_users": int(self.number_players_input.get().strip() or self.engine.config["num_users"]),
@@ -132,8 +131,13 @@ class SettingsView(ctk.CTkFrame):
             "difficulty": float(self.difficulty_input.get().strip() or self.engine.config["difficulty"]),
             "starting_cash": float(self.starting_cash_input.get().strip() or self.engine.config["starting_cash"]),
         }
-        self.engine.rebuild(new_config)
 
+        self.engine.rebuild(new_config)
+        for n in self.engine.database.get("playerlist"):
+            self.engine.database.setPath(f"cash:{n}",new_config["starting_cash"])
+
+        self.engine.database.set("portfolios",{})
+        
         market_view = self.controller.frames.get("Market")
         if market_view:
             market_view.reset()
