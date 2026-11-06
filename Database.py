@@ -178,7 +178,7 @@ class Database:
             self.webs = None
         if self.clientPc:
             try:
-                self.clientPc.close()
+                await self.clientPc.close()
             except:
                 pass
             self.clientPc = None
