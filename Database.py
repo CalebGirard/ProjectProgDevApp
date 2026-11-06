@@ -50,6 +50,7 @@ class Database:
         self.connFailedCallback = None
         self.newConnCallback = None
         self.roomReadyCallback = None
+        self.bankActionCallback = None
 
         self.sigRe = False
         
@@ -386,6 +387,11 @@ class Database:
                     value = data["data"]["value"]
                     op = data["data"]["op"]
                     await self.opData(key,value,op)
+                elif data["type"] == "bank_action":
+                    if self.bankActionCallback:
+                        action = data["data"]["action"]
+                        amount = data["data"].get("amount")
+                        self.bankActionCallback(user, action, amount)
                 elif data["type"] == "disconnect":
                     user = data["username"]
                     self.sendAsHost({"type":"conf"},user)

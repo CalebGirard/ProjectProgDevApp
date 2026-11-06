@@ -90,10 +90,7 @@ class BankView(ctk.CTkFrame):
         if amount + total_loans > maximum_loan:
             return
 
-        if self.engine.bank.take_loan(player_id, amount):
-            cash_path = f"cash:{player_id}"
-            current_cash = self.engine.database.getPath(cash_path)
-            self.engine.database.setPath(cash_path, current_cash + amount)
+        self.engine.request_bank_action("take_loan", amount)
 
         self.refresh_bank()
 
@@ -118,13 +115,7 @@ class BankView(ctk.CTkFrame):
         if current_cash < amount:
             return
 
-        paid_amount = self.engine.bank.repay_loan(player_id, amount)
-
-        if paid_amount > 0:
-            self.engine.database.setPath(
-                cash_path,
-                current_cash - paid_amount
-            )
+        self.engine.request_bank_action("repay_loan", amount)
 
         self.refresh_bank()
 
@@ -139,8 +130,7 @@ class BankView(ctk.CTkFrame):
         if current_cash < total_loans:
             return
 
-        self.engine.database.setPath(cash_path, current_cash - total_loans)
-        self.engine.bank.repay_loans(player_id)
+        self.engine.request_bank_action("repay_all")
         self.refresh_bank()
 
     
