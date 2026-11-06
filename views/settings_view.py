@@ -22,7 +22,7 @@ class SettingsView(ctk.CTkFrame):
 
     def ui_builder(self):
         state = "normal"
-        if self.engine.hosting == False:
+        if not self.engine.hosting:
             state = "disabled"
 
         # Titre de la page
@@ -111,6 +111,17 @@ class SettingsView(ctk.CTkFrame):
         )
         self.apply_btn.pack(anchor="se", padx=30, pady=48)
         
+
+    def refresh(self):
+        state = "normal" if self.engine.hosting else "disabled"
+        for entry in (
+            self.chaos_input,
+            self.difficulty_input,
+            self.number_players_input,
+            self.number_stocks_input,
+            self.starting_cash_input,
+        ):
+            entry.configure(state=state)
 
     def _apply_settings(self):
                 
