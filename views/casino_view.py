@@ -34,20 +34,20 @@ class CasinoView(ctk.CTkFrame) :
         )
         ctk.CTkLabel(
             promo_banner,
-            text="PYNANCE CORP  |  EXCLUSIVE MAKE-O-RICH™ TECHNOLOGIES",
+            text="PYNANCE CORPORATION | TECHNOLOGIES EXCLUSIVES MAKE-O-RICH™",
             text_color="#0ecb81",
             font=("Arial", 12, "bold"),
         ).pack(anchor="w", padx=20, pady=(14, 2))
         ctk.CTkLabel(
             promo_banner,
-            text="A new standard in play.",
+            text="Une nouvelle référence en matière de jeu.",
             text_color="#eaecef",
             font=("Arial", 24, "bold"),
         ).pack(anchor="w", padx=20)
         ctk.CTkLabel(
             promo_banner,
-            text="Discover our next-gen suite of high-performance experiences, "
-                 "engineered for your every winning moment.",
+            text="Découvrez notre gamme d'expériences haute performance de nouvelle génération,"
+                " conçue pour accompagner chacun de vos moments de victoire.",
             text_color="#848e9c",
             font=("Arial", 13),
             wraplength=760,
@@ -90,7 +90,7 @@ class CasinoView(ctk.CTkFrame) :
 
         self.btn_market = ctk.CTkButton(
             games_frame,
-            text="Slot machine",
+            text="Machine à sous",
             width=240,
             height=225,
             fg_color="#181a20",
@@ -105,8 +105,8 @@ class CasinoView(ctk.CTkFrame) :
 
         ctk.CTkLabel(
             games_frame,
-            text="Our precision-crafted, 360-degree decision platform brings "
-                 "next-gen chance analytics to every spin.",
+            text="Notre plateforme décisionnelle à 360 degrés, conçue avec précision,"
+            " intègre des analyses des probabilités de nouvelle génération à chaque tirage.",
             text_color="#848e9c",
             font=("Arial", 13),
             width=240,
@@ -115,8 +115,8 @@ class CasinoView(ctk.CTkFrame) :
         ).grid(row=1, column=0, padx=6, sticky="n")
         ctk.CTkLabel(
             games_frame,
-            text="Activate our high-velocity reward engine, powered by "
-                 "multi-reel momentum and proprietary symbol synchronization.",
+            text="Activez notre moteur de récompenses ultra-rapide," 
+            " reposant sur une dynamique multi-rouleaux et un système exclusif de synchronisation des symboles.",
             text_color="#848e9c",
             font=("Arial", 13),
             width=240,
@@ -124,7 +124,7 @@ class CasinoView(ctk.CTkFrame) :
             justify="center",
         ).grid(row=1, column=1, padx=6, sticky="n")
 
-        # Initialisation de la vue SlotMachine en arrière-plan dans le conteneur
+        """ Initialisation SlotMachine arrière-plan """
         self.roulette_view = Roulette(self.container_casino, self.engine, back_callback=self.return_menu)
         self.roulette_view.place(relx=0, rely=0, relwidth=1, relheight=1)
         self.roulette_view.lower()
@@ -197,21 +197,21 @@ class Roulette(ctk.CTkFrame):
         self.wheel_label.pack()
         self.update_wheel_image(0)
 
-        self.lbl_instruction = ctk.CTkLabel(self, text="Clic on SPACE", font=("Arial", 22, "bold"), text_color="white")
+        self.lbl_instruction = ctk.CTkLabel(self, text="Cliquez sur ESPACE", font=("Arial", 22, "bold"), text_color="white")
         self.lbl_instruction.pack(pady=5)
 
         self.lbl_result = ctk.CTkLabel(self, text="", font=("Arial", 28, "bold"))
         self.lbl_result.pack(pady=10)
 
         # Bet Amount
-        ctk.CTkLabel(self, text="Bet Amount:", font=("Arial", 14)).pack()
+        ctk.CTkLabel(self, text="Montant de la mise :", font=("Arial", 14)).pack()
         self.bet_entry = ctk.CTkEntry(self, font=("Arial", 14))
         self.bet_entry.pack(pady=6)
 
         # Bet Color
-        ctk.CTkLabel(self, text="Choose Color:", font=("Arial", 14)).pack()
+        ctk.CTkLabel(self, text="Choisir la couleur :", font=("Arial", 14)).pack()
         self.color_var = tk.StringVar(value="Red")
-        color_menu = ctk.CTkOptionMenu(self, variable=self.color_var, values=["Red", "Black", "Green"])
+        color_menu = ctk.CTkOptionMenu(self, variable=self.color_var, values=["Rouge", "Noire", "Vert"])
         color_menu.configure(font=("Arial", 12), width=10)
         color_menu.pack(pady=5)
 
@@ -242,13 +242,13 @@ class Roulette(ctk.CTkFrame):
         try:
             self.current_bet = int(self.bet_entry.get())
         except ValueError:
-            self.lbl_result.configure(text="Enter valid bet !", text_color="orange")
+            self.lbl_result.configure(text="Saisissez une mise valide !", text_color="orange")
             return
 
         current_cash = self.engine.database.getPath(f'cash:{self.engine.username}')
         
         if self.current_bet > current_cash:
-            self.lbl_result.configure(text="Not enought money !", text_color="orange")
+            self.lbl_result.configure(text="Pas assez d'argent !", text_color="orange")
             return
 
         new_cash = current_cash - self.current_bet
@@ -291,7 +291,7 @@ class Roulette(ctk.CTkFrame):
             self.spinning = False
 
     def afficher_resultat_final(self, color, number):
-        text_color = "red" if color == "Red" else ("green" if color == "Green" else "white")
+        text_color = "red" if color == "Rouge" else ("green" if color == "Vert" else "white")
         self.lbl_result.configure(text=f"Résultat : {number} ({color})", text_color=text_color)
 
         choix_utilisateur = self.color_var.get()
@@ -301,7 +301,7 @@ class Roulette(ctk.CTkFrame):
             if color == "Green":
                 winnings = self.current_bet * 36
                 player_cash += winnings
-                self.lbl_result.configure(text=f"INCROYABLE ! Vert ! +{winnings}$", text_color="green")
+                self.lbl_result.configure(text=f"MALADE ! Vert ! +{winnings}$", text_color="green")
             else:
                 winnings = self.current_bet * 2
                 player_cash += winnings
@@ -358,20 +358,20 @@ class SlotMachine(ctk.CTkFrame):
             self.btn_back.pack(side="left")
         ctk.CTkLabel(
             header,
-            text="CASINO  /  SLOT MACHINE",
+            text="CASINO  /  MACHINE À SOUS",
             text_color="#848e9c",
             font=("Arial", 12, "bold"),
         ).pack(side="right", pady=6)
 
         ctk.CTkLabel(
             self,
-            text="Three reels. One lucky spin.",
+            text="Trois rouleaux. Un tour chanceux.",
             text_color="#eaecef",
             font=("Arial", 28, "bold"),
         ).pack(pady=(5, 2))
         ctk.CTkLabel(
             self,
-            text="Match all three symbols to win.",
+            text="Faites correspondre les trois symboles pour gagner.",
             text_color="#848e9c",
             font=("Arial", 13),
         ).pack(pady=(0, 14))
@@ -407,7 +407,7 @@ class SlotMachine(ctk.CTkFrame):
 
         self.result_label = ctk.CTkLabel(
             machine_card,
-            text="Ready when you are",
+            text="Prêt quand vous l'êtes",
             text_color="#848e9c",
             font=("Arial", 16, "bold"),
             height=32,
@@ -416,7 +416,7 @@ class SlotMachine(ctk.CTkFrame):
 
         self.spin_button = ctk.CTkButton(
             machine_card,
-            text="SPIN  ·  SPACE",
+            text="TOURNER  ·  ESPACE",
             width=240,
             height=50,
             fg_color="#0ecb81",
@@ -463,7 +463,7 @@ class SlotMachine(ctk.CTkFrame):
 
         player_cash = self.engine.database.getPath(f"cash:{self.engine.username}")
         if 100 > player_cash:
-            self.lbl_result.configure(text="Not enought money !", text_color="orange")
+            self.lbl_result.configure(text="Pas assez d'argent !", text_color="orange")
             return
         
         player_cash -= 100
@@ -471,7 +471,7 @@ class SlotMachine(ctk.CTkFrame):
         self.update_cash_display(player_cash)
         
         self.result_label.configure(
-            text="Spinning...",
+            text="Tourne...",
             text_color="#848e9c",
         )
         self.machine_running = True
@@ -539,7 +539,7 @@ class SlotMachine(ctk.CTkFrame):
             self.update_cash_display(player_prize)
         else:
             self.result_label.configure(
-                text="NO MATCH - TRY AGAIN",
+                text="AUCUNE CORRESPONDANCE - RÉESSAYEZ",
                 text_color="#f6465d",
             )
         self.machine_running = False
