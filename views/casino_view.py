@@ -178,43 +178,43 @@ class Roulette(ctk.CTkFrame):
         self.angle_actuel = 0
 
         self.roulette_wheel = [
-            ("Green", "0"),
-            ("Red", "32"),
-            ("Black", "15"),
-            ("Red", "19"),
-            ("Black", "4"),
-            ("Red", "21"),
-            ("Black", "2"),
-            ("Red", "25"),
-            ("Black", "17"),
-            ("Red", "34"),
-            ("Black", "6"),
-            ("Red", "27"),
-            ("Black", "13"),
-            ("Red", "36"),
-            ("Black", "11"),
-            ("Red", "30"),
-            ("Black", "8"),
-            ("Red", "23"),
-            ("Black", "10"),
-            ("Red", "5"),
-            ("Black", "24"),
-            ("Red", "16"),
-            ("Black", "33"),
-            ("Red", "1"),
-            ("Black", "20"),
-            ("Red", "14"),
-            ("Black", "31"),
-            ("Red", "9"),
-            ("Black", "22"),
-            ("Red", "18"),
-            ("Black", "29"),
-            ("Red", "7"),
-            ("Black", "28"),
-            ("Red", "12"),
-            ("Black", "35"),
-            ("Red", "3"),
-            ("Black", "26"),
+            ("Vert", "0"),
+            ("Rouge", "32"),
+            ("Noire", "15"),
+            ("Rouge", "19"),
+            ("Noire", "4"),
+            ("Rouge", "21"),
+            ("Noire", "2"),
+            ("Rouge", "25"),
+            ("Noire", "17"),
+            ("Rouge", "34"),
+            ("Noire", "6"),
+            ("Rouge", "27"),
+            ("Noire", "13"),
+            ("Rouge", "36"),
+            ("Noire", "11"),
+            ("Rouge", "30"),
+            ("Noire", "8"),
+            ("Rouge", "23"),
+            ("Noire", "10"),
+            ("Rouge", "5"),
+            ("Noire", "24"),
+            ("Rouge", "16"),
+            ("Noire", "33"),
+            ("Rouge", "1"),
+            ("Noire", "20"),
+            ("Rouge", "14"),
+            ("Noire", "31"),
+            ("Rouge", "9"),
+            ("Noire", "22"),
+            ("Rouge", "18"),
+            ("Noire", "29"),
+            ("Rouge", "7"),
+            ("Noire", "28"),
+            ("Rouge", "12"),
+            ("Noire", "35"),
+            ("Rouge", "3"),
+            ("Noire", "26"),
         ]
 
         try:
@@ -268,7 +268,7 @@ class Roulette(ctk.CTkFrame):
 
         # Couleur de la mise
         ctk.CTkLabel(self, text="Choisir la couleur :", font=("Arial", 14)).pack()
-        self.color_var = tk.StringVar(value="Red")
+        self.color_var = tk.StringVar(value="Rouge")
         color_menu = ctk.CTkOptionMenu(
             self, variable=self.color_var, values=["Rouge", "Noire", "Vert"]
         )
@@ -369,7 +369,7 @@ class Roulette(ctk.CTkFrame):
         player_cash = self.engine.database.getPath(f"cash:{self.engine.username}")
 
         if color == choix_utilisateur:
-            if color == "Green":
+            if color == "Vert":
                 winnings = self.current_bet * 36
                 player_cash += winnings
                 self.lbl_result.configure(
