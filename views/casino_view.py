@@ -328,12 +328,13 @@ class SlotMachine(ctk.CTkFrame):
                     ctk.CTkImage(dark_image=symbol.copy(), size=(160, 160))
                 )
         self.user_cash = ctk.CTkLabel(
-                    self,
-                    text=f"⭐ {str(self.engine.database.getPath(f"cash:{self.engine.username}"))} $ ⭐",
-                    font=("Arial", 20, "bold"),
-                    text_color="#0ecb81",
-                )
+            self,
+            text="",
+            font=("Arial", 20, "bold"),
+            text_color="#0ecb81",
+            )
         self.user_cash.pack(side="right", padx=20)
+        self.update_cash_display()
 
         header = ctk.CTkFrame(self, fg_color="transparent")
         header.pack(fill="x", padx=28, pady=(18, 8))
@@ -427,10 +428,18 @@ class SlotMachine(ctk.CTkFrame):
         self.temps_2 = 0
         self.temps_3 = 0
 
+    def update_cash_display(self, cash=None):
+        """Met à jour l'affichage du solde en temps réel"""
+        if cash is None:
+            cash = self.engine.database.getPath(f"cash:{self.engine.username}")
+        self.user_cash.configure(text=f"⭐ {cash} $ ⭐")
+        self.update_idletasks()
+
     def lancer_machine(self):
         player_bet = self.engine.database.getPath(f"cash:{self.engine.username}")
         player_bet -= 100
         self.engine.database.setPath(f"cash:{self.engine.username}",player_bet)
+        self.update_cash_display(player_bet)
         """Déclenche l'animation des 3 rouleaux avec des temps d'arrêt échelonnés"""
         if self.machine_running:
             if self.curr == 1:
@@ -507,6 +516,7 @@ class SlotMachine(ctk.CTkFrame):
             player_prize = self.engine.database.getPath(f"cash:{self.engine.username}")
             player_prize += 1000
             self.engine.database.setPath(f"cash:{self.engine.username}",player_prize)
+            self.update_cash_display(player_prize)
         else:
             self.result_label.configure(
                 text="NO MATCH - TRY AGAIN",
