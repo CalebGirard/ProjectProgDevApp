@@ -2,6 +2,8 @@ from Users.userbase import userbase
 from market.market import Market
 from Database import Database
 from random_events.random_events import random_eventer
+from Bank.bank import Bank
+import json
 import time
 
 class Engine:
@@ -10,6 +12,7 @@ class Engine:
         self.database = Database("host",True)
         self.database.rawMsgCallback = self.rawMsgCallback
         self.database.newConnCallback = self.newPlayer
+        self.database.bankActionCallback = self.process_bank_action
         self.onMarketLoaded = None
         self.database.startThread()
         self.config = {
@@ -40,6 +43,8 @@ class Engine:
         self.userbase.build_T2s()
         self.userbase.build_T3s()
         self.userbase.build_T4s()
+        self.bank = Bank()
+        self.bank.add_player(self.username)
 
     def sell(self,username,ticker,x):
         current_stock = self.market.get_stock_by_ticker(ticker)
@@ -61,6 +66,7 @@ class Engine:
 
     def newPlayer(self,username):
         self.database.setPath(f"cash:{username}", self.config["starting_cash"])
+        self.bank.add_player(username)
         if self.market and self.market.stocks:
             self.database.set("market", {
                 "id": time.time(),
@@ -76,8 +82,66 @@ class Engine:
         messages.append({"username": "[Notification]", "message": f"{username} just joined !"})
         if len(messages) >= 40:
             messages.pop(0)
-        self.database.set("messages", messages)
-        self.needSnapshot = True
+        self.database.set("messages",messages)
+        self.sync_bank_state()
+
+    def sync_bank_state(self):
+        self.database.set("bank_state", {
+            "stock_value": self.bank.stock_value,
+            "stock_change_percent": self.bank.stock_change_percent,
+            "player_loans": self.bank.player_loans
+        })
+
+    def process_bank_action(self, username, action, amount=None):
+        if not self.hosting or action not in ("take_loan", "repay_loan", "repay_all"):
+            return False
+
+        self.bank.add_player(username)
+        cash_path = f"cash:{username}"
+        current_cash = self.database.getPath(cash_path)
+
+        if current_cash is None:
+            current_cash = 0.0
+
+        if action == "take_loan":
+            if not self.bank.take_loan(username, amount):
+                return False
+            self.database.setPath(cash_path, current_cash + float(amount))
+
+        elif action == "repay_loan":
+            total_loans = self.bank.get_total_loans(username)
+            if amount <= 0 or amount > total_loans or amount > current_cash:
+                return False
+
+            paid_amount = self.bank.repay_loan(username, amount)
+            if paid_amount <= 0:
+                return False
+            self.database.setPath(cash_path, current_cash - paid_amount)
+
+        elif action == "repay_all":
+            total_loans = self.bank.get_total_loans(username)
+            if total_loans <= 0 or current_cash < total_loans:
+                return False
+
+            paid_amount = self.bank.repay_loans(username)
+            self.database.setPath(cash_path, current_cash - paid_amount)
+
+        self.sync_bank_state()
+        return True
+
+    def request_bank_action(self, action, amount=None):
+        if self.hosting:
+            return self.process_bank_action(self.username, action, amount)
+
+        self.database.sendAsClient(json.dumps({
+            "type": "bank_action",
+            "username": self.username,
+            "data": {
+                "action": action,
+                "amount": amount
+            }
+        }))
+        return True
 
     def rawMsgCallback(self,username, msg):
         if msg["data"].startswith("/buy"):
@@ -97,6 +161,20 @@ class Engine:
         """Advances the simulation by 1 time step."""
         if self.hosting:
             self.iteration += 1
+
+            if self.iteration % self.bank.mandatory_payment_interval == 0:
+                for player_id in list(self.bank.player_loans):
+                    self.bank.update_loans(player_id)
+
+                self.bank.update_bank_stock()
+
+            self.database.set("bank_state", {
+                "stock_value": self.bank.stock_value,
+                "stock_change_percent": self.bank.stock_change_percent,
+                "player_loans": self.bank.player_loans
+                })
+
+            bank_state = self.database.get("bank_state")
 
             played_event = self.eventer.update(
                 current_iteration = self.iteration,
@@ -125,20 +203,18 @@ class Engine:
                 "prices": {t: s.price for t, s in self.market.stocks.items()},
             })
         else:
-            snap = self.database.get("market")
-            if snap and snap.get("id") != self.snapshot_id:
-                if not self.market:
-                    self.market = Market(len(snap["stocks"]))
-                self.market.load_snapshot(snap["stocks"])
-                self.snapshot_id = snap["id"]
-                self.iteration = snap["iteration"]
-                if self.onMarketLoaded:
-                    self.onMarketLoaded()
-            
-            td = self.database.get("tick")
-            if td and td.get("iteration", 0) > self.iteration and self.market:
-                self.iteration = td["iteration"]
-                self.market.apply_tick(td["prices"])
+            prices = self.database.get("prices")
+            lastHist = self.database.get("lastHist")
+            bank_state = self.database.get("bank_state")
+
+            if bank_state is not None:
+                self.bank.stock_value = bank_state["stock_value"]
+                self.bank.stock_change_percent = bank_state["stock_change_percent"]
+                self.bank.player_loans = bank_state["player_loans"]
+            if prices:
+                self.market.setPrices(prices)
+            if lastHist:
+                self.market.addHist(lastHist)
 
     def _apply_event(self, event):
         if self.hosting:
