@@ -304,8 +304,6 @@ class Roulette(ctk.CTkFrame):
         self.update_cash_display(player_cash)
         self.spinning = False
 
-
-
 class SlotMachine(ctk.CTkFrame):
     def __init__(self, master, engine, back_callback=None):
         super().__init__(master, fg_color="#0b0e11")
@@ -435,14 +433,6 @@ class SlotMachine(ctk.CTkFrame):
         self.update_idletasks()
 
     def lancer_machine(self):
-        player_cash = self.engine.database.getPath(f"cash:{self.engine.username}")
-        if 100 > player_cash:
-            self.lbl_result.configure(text="Not enought money !", text_color="orange")
-            return
-        
-        player_cash -= 100
-        self.engine.database.setPath(f"cash:{self.engine.username}",player_cash)
-        self.update_cash_display(player_cash)
         """Déclenche l'animation des 3 rouleaux avec des temps d'arrêt échelonnés"""
         if self.machine_running:
             if self.curr == 1:
@@ -453,6 +443,16 @@ class SlotMachine(ctk.CTkFrame):
                 self.temps_3 = 0
             self.curr += 1
             return
+
+        player_cash = self.engine.database.getPath(f"cash:{self.engine.username}")
+        if 100 > player_cash:
+            self.lbl_result.configure(text="Not enought money !", text_color="orange")
+            return
+        
+        player_cash -= 100
+        self.engine.database.setPath(f"cash:{self.engine.username}",player_cash)
+        self.update_cash_display(player_cash)
+        
         self.result_label.configure(
             text="Spinning...",
             text_color="#848e9c",
