@@ -86,7 +86,7 @@ class BankView(ctk.CTkFrame):
 
         player_id = self.engine.username
 
-        if amount <= 0 or not math.isfifinite(amount):
+        if amount <= 0 or not math.isfinite(amount):
             return
 
         total_loans = self.engine.bank.get_total_loans(player_id)
@@ -105,7 +105,7 @@ class BankView(ctk.CTkFrame):
         except ValueError:
             return
 
-        if amount <= 0:
+        if amount <= 0 or not math.isfinite(amount):
             return
 
         player_id = self.engine.username

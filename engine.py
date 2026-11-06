@@ -128,6 +128,12 @@ class Engine:
             if amount > total_loans or amount > current_cash:
                 return False
 
+            paid_amount = self.bank.repay_loan(username, amount)
+            if paid_amount <= 0:
+                return False
+
+            self.database.setPath(cash_path, current_cash - paid_amount)    
+
         elif action == "repay_all":
             total_loans = self.bank.get_total_loans(username)
             if total_loans <= 0 or current_cash < total_loans:
