@@ -1,0 +1,125 @@
+{
+ "version": "auto-py-to-exe-configuration_v1",
+ "pyinstallerOptions": [
+  {
+   "optionDest": "noconfirm",
+   "value": true
+  },
+  {
+   "optionDest": "filenames",
+   "value": "C:/Users/Caleb/Documents/GitHub/ProjectProgDevApp/main.py"
+  },
+  {
+   "optionDest": "onefile",
+   "value": true
+  },
+  {
+   "optionDest": "console",
+   "value": false
+  },
+  {
+   "optionDest": "icon_file",
+   "value": "C:/Users/Caleb/Documents/GitHub/ProjectProgDevApp/Assets/snake.ico"
+  },
+  {
+   "optionDest": "clean_build",
+   "value": false
+  },
+  {
+   "optionDest": "strip",
+   "value": false
+  },
+  {
+   "optionDest": "noupx",
+   "value": false
+  },
+  {
+   "optionDest": "disable_windowed_traceback",
+   "value": false
+  },
+  {
+   "optionDest": "uac_admin",
+   "value": false
+  },
+  {
+   "optionDest": "uac_uiaccess",
+   "value": false
+  },
+  {
+   "optionDest": "argv_emulation",
+   "value": false
+  },
+  {
+   "optionDest": "bootloader_ignore_signals",
+   "value": false
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/Caleb/Documents/GitHub/ProjectProgDevApp/assets.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/Caleb/Documents/GitHub/ProjectProgDevApp/Database.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/Caleb/Documents/GitHub/ProjectProgDevApp/engine.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/Caleb/Documents/GitHub/ProjectProgDevApp/main.py;."
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/Caleb/Documents/GitHub/ProjectProgDevApp/Assets;Assets/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/Caleb/Documents/GitHub/ProjectProgDevApp/market;market/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/Caleb/Documents/GitHub/ProjectProgDevApp/Users;Users/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/Caleb/Documents/GitHub/ProjectProgDevApp/views;views/"
+  },
+  {
+   "optionDest": "datas",
+   "value": "C:/Users/Caleb/Documents/GitHub/ProjectProgDevApp/random_events;random_events/"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "requests"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "aiortc"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "websockets"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "pandas"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "matplotlib"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "customtkinter"
+  },
+  {
+   "optionDest": "hiddenimports",
+   "value": "numpy"
+  }
+ ],
+ "nonPyinstallerOptions": {
+  "increaseRecursionLimit": true,
+  "manualArguments": ""
+ }
+}
