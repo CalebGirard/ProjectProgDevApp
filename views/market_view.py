@@ -12,6 +12,8 @@ class MarketView(ctk.CTkFrame):
         self.controller = controller
 
         self.engine = engine
+        self._last_displayed_event = None
+
 
         self.current_stock = list(self.engine.market.stocks.values())[
             0
@@ -34,24 +36,28 @@ class MarketView(ctk.CTkFrame):
         self.bottom_tabs_builder()
         self.engine.onMarketLoaded = self.reload_stocks
 
+    # Recharger les actions
     def reload_stocks(self):
         options = self._get_dropdown_options()
         self.name_select.configure(values=options)
         self.name_select.set(options[0])
         self.switch_data(options[0])
 
+    # Les options du menu
     def _get_dropdown_options(self):
         # Format : "Apple (AAPL)"
         return sorted(
             [f"{s.name} ({s.ticker})" for s in self.engine.market.stocks.values()]
         )
 
+    # Quand l'action visualisée est changée
     def switch_data(self, stock_name):
         found = self.engine.market.find_stock_by_long_name(stock_name)
         if found is not None:
             self.current_stock = found
             self.refresh()
 
+    # Construire la barre du haut
     def top_bar_builder(self):
         bar = ctk.CTkFrame(self, fg_color="#181a20", height=48, corner_radius=0)
         bar.grid(row=0, column=0, columnspan=2, sticky="ew", padx=0, pady=(0, 2))
@@ -115,7 +121,7 @@ class MarketView(ctk.CTkFrame):
             "hover_color": "#2a2d2e",
         }
 
-        # Superposition
+        # Créer les boutons de durées
 
         self.time_buttons = {}
 
@@ -132,6 +138,11 @@ class MarketView(ctk.CTkFrame):
             button.pack(side="right", padx=5)
             self.time_buttons[label] = button
 
+    # En fait, la comboBox de base de ctkinter est pas très bien.
+    # Les systèmes qui suivent servent à rendre le tout un peu plus utilisable en
+    # permettant de taper et d'autocompléter en appuyant sur tab
+    #
+    # Filtrer les options
     def _filter_combobox(self, event):
         if event.keysym in ("Return", "Tab", "Up", "Down", "Left", "Right"):
             return
@@ -142,11 +153,13 @@ class MarketView(ctk.CTkFrame):
         filtered = [opt for opt in all_options if query in opt.lower()]
         self.name_select.configure(values=filtered if filtered else all_options)
 
+    # Pour changer la durée visualisée
     def set_current_view(self, view):
         self.current_time_view = view
         self._update_time_button_styles()
         self.refresh()
 
+    # Pour que les boutons de durée aient le même effet visuel que les boutons de la barre latérale
     def _update_time_button_styles(self):
         for label, view in self.time_views.items():
             self.time_buttons[label].configure(
@@ -155,8 +168,8 @@ class MarketView(ctk.CTkFrame):
                 )
             )
 
+    # Sélectionner automatiquement la première action valide
     def _select_first_match(self, event):
-        """Auto select le premier stock quand le user fait tab"""
         valid_options = self.name_select._values
 
         if valid_options:
@@ -166,6 +179,7 @@ class MarketView(ctk.CTkFrame):
 
         return "break"
 
+    # Construire le graphique
     def graph_area_builder(self):
         chart_frame = ctk.CTkFrame(self, fg_color="#181a20", corner_radius=6)
         chart_frame.grid(row=1, column=0, sticky="nsew", padx=(6, 3), pady=3)
@@ -189,10 +203,12 @@ class MarketView(ctk.CTkFrame):
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(fill="both", expand=True, padx=4, pady=4)
 
+    # Construire la zone où on peut acheter
     def order_panel_builder(self):
         panel = ctk.CTkFrame(self, fg_color="#181a20", corner_radius=6)
         panel.grid(row=1, column=1, rowspan=2, sticky="nsew", padx=(3, 6), pady=3)
 
+        # Titre
         ctk.CTkLabel(
             panel,
             text="MOUVEMENTS DU MARCHÉ",
@@ -203,6 +219,7 @@ class MarketView(ctk.CTkFrame):
         breadth_card = ctk.CTkFrame(panel, fg_color="#121418", corner_radius=8)
         breadth_card.pack(fill="x", padx=12, pady=(0, 12))
 
+        # Carte
         ctk.CTkLabel(
             breadth_card,
             text="AMPLITUDE DU MARCHÉ",
@@ -216,6 +233,8 @@ class MarketView(ctk.CTkFrame):
             font=("Arial", 12, "bold"),
         )
         self.market_breadth_label.pack(anchor="w", padx=10)
+
+        # Barre parce que pourquoi pas j'ai pas d'autres idées de quoi mettre
         self.market_breadth_bar = ctk.CTkProgressBar(
             breadth_card,
             height=6,
@@ -224,6 +243,7 @@ class MarketView(ctk.CTkFrame):
         )
         self.market_breadth_bar.pack(fill="x", padx=10, pady=(6, 9))
 
+        # Variations
         ctk.CTkLabel(
             panel,
             text="PLUS FORTES VARIATIONS · HIER",
@@ -269,7 +289,7 @@ class MarketView(ctk.CTkFrame):
         )
         sell_btn.pack(side="right", expand=True, fill="x", padx=(4, 0))
 
-        # Clavier
+        # Zone de texte
         ctk.CTkLabel(
             panel, text="Quantité (actions)", text_color="#848e9c", font=("Arial", 11)
         ).pack(anchor="w", padx=14, pady=(10, 0))
@@ -277,6 +297,7 @@ class MarketView(ctk.CTkFrame):
         self.amount_entry.pack(fill="x", padx=12, pady=4)
         self.amount_entry.insert(0, "1")
 
+        # Quantités d'actions possédées
         self.owned_shares_label = ctk.CTkLabel(
             panel, text="", text_color="#848e9c", font=("Arial", 11)
         )
@@ -287,6 +308,7 @@ class MarketView(ctk.CTkFrame):
 
     # Ventes et achats
 
+    # Fonction pour vendre et acheter
     def sales_or_buys_executer(self, direction):
         try:
             quantity = int(self.amount_entry.get())
@@ -307,6 +329,7 @@ class MarketView(ctk.CTkFrame):
                 f"/{action} {self.current_stock.ticker} {quantity}"
             )
 
+    # Pour rafraîchir avec la database
     def _refresh_owned_shares(self):
         portfolios = self.engine.database.get("portfolios") or {}
         owned = portfolios.get(self.engine.username, {}).get(
@@ -314,6 +337,7 @@ class MarketView(ctk.CTkFrame):
         )
         self.owned_shares_label.configure(text=f"Possédées : {owned} actions")
 
+    # Construire le panneau d'en bas
     def bottom_tabs_builder(self):
         # Fil d'événements défilant
         self.news_box = ctk.CTkTextbox(
@@ -322,6 +346,7 @@ class MarketView(ctk.CTkFrame):
         self.news_box.grid(row=2, column=0, sticky="nsew", padx=(6, 3), pady=(3, 6))
         self.news_box.configure(state="disabled")
 
+    # Pour actualiser
     def refresh(self):
         self.price_label.configure(text=f"${self.current_stock.price:.2f}")
         self._refresh_owned_shares()
@@ -339,17 +364,17 @@ class MarketView(ctk.CTkFrame):
                 "play_probability": event["play_probability"],
             }
 
-        self.news_box.configure(state="normal")
-        self.news_box.delete("1.0", "end")
-        if next_event:
+        event_entry = (next_event["scope"], next_event["headline"])
+        if event_entry != self._last_displayed_event:
+            self.news_box.configure(state="normal")
             self.news_box.insert(
-                "end", f"{next_event['scope'].upper()} - " f"{next_event['headline']}\n"
+                "end",
+                f"{next_event['scope'].upper()} - "
+                f"{next_event['headline']}\n"
             )
-        else:
-            self.news_box.insert(
-                "end", "Aucun événement n’est encore en file d’attente.\n"
-            )
-        self.news_box.configure(state="disabled")
+            self.news_box.see("end")
+            self.news_box.configure(state="disabled")
+            self._last_displayed_event = event_entry
 
         # Actualiser le graphique
         self.ax.clear()
@@ -372,6 +397,7 @@ class MarketView(ctk.CTkFrame):
         self.user_cash.configure(text=f"⭐ {cash} $ ⭐")
         self.canvas.draw()
 
+    # Changements du marché
     def _refresh_market_pulse(self):
         stocks = list(self.engine.market.stocks.values())
         changes = [(stock, _latest_change_pct(stock)) for stock in stocks]
@@ -379,9 +405,7 @@ class MarketView(ctk.CTkFrame):
         declining = sum(change < 0 for _, change in changes)
         unchanged = len(changes) - advancing - declining
 
-        breadth_text = f"{advancing} montant  ·  {declining} descendant"
-        if unchanged:
-            breadth_text += f"  ·  {unchanged} flat"
+        breadth_text = f"{advancing} montants  ·  {declining} descendants"
         self.market_breadth_label.configure(text=breadth_text)
         self.market_breadth_bar.set(advancing / len(changes) if changes else 0)
 
@@ -395,12 +419,14 @@ class MarketView(ctk.CTkFrame):
                 ),
             )
 
+    # Le style du graphique est défini dans cette méthode à des fins de concision
     def style_chart(self):
         self.ax.set_facecolor("#181a20")
         self.ax.tick_params(colors="#848e9c", labelsize=9)
         for spine in self.ax.spines.values():
             spine.set_color("#2b313a")
 
+    # Au recommencement de la simulation
     def reset(self):
         self.current_stock = list(self.engine.market.stocks.values())[0]
 
@@ -411,12 +437,13 @@ class MarketView(ctk.CTkFrame):
         self.refresh()
 
 
+# Pour afficher les nombres sous un meilleur format (ex. : 1 Mrd)
 def number_formatter(valeur):
     valeur = float(valeur)
     if valeur >= 1e12:
         return f"{valeur / 1e12:.2f}T"
     if valeur >= 1e9:
-        return f"{valeur / 1e9:.2f}B"
+        return f"{valeur / 1e9:.2f}G"
     elif valeur >= 1e6:
         return f"{valeur / 1e6:.2f}M"
     elif valeur >= 1e3:
@@ -426,20 +453,20 @@ def number_formatter(valeur):
 
 MAX_CANDLES = 100
 
-
+# Pourcentage de changement
 def _latest_change_pct(stock):
     if len(stock.history) < 2 or stock.history[-2] <= 0:
         return 0.0
     return (stock.history[-1] - stock.history[-2]) / stock.history[-2] * 100
 
-
+# Filtrer pour n'avoir que le bon nombre d'"itérations" pour la durée sélectionnée
 def _history_window(history, time_view):
     if time_view is None:
         return history, 0
     start = max(0, len(history) - time_view)
     return history[start:], start
 
-
+# Créer les bougies du graphique
 def candlesticker(ax, prices, start_index=0, previous_close=None):
     candle_sizer = max(1, (len(prices) + MAX_CANDLES - 1) // MAX_CANDLES)
 
@@ -472,4 +499,4 @@ def candlesticker(ax, prices, start_index=0, previous_close=None):
         )
     if prices:
         ax.set_xlim(start_index - 0.5, start_index + len(prices) - 0.5)
-    ax.set_xlabel(f"{candle_sizer} échantillons par bougie", color="#848e9c")
+    ax.set_xlabel(f"{candle_sizer} jours", color="#848e9c")

@@ -1,4 +1,4 @@
-from Users.userbase import userbase
+from Users.userbase import Userbase
 from market.market import Market
 from Database import Database
 from random_events.random_events import random_eventer
@@ -45,7 +45,7 @@ class Engine:
         self.market = Market(self.config["num_stocks"])
         self.eventer = random_eventer(chaos=self.config["chaos"], market=self.market)
         self.iteration = 0
-        self.userbase = userbase(self.config["num_users"], self.config["difficulty"])
+        self.userbase = Userbase(self.config["num_users"], self.config["difficulty"])
         self.database.set("tick", {"iteration": 0, "prices": {}})
         self.snapshot_id = None
         self.needSnapshot = True
