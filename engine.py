@@ -27,10 +27,11 @@ class Engine:
 
 
     def rebuild(self, config_changes=None):
+        self.username = "host"
         if config_changes:
             self.config.update(config_changes)
-        self.username = "host"
-        self.database.set("playerlist",[self.username])
+        else:
+            self.database.set("playerlist",[self.username])
         self.database.setPath("cash:host", self.config["starting_cash"])
         self.database.set("messages",[])
         self.hosting = True
