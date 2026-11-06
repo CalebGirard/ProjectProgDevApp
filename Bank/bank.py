@@ -40,7 +40,7 @@ class Bank:
             return self.stock_value * credit_score * 1000
 
     def take_loan(self, player_id, amount):
-        if not isinstance(amount, (int, float)):
+        if isinstance(amount,bool) or not isinstance(amount, (int, float)):
             return False
 
         amount = float(amount)
@@ -139,10 +139,13 @@ class Bank:
         state["interest_rates"].clear()
         state["paid_interest_multiples"].clear()
 
+        self.update_credit_score(player_id)
+        self.update_vip_status(player_id)
+
         return total_loans
 
     def repay_loan(self, player_id, amount):
-        if not isinstance(amount, (int, float)):
+        if isinstance(amount, bool) or not isinstance(amount, (int, float)):
             return 0.0
 
         amount = float(amount)

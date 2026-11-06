@@ -5,6 +5,7 @@ from random_events.random_events import random_eventer
 from Bank.bank import Bank
 import json
 import time
+import math
 
 class Engine:
     def __init__(self, starting_cash_def=50000, market_def=200, chaos_def=1.0, nbusers_def = 500, diff_mul_def = 1.0):
@@ -100,23 +101,32 @@ class Engine:
         cash_path = f"cash:{username}"
         current_cash = self.database.getPath(cash_path)
 
-        if current_cash is None:
-            current_cash = 0.0
+        if isinstance(current_cash, bool) or not isinstance(current_cash, (int, float)):
+            return False
 
+        current_cash = float(current_cash)
+
+        if not math.isfinite(current_cash) or current_cash < 0:
+            return False
+        
         if action == "take_loan":
             if not self.bank.take_loan(username, amount):
                 return False
             self.database.setPath(cash_path, current_cash + float(amount))
 
         elif action == "repay_loan":
-            total_loans = self.bank.get_total_loans(username)
-            if amount <= 0 or amount > total_loans or amount > current_cash:
+            if isinstance(amount, bool) or not isinstance(amount, (int, float)):
                 return False
 
-            paid_amount = self.bank.repay_loan(username, amount)
-            if paid_amount <= 0:
+            amount = float(amount)
+
+            if not math.isfinite(amount) or amount <= 0:
                 return False
-            self.database.setPath(cash_path, current_cash - paid_amount)
+
+            total_loans = self.bank.get_total_loans(username)
+
+            if amount > total_loans or amount > current_cash:
+                return False
 
         elif action == "repay_all":
             total_loans = self.bank.get_total_loans(username)
