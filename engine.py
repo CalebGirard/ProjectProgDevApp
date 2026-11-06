@@ -39,6 +39,7 @@ class Engine:
         self.eventer = random_eventer(chaos = self.config["chaos"], market = self.market)
         self.iteration = 0
         self.userbase = userbase(self.config["num_users"], self.config["difficulty"])
+        self.database.set("tick", {"iteration": 0, "prices": {}})
         self.snapshot_id = None
         self.needSnapshot = True
         self.userbase.build_T1s()
@@ -47,6 +48,7 @@ class Engine:
         self.userbase.build_T4s()
         self.bank = Bank()
         self.bank.add_player(self.username)
+        
 
     def sell(self,username,ticker,x):
         current_stock = self.market.get_stock_by_ticker(ticker)
@@ -246,10 +248,11 @@ class Engine:
                     "iteration": self.iteration,
                     "stocks": self.market.snapshot(),
                 })
-            self.database.set("tick", {
-                "iteration": self.iteration,
-                "prices": {t: s.price for t, s in self.market.stocks.items()},
-            })
+            else:
+                self.database.set("tick", {
+                    "iteration": self.iteration,
+                    "prices": {t: s.price for t, s in self.market.stocks.items()},
+                })
         else:
             snap = self.database.get("market")
             if snap and snap.get("id") != self.snapshot_id:
