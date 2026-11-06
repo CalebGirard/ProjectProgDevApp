@@ -189,6 +189,9 @@ class MainApp(ctk.CTk):
         if hasattr(frame, "refresh"):
             frame.refresh()
 
+        if hasattr(frame, "actualize"):
+            frame.actualize()
+
         for name, button in self.navigation_buttons.items():
             button.configure(
                 fg_color="#2d2d30" if name == page_name else "transparent"
