@@ -3,6 +3,9 @@ import random
 
 
 class Bank:
+
+    # initialisation de tous les paramètres/variables qui seront utilisés ici.
+
     def __init__(self):
         self.stock_value = 100.0
         self.stock_change_percent = 0.0
@@ -16,6 +19,8 @@ class Bank:
     interest_increase = 0.005
     mandatory_payment_interval = 100
 
+    # crée le "compte bancaire" initial d'un joueur si celui-ci n'existe pas encore
+
     def add_player(self, player_id):
         if player_id in self.player_loans:
             return
@@ -28,11 +33,17 @@ class Bank:
             "is_vip": False,
         }
 
+    # retourne l'état bancaire du joueur, en créant automatiquement cet état
+    # lorsqu'il n'existe pas encore
+
     def get_player_state(self, player_id):
         if player_id not in self.player_loans:
             self.add_player(player_id)
 
         return self.player_loans[player_id]
+
+    # calcule le montant maximal que le joueur peut emprunter à partir de la
+    # valeur actuelle de la banque et de la cote de crédit du joueur.
 
     def get_max_loan(self, player_id):
         state = self.get_player_state(player_id)
@@ -40,6 +51,9 @@ class Bank:
         credit_score = state["credit_score"]
 
         return self.stock_value * credit_score * 1000
+
+    # valide puis ajoute un nouveau prêt au joueur. vérifie aussi les paramètres bancaires
+    # (montant, limite de prêt, dette totale et crédit)
 
     def take_loan(self, player_id, amount):
         if isinstance(amount, bool) or not isinstance(amount, (int, float)):
@@ -74,9 +88,14 @@ class Bank:
 
         return True
 
+    # retourne la dette totale actuelle du joueur (la somme de tous ses prêts)
+
     def get_total_loans(self, player_id):
         state = self.get_player_state(player_id)
         return sum(state["loans"])
+
+    # mise à jour du pointage de crédit selon le nombre de prêts en cours.
+    # le fait de n'avoir aucun prêt améliore la cote alors qu'en avoir la diminue.
 
     def update_credit_score(self, player_id):
         state = self.get_player_state(player_id)
@@ -91,9 +110,14 @@ class Bank:
 
         state["credit_score"] = max(0, state["credit_score"] - 3)
 
+     # active le statut VIP lorsque le pointage de crédit du joueur atteint 80.
+
     def update_vip_status(self, player_id):
         state = self.get_player_state(player_id)
         state["is_vip"] = state["credit_score"] >= 80
+
+    # fait évoluer aléatoirement la valeur de l'action de la banque
+    # puis mémorise sa nouvelle valeur et sa variation en pourcentage.
 
     def update_bank_stock(self):
         previous_value = self.stock_value
@@ -108,6 +132,10 @@ class Bank:
             self.stock_change_percent = (
                 (self.stock_value - previous_value) / previous_value
             ) * 100
+
+    # mise à jour des prêts du joueur en appliquant les intérêts sur les prêts du joueur, 
+    # en augmentant progressivement le taux d'intérêt ainsi qu'en déterminant si le joueur doit
+    # automatiquement repayer ses prêts
 
     def update_loans(self, player_id):
         state = self.get_player_state(player_id)
@@ -134,6 +162,8 @@ class Bank:
         self.update_credit_score(player_id)
         self.update_vip_status(player_id)
 
+    # rembourse intégralement tous les prêts du joueur et retourne le montant total remboursé.
+
     def repay_loans(self, player_id):
         state = self.get_player_state(player_id)
 
@@ -147,6 +177,9 @@ class Bank:
         self.update_vip_status(player_id)
 
         return total_loans
+
+    # rembourse une partie ou la totalité des prêts du joueur s'il n'en a qu'un, en commençant
+    # par les prêts les plus anciens. retourne le montant réellement payé.
 
     def repay_loan(self, player_id, amount):
         if isinstance(amount, bool) or not isinstance(amount, (int, float)):

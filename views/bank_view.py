@@ -5,6 +5,10 @@ import math
 
 
 class BankView(ctk.CTkFrame):
+
+    # initialise les paramètres, construit l'interface graphique de la banque et lance la
+    # première actualisation des informations affichées 
+
     def __init__(self, master, controller, engine):
         super().__init__(master, fg_color="#0b0e11")
         self.controller = controller
@@ -128,6 +132,9 @@ class BankView(ctk.CTkFrame):
 
         self.refresh_bank()
 
+    # actualise les informations bancaires, les prêts, le crédit ainsi que le graphique,
+    # puis relance automatiquement cette méthode une seconde plus tard.
+
     def refresh_bank(self):
         if self.refresh_job is not None:
             self.after_cancel(self.refresh_job)
@@ -200,6 +207,9 @@ class BankView(ctk.CTkFrame):
 
         self.refresh_job = self.after(1000, self.refresh_bank)
 
+    # valide et traite la demande de prise de prêt. Le montant doit être positif,
+    # valide et ne pas dépasser la limite maximale de la valeur d'un prêt.
+
     def take_loan(self):
         try:
             amount = float(self.loan_amount_entry.get())
@@ -220,6 +230,9 @@ class BankView(ctk.CTkFrame):
         self.engine.request_bank_action("take_loan", amount)
 
         self.refresh_bank()
+
+    # valide et traite un remboursement partiel. On vérifie que le montant est valide
+    # et qu'il ne dépasse ni la dette, ni l'argent disponible. 
 
     def repay_loan(self):
         try:
@@ -251,6 +264,8 @@ class BankView(ctk.CTkFrame):
 
         self.refresh_bank()
 
+    # vérifie que le solde du joueur suffit, puis demande le remboursement de tous les prêts à engine.
+    
     def repay_loans(self):
         player_id = self.engine.username
         state = self.engine.bank.get_player_state(player_id)

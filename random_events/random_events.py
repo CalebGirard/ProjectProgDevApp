@@ -34,6 +34,10 @@ import csv
 import re
 from pathlib import Path
 
+# Méthode choisissant un élément avec l'aide des poids représentant la probabilité 
+# de chaque élément.
+# sélectionnés au hasard (événements, compagnies pdg..... tout ce qui va se 
+# retrouver dans le fichier event_state)
 
 def weighted_choice(weights):
     total = sum(weights.values())
@@ -52,6 +56,9 @@ def weighted_choice(weights):
 
 
 class random_eventer:
+
+    # initialisation de la classe. On crée les paramètres qui vont être
+    # réutilisés plus tard dans la classe.
 
     def __init__(self, chaos, market=None):
         self.chaos = chaos
@@ -162,8 +169,16 @@ class random_eventer:
             self.event_list = [self.build_event() for _ in range(5)]
             self.write_state()
 
+    # choix du type d'évenement qui va se produire (minor,major,global)
+    # c'est ici que commencent les méthodes de génération d'événement, qui
+    # vont toutes être appelées plus tard.
+
     def select_scope(self):
         return weighted_choice(self.scope_weights)
+
+    # choix de l'événement spécifique qui va être sélectionné 
+    # (choisi à partir de tous les événements disponibles dans le type
+    # (scope) précédemment sélectionné
 
     def select_template(self, scope):
         weights = self.template_weights[scope]
@@ -176,23 +191,27 @@ class random_eventer:
         )
         return template
 
+    # rebalancement du coefficient de probabilité des autres événements.
+    # Le coefficient de l'élément choisi diminue de moitié et la moitié qui
+    # lui a été enlevée est redistribuée de manière équitable avec les autres
+    # événements du même type
+
     def rebalance_template_weights(self, scope, selected_template_id):
         weights = self.template_weights[scope]
 
         removed_weight = weights[selected_template_id] / 2
         weights[selected_template_id] -= removed_weight
 
-        sibling_ids = [
-            template_id
-            for template_id in weights
-            if template_id != selected_template_id
-        ]
+        sibling_ids = [template_id for template_id in weights if template_id != selected_template_id]
 
         if sibling_ids:
             redistribution = removed_weight / len(sibling_ids)
 
             for template_id in sibling_ids:
                 weights[template_id] += redistribution
+
+    # rebalancement des coefficients de probabilité des variables utilisées dans les événements 
+    # (comme le "tag" pour avoir un PDG pigé dans notre liste de PDG dans company_ceos.json)
 
     def rebalance_variable(self, variable_name, selected_value):
         weights = self.variable_weights[variable_name]
@@ -206,6 +225,10 @@ class random_eventer:
 
             for value in other_values:
                 weights[value] += redistribution
+
+    # sélection des variables choisies dans nos événements. On analyse ici les espaces
+    # réservés aux variables ({variable}) dans la section de chaque événement dans event_structures
+    # où l'on a le texte qui sera affiché.
 
     def resolve_template_variables(self, template):
         text_fields = [
@@ -317,6 +340,11 @@ class random_eventer:
 
         return selected_values
 
+    # remplace les endroits réservés aux variables de l'événement choisi avec les variables
+    # choisies (si on regarde dans event_structures.json, alors on peut voir que dans chaque
+    # déclaration d'événement, ou ce que l'utilisateur va voir dans l'interface, ils ont
+    # tous une section avec le type de la variable en {variable})
+
     def resolve_string(self, value, selected_values):
         if not isinstance(value, str):
             return value
@@ -326,8 +354,13 @@ class random_eventer:
 
         return value
 
+    # on génère l'impact de l'événement choisi sur le marché.
     def generate_impact(self, template):
         return random.uniform(*template["impact_range"]) * self.chaos
+
+    # C'est ici que l'on construit l'événement choisi en utilisant les méthodes de génération afin de le 
+    # mettre plus tard dans le fichier event_state.json, qui gère les probabilités de tous les événements et les variables 
+    # ainsi que la liste d'événements construits. 
 
     def build_event(self):
         scope = self.select_scope()
@@ -352,6 +385,9 @@ class random_eventer:
             "failure_increase": 0.10,
         }
 
+    # détermine quelles actions sont affectées par l'événement choisi (nombre d'actions impactées
+    # varie selon le type de l'événement).
+
     def resolve_targets(self, event, market):
         stocks = market.stocks
 
@@ -364,34 +400,32 @@ class random_eventer:
             company_tag = event["variables"].get("company_tag")
 
             if company is not None and company_tag is not None:
-                matching_companies = {
-                    company_name
-                    for company_name, company_record in self.company_records.items()
-                    if company_record.get("tag") == company_tag
-                }
-                return [
-                    stock
-                    for stock in stocks.values()
-                    if stock.name in matching_companies
-                ]
+                matching_companies = {company_name for company_name, company_record 
+                                      in self.company_records.items() 
+                                      if company_record.get("tag") == company_tag
+                                      }
+                return [stock for stock in stocks.values() if stock.name in matching_companies]
 
             target_tag = event["target_tag"]
 
             if target_tag is not None:
-                return [
-                    stock
-                    for stock in stocks.values()
+                return [stock for stock in stocks.values()
                     if target_tag in getattr(stock, "tags", [])
                     or getattr(stock, "tag", None) == target_tag
                 ]
 
         return list(stocks.values())
 
+    # applique l'impact de l'événement sur les actions choisies par resolve_targets
+
     def apply_event(self, event, market):
         for stock in self.resolve_targets(event, market):
             stock.price = max(0.01, stock.price * (1.0 + event["impact"] * 0.1))
 
             stock.history.append(stock.price)
+
+    # sépare l'impact de l'événement en plusieurs itérations afin que l'impact causé par les événements
+    # soit plus remarquable plutôt que de faire augmenter la valeur de l'action une seule fois.
 
     def apply_event_tick(self, event, market):
         duration = max(1, int(event.get("duration_ticks", 1)))
@@ -401,12 +435,16 @@ class random_eventer:
         for stock in self.resolve_targets(event, market):
             stock.price = max(0.01, stock.price * tick_multiplier)
 
+    # on rajoute l'événement choisi à la liste d'événements actifs présentemment actifs.
+    # (ceux présentement en train d'appliquer leur impact) 
+
     def activate_event(self, event):
         duration = max(1, int(event.get("duration_ticks", 1)))
         active_event = dict(event)
         active_event["remaining_ticks"] = duration
         self.active_events.append(active_event)
 
+    # c'est ici que l'on sauvegarde event_state
 
     def write_state(self):
         state = {
@@ -421,6 +459,7 @@ class random_eventer:
         with self.state_file.open("w", encoding = "utf-8") as state_file:
             json.dump(state, state_file, indent = 2, ensure_ascii = False)
 
+    # méthode qui restaure l'état sauvegardé de event_state. on initialise un nouvel état si le chargement échoue
 
     def load_state(self):
         if not self.state_file.exists():
@@ -529,12 +568,18 @@ class random_eventer:
 
         return True
 
+    # délègue le traitement à process_event_queue
+
     def update(self, current_iteration, check_interval, market=None):
         return self.process_event_queue(
-            check_interval=check_interval,
-            current_iteration=current_iteration,
-            market=market,
+            check_interval = check_interval,
+            current_iteration = current_iteration,
+            market = market,
         )
+
+    # traite les événements en appliquant les événements actifs ainsi qu'en testant/activant
+    # le prochain événement dans la liste. le test du prochain événement n'a lieu que lorsque
+    # current_iteration % check_interval == 0
 
     def process_event_queue(self, check_interval, current_iteration, market = None):
         active_state_changed = False
@@ -542,10 +587,7 @@ class random_eventer:
         if market is not None and self.active_events:
             for event in list(self.active_events):
                 self.apply_event_tick(event, market)
-                event["remaining_ticks"] = max(
-                    0,
-                    int(event.get("remaining_ticks", 1)) - 1
-                )
+                event["remaining_ticks"] = max(0, int(event.get("remaining_ticks", 1)) - 1)
                 active_state_changed = True
 
                 if event["remaining_ticks"] <= 0:
