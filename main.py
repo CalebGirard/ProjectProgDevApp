@@ -4,7 +4,7 @@ import customtkinter as ctk
 import tkinter as tk
 from PIL import Image, ImageTk
 
-# Views
+# Vues
 
 from views.market_view import MarketView
 from views.shop_view import ShopView
@@ -156,7 +156,7 @@ class MainApp(ctk.CTk):
     def init_frames(self):
         self.container.grid_columnconfigure(0, weight=1)
         self.container.grid_rowconfigure(0, weight=1)
-        # Map a string key to the respective class
+        # Associer une clé textuelle à la classe correspondante
         page_classes = {
             "Casino": CasinoView,
             "Shop": ShopView,
@@ -167,11 +167,11 @@ class MainApp(ctk.CTk):
         }
 
         for name, FrameClass in page_classes.items():
-            # Instantiate each frame inside self.container
+            # Instancier chaque cadre dans self.container
             frame = FrameClass(master=self.container, controller=self, engine=self.engine)
             self.frames[name] = frame
 
-            # Stack all frames into the exact same cell
+            # Empiler tous les cadres dans la même cellule
             frame.grid(row=0, column=0, sticky="nsew")
 
     def show_frame(self, page_name: str):

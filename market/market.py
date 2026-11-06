@@ -70,7 +70,7 @@ class Market:
     def __init__(self, size, impact=0.01):
         self.size = size
         self.assets = Assets("market")
-        self.stocks = self.create_stocks(self.size, impact)  # dictionnary of stocks
+        self.stocks = self.create_stocks(self.size, impact)          # Dictionnaire des actions
         
 
     def create_stocks(self, size, impact):
@@ -155,7 +155,7 @@ class Market:
         return self.stocks.get(ticker, None)
 
     def find_stock_by_long_name(self, name):
-        # format : A (A)
+        # Format : A (A)
 
         index = name.find("(")
         ticker = name[index + 1 : -1]

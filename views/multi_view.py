@@ -58,7 +58,7 @@ class MultiView(ctk.CTkFrame):
         self.initframe = ctk.CTkFrame(self, fg_color="#0b0e11")
         self.initframe.place(relx=0, rely=0, relwidth=1, relheight=1)
  
-        # Centered card
+        # Carte centrée
         card = ctk.CTkFrame(
             self.initframe,
             fg_color="#161a1e",

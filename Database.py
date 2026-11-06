@@ -23,17 +23,17 @@ def threadsafe(fn):
 
 class Database:
     def __init__(self,username:str, host:bool=False):
-        # Global
+        # Variables globales
         self.username = username
         self.host = host
         self.data = {}
         self.canSend = False
 
-        # Requests
+        # Requêtes
         self.requestQueue = asyncio.Queue()
         self.waitQueue = asyncio.Queue()
         
-        # Signaling 
+        # Signalisation
         self.webs = None
         self.code = None
         self.token = None
@@ -41,7 +41,7 @@ class Database:
         self.sigRoomRunning = False
         self.sigQueue = asyncio.Queue()
 
-        # Networking 
+        # Réseau
         self.connections = {}
         self.channels = {}
         self.clientPc = None
@@ -57,7 +57,7 @@ class Database:
     async def init(self):
         asyncio.create_task(self.handleRequests())
 
-    # Signaling Module
+    # Module de signalisation
 
     async def signalRecv(self):
         if self.sigRe:
@@ -230,7 +230,7 @@ class Database:
         self.sigRoomRunning = False
         return True
 
-    # Request Module
+    # Module des requêtes
     def getPath(self, path: str):
         dt = self.data
         for p in self.splitPath(path):
@@ -307,7 +307,7 @@ class Database:
             return pd.DataFrame(self.data.get(key))
         return None
     
-    # Networking Module 
+    # Module réseau
 
     def handleChannel(self, channel, username:str):
         if self.host:
@@ -437,7 +437,7 @@ class Database:
         self.broadcast(json.dumps({"type":"database_close"}))
         self.data = {}
 
-    # Utilities
+    # Utilitaires
 
     def splitPath(self, path:str):
         path = path.split(":")

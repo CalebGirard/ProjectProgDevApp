@@ -205,12 +205,12 @@ class Roulette(ctk.CTkFrame):
         self.lbl_result = ctk.CTkLabel(self, text="", font=("Arial", 28, "bold"))
         self.lbl_result.pack(pady=10)
 
-        # Bet Amount
+        # Montant de la mise
         ctk.CTkLabel(self, text="Montant de la mise :", font=("Arial", 14)).pack()
         self.bet_entry = ctk.CTkEntry(self, font=("Arial", 14))
         self.bet_entry.pack(pady=6)
 
-        # Bet Color
+        # Couleur de la mise
         ctk.CTkLabel(self, text="Choisir la couleur :", font=("Arial", 14)).pack()
         self.color_var = tk.StringVar(value="Red")
         color_menu = ctk.CTkOptionMenu(self, variable=self.color_var, values=["Rouge", "Noire", "Vert"])

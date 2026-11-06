@@ -14,6 +14,6 @@ async def main():
         await database.set("Test1", counter)
         print(await database.get("Test1"))
 
-#Test
+# Tests
 
 asyncio.run(main())

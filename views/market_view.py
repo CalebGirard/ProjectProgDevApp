@@ -39,18 +39,18 @@ class MarketView(ctk.CTkFrame):
 
         self.current_stock = list(self.engine.market.stocks.values())[
             0
-        ]  # Default to the first stock
+        ]          # Sélectionner la première action par défaut
 
-        # Time views
+        # Vues temporelles
 
         self.time_views = {"1W": 7, "1M": 30, "6M": 180, "1Y":365, "ALL": None}
         self.current_time_view = 30
 
-        # Grid configuration
-        self.grid_columnconfigure(0, weight=3)  # Chart + News
-        self.grid_columnconfigure(1, weight=1)  # Order execution panel
-        self.grid_rowconfigure(1, weight=3)  # Main chart row
-        self.grid_rowconfigure(2, weight=1)  # News / bottom tabs row
+        # Configuration de la grille
+        self.grid_columnconfigure(0, weight=3)          # Graphique + actualités
+        self.grid_columnconfigure(1, weight=1)          # Panneau de passation des ordres
+        self.grid_rowconfigure(1, weight=3)          # Ligne du graphique principal
+        self.grid_rowconfigure(2, weight=1)          # Ligne des actualités / onglets inférieurs
 
         self.top_bar_builder()
         self.graph_area_builder()
@@ -65,7 +65,7 @@ class MarketView(ctk.CTkFrame):
         self.switch_data(options[0])
 
     def _get_dropdown_options(self):
-        # Format: "Apple (AAPL)"
+        # Format : "Apple (AAPL)"
         return sorted(
             [f"{s.name} ({s.ticker})" for s in self.engine.market.stocks.values()]
         )
@@ -80,7 +80,7 @@ class MarketView(ctk.CTkFrame):
         bar = ctk.CTkFrame(self, fg_color="#181a20", height=48, corner_radius=0)
         bar.grid(row=0, column=0, columnspan=2, sticky="ew", padx=0, pady=(0, 2))
 
-        # Dropdown menu
+        # Menu déroulant
         options = self._get_dropdown_options()
         self.name_select = ctk.CTkComboBox(
             bar,
@@ -94,7 +94,7 @@ class MarketView(ctk.CTkFrame):
         self.name_select.set(options[0] if options else "")
         self.name_select.pack(side="left", padx=12, pady=8)
 
-        # Clavier pour l'autocompletion
+        # Clavier pour la complétion automatique
         self.name_select.bind("<KeyRelease>", self._filter_combobox)
         self.name_select.bind("<Tab>", self._select_first_match)
         self.name_select.bind("<Return>", self._select_first_match)
@@ -105,7 +105,7 @@ class MarketView(ctk.CTkFrame):
         )
         self.name.pack(side="left", padx=12, pady=8)
 
-        # Stats
+        # Statistiques
         self.price_label = ctk.CTkLabel(
             bar,
             text=f"${self.current_stock.price:.2f}",
@@ -123,7 +123,7 @@ class MarketView(ctk.CTkFrame):
         self.stat_text.pack(side="left", padx=10)
 
 
-        # User argent
+        # Argent de l'utilisateur
 
         self.user_cash = ctk.CTkLabel(
             bar,
@@ -143,7 +143,7 @@ class MarketView(ctk.CTkFrame):
         }
 
 
-        # Overlay
+        # Superposition
 
         self.time_buttons = {}
 
@@ -273,7 +273,7 @@ class MarketView(ctk.CTkFrame):
             button.pack(fill="x", padx=10, pady=1)
             self.mover_buttons.append(button)
 
-        # Buy / Sell Toggle Buttons
+        # Boutons bascule achat/vente
         btn_row = ctk.CTkFrame(panel, fg_color="transparent")
         btn_row.pack(fill="x", padx=12, pady=12)
 
@@ -346,7 +346,7 @@ class MarketView(ctk.CTkFrame):
         self.owned_shares_label.configure(text=f"Owned: {owned} shares")
 
     def bottom_tabs_builder(self):
-        # Scrollable events feed
+        # Fil d'événements défilant
         self.news_box = ctk.CTkTextbox(
             self, fg_color="#121418", text_color="#eaecef", font=("Consolas", 11)
         )
@@ -382,7 +382,7 @@ class MarketView(ctk.CTkFrame):
             self.news_box.insert("end", "Aucun événement n’est encore en file d’attente.\n")
         self.news_box.configure(state="disabled")
 
-        # Refresh le graphique
+        # Actualiser le graphique
         self.ax.clear()
 
         self.style_chart()

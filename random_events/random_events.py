@@ -1,30 +1,30 @@
- # Pre-generates and schedules the full list of events before the simulation.
-    # Minor events will affect only their stock.
-    # Major events will affect their stock and the ones of the same tag(s).
-    # Global events will affect the whole market.
-    # Impact coefficients can be positive or negative.
+# Génère et planifie à l'avance la liste complète des événements avant le début de la simulation.
+    # Les événements mineurs n'affectent que l'action concernée.
+    # Les événements majeurs affectent l'action concernée ainsi que celles partageant la/les même(s) étiquette(s).
+    # Les événements globaux affectent l'ensemble du marché.
+    # Les coefficients d'impact peuvent être positifs ou négatifs.
 
-    # Types of minor events :
-    # [CEO of x company] publicly supports [x candidate] from [x country].
-    # Employees of [x company] have started a strike !
-    # {company} beats consensus quarterly earnings by {pct}% and raises full-year forward revenue guidance.
-    # Patent office grants {company} exclusive 20-year rights to an unannounced proprietary technology.
-    # Billionaire hedge fund manager discloses a {pct}% stake in {company} and demands immediate share buybacks.
-    # Regulatory filing reveals {company} inflated subscription renewals and cash reserves for three quarters.
-    # [tbd]
+    # Types d'événements mineurs :
+    # Le PDG de l'entreprise [x] soutient publiquement le candidat [x] originaire du pays [x].
+    # Les employés de l'entreprise [x] se mettent en grève !
+    # L'entreprise {company} dépasse les prévisions consensuelles de bénéfices trimestriels de {pct} % et relève ses prévisions de chiffre d'affaires pour l'ensemble de l'année.
+    # L'office des brevets accorde à l'entreprise {company} des droits exclusifs de 20 ans sur une technologie propriétaire inédite.
+    # Un gestionnaire milliardaire de fonds spéculatifs révèle une participation de {pct} % dans l'entreprise {company} et exige un rachat immédiat d'actions.
+    # Un document réglementaire révèle que l'entreprise {company} a gonflé ses chiffres de renouvellement d'abonnements et ses réserves de trésorerie sur trois trimestres.
+    # [à définir]
 
-    # Types of major events :
-    # Donald Trump announces [random %] of tariffs on all countries.
-    # [tbd]
+    # Types d'événements majeurs :
+    # Donald Trump annonce des droits de douane de [pourcentage aléatoire] % sur tous les pays.
+    # [à définir]
 
-    # Types of global events :
-    # [major country] attacks [major region]
-    # [tbd]
+    # Types d'événements globaux :
+    # Un pays majeur attaque une région majeure.
+    # [à définir]
 
-    # Dataframe structure :
-    # Turn count - Headline - Scope (Mi/Ma/Gl) - Impact
+    # Structure de la trame de données :
+    # Numéro du tour - Titre - Portée (Mineur/Majeur/Global) - Impact
 
-    # Lists of files : region/countries, ceos of companies, templates of events, list of tags
+    # Liste des fichiers : régions/pays, PDG des entreprises, modèles d'événements, liste des étiquettes
 
 
 import json

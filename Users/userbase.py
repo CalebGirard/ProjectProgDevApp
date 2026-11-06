@@ -17,7 +17,7 @@ class user:
         if rd.random() > 0.30:
             return
 
-        # Essayer stocks
+        # Essayer des actions
         all_tickers = list(market.stocks.keys())
         sample_tickers = rd.sample(all_tickers, min(5, len(all_tickers)))
 

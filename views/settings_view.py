@@ -8,13 +8,13 @@ class SettingsView(ctk.CTkFrame):
         super().__init__(master, fg_color="#0b0e11")
         self.controller = controller
 
-        # Grid configuration
-        # Settings :
+        # Configuration de la grille
+        # Paramètres :
         #
-        # Difficulty multiplier
-        # Nombre de players
-        # Nombre de stocks
-        # Starting cash
+        # Multiplicateur de difficulté
+        # Nombre de joueurs
+        # Nombre d'actions
+        # Capital de départ
 
         self.engine = engine
 
@@ -77,7 +77,7 @@ class SettingsView(ctk.CTkFrame):
         self.number_players_input = ctk.CTkEntry(main, placeholder_text=f"{self.engine.config["num_users"]}", height=42, state=state)
         self.number_players_input.pack(anchor="e", padx=30, pady=(10, 0))
 
-        # Stocks
+        # Actions
         self.number_stocks_label = ctk.CTkLabel(
             main, text="Number of stocks : ", font=("Arial", 14, "bold")
         )
@@ -98,7 +98,7 @@ class SettingsView(ctk.CTkFrame):
         self.starting_cash_input = ctk.CTkEntry(main, placeholder_text=f"{self.engine.config["starting_cash"]}", height=42, state=state)
         self.starting_cash_input.pack(anchor="e", padx=30, pady=(10, 0))
 
-        # Appliquer les settings
+        # Appliquer les paramètres
 
         self.apply_btn = ctk.CTkButton(
             main,

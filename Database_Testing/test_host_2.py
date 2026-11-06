@@ -11,6 +11,6 @@ async def main():
     while True:
         await asyncio.sleep(5)
 
-#Test
+# Tests
 
 asyncio.run(main())
