@@ -21,10 +21,22 @@ class SettingsView(ctk.CTkFrame):
         self.ui_builder()
 
     def ui_builder(self):
+        state = "normal"
+        if self.engine.hosting == False:
+            state = "disabled"
 
         # Titre de la page
         main = ctk.CTkFrame(self, fg_color="#181a20", corner_radius=10, width=500)
         main.pack(pady=40, padx=40, fill="both", expand=True)
+
+        
+        self.host_warning_label = ctk.CTkLabel(
+            main,
+            text="",
+            font=("Arial", 12, "italic"),
+            text_color="#f6465d",
+        )
+        self.host_warning_label.pack(anchor="w", padx=30, pady=(0, 5))
 
         title = ctk.CTkLabel(
             main,
@@ -42,7 +54,7 @@ class SettingsView(ctk.CTkFrame):
         )
         self.chaos_label.pack(anchor="w", padx=30, pady=(10, 0))
 
-        self.chaos_input = ctk.CTkEntry(main, placeholder_text=f"{self.engine.config["chaos"]}", height=42)
+        self.chaos_input = ctk.CTkEntry(main, placeholder_text=f"{self.engine.config["chaos"]}", height=42, state=state)
         self.chaos_input.pack(anchor="e", padx=30, pady=(10, 0))
 
         # Difficulté
@@ -53,7 +65,7 @@ class SettingsView(ctk.CTkFrame):
         )
         self.difficulty_label.pack(anchor="w", padx=30, pady=(10, 0))
 
-        self.difficulty_input = ctk.CTkEntry(main, placeholder_text=f"{self.engine.config["difficulty"]}", height=42)
+        self.difficulty_input = ctk.CTkEntry(main, placeholder_text=f"{self.engine.config["difficulty"]}", height=42, state=state)
         self.difficulty_input.pack(anchor="e", padx=30, pady=(10, 0))
 
         # Joueurs
@@ -62,7 +74,7 @@ class SettingsView(ctk.CTkFrame):
         )
         self.number_players_label.pack(anchor="w", padx=30, pady=(10, 0))
 
-        self.number_players_input = ctk.CTkEntry(main, placeholder_text=f"{self.engine.config["num_users"]}", height=42)
+        self.number_players_input = ctk.CTkEntry(main, placeholder_text=f"{self.engine.config["num_users"]}", height=42, state=state)
         self.number_players_input.pack(anchor="e", padx=30, pady=(10, 0))
 
         # Stocks
@@ -72,7 +84,7 @@ class SettingsView(ctk.CTkFrame):
         self.number_stocks_label.pack(anchor="w", padx=30, pady=(10, 0))
 
 
-        self.number_stocks_input = ctk.CTkEntry(main, placeholder_text=f"{self.engine.config["num_stocks"]}", height=42)
+        self.number_stocks_input = ctk.CTkEntry(main, placeholder_text=f"{self.engine.config["num_stocks"]}", height=42, state=state)
         self.number_stocks_input.pack(anchor="e", padx=30, pady=(10, 0))
 
         # Montant de départ
@@ -83,13 +95,12 @@ class SettingsView(ctk.CTkFrame):
         )
         self.starting_cash_label.pack(anchor="w", padx=30, pady=(10, 0))
 
-        self.starting_cash_input = ctk.CTkEntry(main, placeholder_text=f"{self.engine.config["starting_cash"]}", height=42)
+        self.starting_cash_input = ctk.CTkEntry(main, placeholder_text=f"{self.engine.config["starting_cash"]}", height=42, state=state)
         self.starting_cash_input.pack(anchor="e", padx=30, pady=(10, 0))
-
 
         # Appliquer les settings
 
-        apply_btn = ctk.CTkButton(
+        self.apply_btn = ctk.CTkButton(
             main,
             text="Apply & Restart Simulation",
             fg_color="#0ecb81",
@@ -98,10 +109,11 @@ class SettingsView(ctk.CTkFrame):
             height=42,
             command=self._apply_settings
         )
-        apply_btn.pack(anchor="se", padx=30, pady=100)
+        self.apply_btn.pack(anchor="se", padx=30, pady=48)
         
 
     def _apply_settings(self):
+                
         new_config = {
             "num_stocks": int(self.number_stocks_input.get().strip() or self.engine.config["num_stocks"]),
             "num_users": int(self.number_players_input.get().strip() or self.engine.config["num_users"]),
@@ -114,3 +126,5 @@ class SettingsView(ctk.CTkFrame):
         market_view = self.controller.frames.get("Market")
         if market_view:
             market_view.reset()
+
+    
