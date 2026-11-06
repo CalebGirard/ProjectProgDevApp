@@ -1,5 +1,6 @@
 import Database, asyncio
 
+
 async def main():
     username = input("Username: ")
     database = Database.Database(username)
@@ -7,7 +8,7 @@ async def main():
     await database.connectToDatabase(code)
     print("Connected!")
     await database.sendAsClient("Test Message")
-    await database.opData("Test1",10,"+")
+    await database.opData("Test1", 10, "+")
     last = 0
     while True:
         await asyncio.sleep(0.03)
@@ -15,6 +16,7 @@ async def main():
         if last != val:
             last = val
             print(f"'Test1' is {val}...")
+
 
 # Tests
 

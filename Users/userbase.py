@@ -6,6 +6,7 @@ import math
 import csv
 from assets import Assets
 
+
 class user:
     def __init__(self, nom, lvl, starting_cash):
         self.nom = nom
@@ -21,7 +22,7 @@ class user:
         all_tickers = list(market.stocks.keys())
         sample_tickers = rd.sample(all_tickers, min(5, len(all_tickers)))
 
-        # 
+        #
         skill_factor = max(0.05, (10.5 - min(10.0, self.lvl)) / 10.0)
         noise_std = 0.08 * skill_factor
 
@@ -55,7 +56,7 @@ class user:
         if self.holdings >= cost and qty > 0:
             self.holdings -= cost
             self.wallet[stock.ticker] = self.wallet.get(stock.ticker, 0) + qty
-            stock.buy(qty) 
+            stock.buy(qty)
 
     def sell_stock(self, stock, qty):
         owned = self.wallet.get(stock.ticker, 0)
@@ -65,8 +66,7 @@ class user:
             self.wallet[stock.ticker] -= qty
             if self.wallet[stock.ticker] <= 0:
                 del self.wallet[stock.ticker]
-            stock.sell(qty)  
-
+            stock.sell(qty)
 
     def __gt__(self, other):
         return self.name > other.name
@@ -200,32 +200,32 @@ class userbase:
         self.userbase.extend(users)
 
     def good_stock_finder(self, market, active_event=None, eventer=None):
-            scores = {}
-    
-            event_targets = set()
-            event_impact = 0.0
-            if active_event and eventer:
-                affected_stocks = eventer.resolve_targets(active_event, market)
-                event_targets = {s.ticker for s in affected_stocks}
-                event_impact = active_event.get("impact", 0.0)
-    
-            for ticker, stock in market.stocks.items():
-                if len(stock.history) >= 5 and stock.history[-5] > 0:
-                    momentum = (stock.price - stock.history[-5]) / stock.history[-5]
-                else:
-                    momentum = 0.0
-    
-                score = (momentum * 0.1) + (stock.drift * 10)
-    
-                if ticker in event_targets:
-                    score += event_impact
-    
-                scores[ticker] = score
-    
-            return scores
-    
+        scores = {}
+
+        event_targets = set()
+        event_impact = 0.0
+        if active_event and eventer:
+            affected_stocks = eventer.resolve_targets(active_event, market)
+            event_targets = {s.ticker for s in affected_stocks}
+            event_impact = active_event.get("impact", 0.0)
+
+        for ticker, stock in market.stocks.items():
+            if len(stock.history) >= 5 and stock.history[-5] > 0:
+                momentum = (stock.price - stock.history[-5]) / stock.history[-5]
+            else:
+                momentum = 0.0
+
+            score = (momentum * 0.1) + (stock.drift * 10)
+
+            if ticker in event_targets:
+                score += event_impact
+
+            scores[ticker] = score
+
+        return scores
+
     def update(self, market, active_event=None, eventer=None):
         good_stocks = self.good_stock_finder(market, active_event, eventer)
-    
+
         for bot in self.userbase:
             bot.make_decision(market, good_stocks)

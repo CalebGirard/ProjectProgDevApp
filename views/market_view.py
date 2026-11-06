@@ -4,34 +4,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.patches import Rectangle
 import matplotlib.pyplot as plt
 from engine import Engine
-"""
-
-UI STRUCTURE :
-
-+---------------------------------------------------------------------------------------------+
-| TOP BAR: [Ticker Dropdown] | $83,109.38 (+1.48%) | 24h High: $84k | 24h Low: $81k | Cash: $10k|
-+----------------------------------------------------+--------------------+--------------------+
-|                                                    | MIDDLE (20%):      | RIGHT (25%):       |
-|  LEFT (55%):                                       | ORDER BOOK / TICK  | ORDER PANEL        |
-|                                                    |                    |                    |
-|  - Candlestick Chart (Matplotlib Canvas)           | [ Asks (Red)     ] | [ Buy ]  [ Sell ]  |
-|  - Timeframe toggles [1m][5m][1h]                  | ------------------ | ------------------ |
-|                                                    | Current Price      | Type: Market/Limit |
-|                                                    | ------------------ | Shares / Amount    |
-|                                                    | [ Bids (Green)   ] | Slider: 25% 50% 100|
-|                                                    |                    | Total: $...        |
-|                                                    |                    | [ PLACE ORDER BTN ]|
-+----------------------------------------------------+--------------------+--------------------+
-| BOTTOM TABS (Height: ~180px):                                                                |
-| [ Current Positions ]  [ Active Orders ]  [ News & Breaking Events Feed ]                    |
-| > "FED announces interest rate hike: Tech sector drops 4%"                                  |
-+---------------------------------------------------------------------------------------------+
-
-"""
 
 
 class MarketView(ctk.CTkFrame):
-    def __init__(self, master, controller, engine:Engine):
+    def __init__(self, master, controller, engine: Engine):
         super().__init__(master, fg_color="#0b0e11")
         self.controller = controller
 
@@ -39,18 +15,18 @@ class MarketView(ctk.CTkFrame):
 
         self.current_stock = list(self.engine.market.stocks.values())[
             0
-        ]          # Sélectionner la première action par défaut
+        ]  # Sélectionner la première action par défaut
 
         # Vues temporelles
 
-        self.time_views = {"1W": 7, "1M": 30, "6M": 180, "1Y":365, "ALL": None}
+        self.time_views = {"1W": 7, "1M": 30, "6M": 180, "1Y": 365, "ALL": None}
         self.current_time_view = 30
 
         # Configuration de la grille
-        self.grid_columnconfigure(0, weight=3)          # Graphique + actualités
-        self.grid_columnconfigure(1, weight=1)          # Panneau de passation des ordres
-        self.grid_rowconfigure(1, weight=3)          # Ligne du graphique principal
-        self.grid_rowconfigure(2, weight=1)          # Ligne des actualités / onglets inférieurs
+        self.grid_columnconfigure(0, weight=3)  # Graphique + actualités
+        self.grid_columnconfigure(1, weight=1)  # Panneau de passation des ordres
+        self.grid_rowconfigure(1, weight=3)  # Ligne du graphique principal
+        self.grid_rowconfigure(2, weight=1)  # Ligne des actualités / onglets inférieurs
 
         self.top_bar_builder()
         self.graph_area_builder()
@@ -122,7 +98,6 @@ class MarketView(ctk.CTkFrame):
         )
         self.stat_text.pack(side="left", padx=10)
 
-
         # Argent de l'utilisateur
 
         self.user_cash = ctk.CTkLabel(
@@ -133,15 +108,12 @@ class MarketView(ctk.CTkFrame):
         )
         self.user_cash.pack(side="right", padx=20)
 
-        
-
         button_style = {
             "width": 40,
             "height": 40,
             "corner_radius": 8,
             "hover_color": "#2a2d2e",
         }
-
 
         # Superposition
 
@@ -301,9 +273,7 @@ class MarketView(ctk.CTkFrame):
         ctk.CTkLabel(
             panel, text="Quantité (actions)", text_color="#848e9c", font=("Arial", 11)
         ).pack(anchor="w", padx=14, pady=(10, 0))
-        self.amount_entry = ctk.CTkEntry(
-            panel, fg_color="#2b313a", border_width=0
-        )
+        self.amount_entry = ctk.CTkEntry(panel, fg_color="#2b313a", border_width=0)
         self.amount_entry.pack(fill="x", padx=12, pady=4)
         self.amount_entry.insert(0, "1")
 
@@ -314,7 +284,6 @@ class MarketView(ctk.CTkFrame):
         self._refresh_owned_shares()
 
         self._refresh_market_pulse()
-
 
     # Ventes et achats
 
@@ -343,7 +312,7 @@ class MarketView(ctk.CTkFrame):
         owned = portfolios.get(self.engine.username, {}).get(
             self.current_stock.ticker, 0
         )
-        self.owned_shares_label.configure(text=f"Owned: {owned} shares")
+        self.owned_shares_label.configure(text=f"Possédées : {owned} actions")
 
     def bottom_tabs_builder(self):
         # Fil d'événements défilant
@@ -367,19 +336,19 @@ class MarketView(ctk.CTkFrame):
             next_event = {
                 "headline": event["headline"],
                 "scope": event["scope"],
-                "play_probability": event["play_probability"]
+                "play_probability": event["play_probability"],
             }
 
         self.news_box.configure(state="normal")
         self.news_box.delete("1.0", "end")
         if next_event:
             self.news_box.insert(
-                "end",
-                f"{next_event['scope'].upper()} - "
-                f"{next_event['headline']}\n"
+                "end", f"{next_event['scope'].upper()} - " f"{next_event['headline']}\n"
             )
         else:
-            self.news_box.insert("end", "Aucun événement n’est encore en file d’attente.\n")
+            self.news_box.insert(
+                "end", "Aucun événement n’est encore en file d’attente.\n"
+            )
         self.news_box.configure(state="disabled")
 
         # Actualiser le graphique
@@ -434,11 +403,11 @@ class MarketView(ctk.CTkFrame):
 
     def reset(self):
         self.current_stock = list(self.engine.market.stocks.values())[0]
-        
+
         new_options = self.engine.market.get_names()
         self.name_select.configure(values=new_options)
         self.name_select.set(new_options[0] if new_options else "")
-        
+
         self.refresh()
 
 

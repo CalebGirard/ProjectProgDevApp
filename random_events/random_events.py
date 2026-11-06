@@ -1,30 +1,30 @@
 # Génère et planifie à l'avance la liste complète des événements avant le début de la simulation.
-    # Les événements mineurs n'affectent que l'action concernée.
-    # Les événements majeurs affectent l'action concernée ainsi que celles partageant la/les même(s) étiquette(s).
-    # Les événements globaux affectent l'ensemble du marché.
-    # Les coefficients d'impact peuvent être positifs ou négatifs.
+# Les événements mineurs n'affectent que l'action concernée.
+# Les événements majeurs affectent l'action concernée ainsi que celles partageant la/les même(s) étiquette(s).
+# Les événements globaux affectent l'ensemble du marché.
+# Les coefficients d'impact peuvent être positifs ou négatifs.
 
-    # Types d'événements mineurs :
-    # Le PDG de l'entreprise [x] soutient publiquement le candidat [x] originaire du pays [x].
-    # Les employés de l'entreprise [x] se mettent en grève !
-    # L'entreprise {company} dépasse les prévisions consensuelles de bénéfices trimestriels de {pct} % et relève ses prévisions de chiffre d'affaires pour l'ensemble de l'année.
-    # L'office des brevets accorde à l'entreprise {company} des droits exclusifs de 20 ans sur une technologie propriétaire inédite.
-    # Un gestionnaire milliardaire de fonds spéculatifs révèle une participation de {pct} % dans l'entreprise {company} et exige un rachat immédiat d'actions.
-    # Un document réglementaire révèle que l'entreprise {company} a gonflé ses chiffres de renouvellement d'abonnements et ses réserves de trésorerie sur trois trimestres.
-    # [à définir]
+# Types d'événements mineurs :
+# Le PDG de l'entreprise [x] soutient publiquement le candidat [x] originaire du pays [x].
+# Les employés de l'entreprise [x] se mettent en grève !
+# L'entreprise {company} dépasse les prévisions consensuelles de bénéfices trimestriels de {pct} % et relève ses prévisions de chiffre d'affaires pour l'ensemble de l'année.
+# L'office des brevets accorde à l'entreprise {company} des droits exclusifs de 20 ans sur une technologie propriétaire inédite.
+# Un gestionnaire milliardaire de fonds spéculatifs révèle une participation de {pct} % dans l'entreprise {company} et exige un rachat immédiat d'actions.
+# Un document réglementaire révèle que l'entreprise {company} a gonflé ses chiffres de renouvellement d'abonnements et ses réserves de trésorerie sur trois trimestres.
+# [à définir]
 
-    # Types d'événements majeurs :
-    # Donald Trump annonce des droits de douane de [pourcentage aléatoire] % sur tous les pays.
-    # [à définir]
+# Types d'événements majeurs :
+# Donald Trump annonce des droits de douane de [pourcentage aléatoire] % sur tous les pays.
+# [à définir]
 
-    # Types d'événements globaux :
-    # Un pays majeur attaque une région majeure.
-    # [à définir]
+# Types d'événements globaux :
+# Un pays majeur attaque une région majeure.
+# [à définir]
 
-    # Structure de la trame de données :
-    # Numéro du tour - Titre - Portée (Mineur/Majeur/Global) - Impact
+# Structure de la trame de données :
+# Numéro du tour - Titre - Portée (Mineur/Majeur/Global) - Impact
 
-    # Liste des fichiers : régions/pays, PDG des entreprises, modèles d'événements, liste des étiquettes
+# Liste des fichiers : régions/pays, PDG des entreprises, modèles d'événements, liste des étiquettes
 
 
 import json
@@ -33,6 +33,7 @@ import pandas as pd
 import csv
 import re
 from pathlib import Path
+
 
 def weighted_choice(weights):
     total = sum(weights.values())
@@ -49,9 +50,10 @@ def weighted_choice(weights):
 
     return next(reversed(weights))
 
-class random_eventer():
 
-    def __init__(self, chaos, market = None):
+class random_eventer:
+
+    def __init__(self, chaos, market=None):
         self.chaos = chaos
         self.event_list = []
 
@@ -59,20 +61,22 @@ class random_eventer():
 
         self.state_file = data_directory / "event_state.json"
 
-        with (data_directory / "event_structures.json").open("r", encoding = "utf-8") as template_file:
+        with (data_directory / "event_structures.json").open(
+            "r", encoding="utf-8"
+        ) as template_file:
             self.templates = json.load(template_file)
 
-        with (data_directory / "company_ceos.json").open("r", encoding = "utf-8") as company_file:
+        with (data_directory / "company_ceos.json").open(
+            "r", encoding="utf-8"
+        ) as company_file:
             self.companies = json.load(company_file)
 
         if isinstance(self.companies, list):
             self.company_records = {
-                record["company"]: record
-                for record in self.companies
+                record["company"]: record for record in self.companies
             }
             self.companies = {
-                record["company"]: record["ceo"]
-                for record in self.companies
+                record["company"]: record["ceo"] for record in self.companies
             }
         else:
             self.company_records = {
@@ -80,7 +84,9 @@ class random_eventer():
                 for company, ceo in self.companies.items()
             }
 
-        with (data_directory / "regions.json").open("r", encoding = "utf-8") as region_file:
+        with (data_directory / "regions.json").open(
+            "r", encoding="utf-8"
+        ) as region_file:
             region_data = json.load(region_file)
 
         regions = []
@@ -92,13 +98,17 @@ class random_eventer():
 
         countries = []
         self.country_capitals = {}
-        with (data_directory / "country-list.csv").open("r", encoding = "utf-8") as country_file:
+        with (data_directory / "country-list.csv").open(
+            "r", encoding="utf-8"
+        ) as country_file:
             for row in csv.DictReader(country_file):
                 countries.append(row["country"])
                 self.country_capitals[row["country"]] = row["capital"]
 
         self.subdivision_capitals = {}
-        with (data_directory / "subdivisions.json").open("r", encoding = "utf-8") as subdivision_file:
+        with (data_directory / "subdivisions.json").open(
+            "r", encoding="utf-8"
+        ) as subdivision_file:
             subdivision_data = json.load(subdivision_file)
 
         subdivisions = []
@@ -109,14 +119,15 @@ class random_eventer():
                     self.subdivision_capitals[subdivision] = capital
 
         tags = []
-        with (data_directory / "tags.csv").open("r", encoding = "utf-8") as tag_file:
+        with (data_directory / "tags.csv").open("r", encoding="utf-8") as tag_file:
             for row in csv.DictReader(tag_file):
                 tags.append(row["tag"])
 
         available_companies = set(self.companies)
         if market is not None:
             available_companies = {
-                stock.name for stock in market.stocks.values()
+                stock.name
+                for stock in market.stocks.values()
                 if stock.name in self.companies
             }
 
@@ -128,15 +139,13 @@ class random_eventer():
             },
             "region": {region: 1.0 for region in dict.fromkeys(regions)},
             "country": {country: 1.0 for country in dict.fromkeys(countries)},
-            "subdivision": {subdivision: 1.0 for subdivision in dict.fromkeys(subdivisions)},
-            "tag": {tag: 1.0 for tag in dict.fromkeys(tags)}
+            "subdivision": {
+                subdivision: 1.0 for subdivision in dict.fromkeys(subdivisions)
+            },
+            "tag": {tag: 1.0 for tag in dict.fromkeys(tags)},
         }
 
-        self.scope_weights = {
-            "minor" : 70.0,
-            "major" : 25.0,
-            "global" : 5.0
-        }
+        self.scope_weights = {"minor": 70.0, "major": 25.0, "global": 5.0}
 
         self.template_weights = {}
 
@@ -149,29 +158,34 @@ class random_eventer():
             self.template_weights[scope][template["id"]] = 1.0
 
         if not self.load_state():
-            self.event_list = [self.build_event() for _ in range (5)]
+            self.event_list = [self.build_event() for _ in range(5)]
             self.write_state()
-
 
     def select_scope(self):
         return weighted_choice(self.scope_weights)
-
 
     def select_template(self, scope):
         weights = self.template_weights[scope]
         template_id = weighted_choice(weights)
 
-        template = next(template for template in self.templates if template["id"] == template_id and template["scope"] == scope)
+        template = next(
+            template
+            for template in self.templates
+            if template["id"] == template_id and template["scope"] == scope
+        )
         return template
 
-
-    def rebalance_template_weights(self,scope, selected_template_id):
+    def rebalance_template_weights(self, scope, selected_template_id):
         weights = self.template_weights[scope]
 
         removed_weight = weights[selected_template_id] / 2
         weights[selected_template_id] -= removed_weight
 
-        sibling_ids = [template_id for template_id in weights if template_id != selected_template_id]
+        sibling_ids = [
+            template_id
+            for template_id in weights
+            if template_id != selected_template_id
+        ]
 
         if sibling_ids:
             redistribution = removed_weight / len(sibling_ids)
@@ -179,16 +193,12 @@ class random_eventer():
             for template_id in sibling_ids:
                 weights[template_id] += redistribution
 
-
     def rebalance_variable(self, variable_name, selected_value):
         weights = self.variable_weights[variable_name]
         removed_weight = weights[selected_value] / 2
         weights[selected_value] -= removed_weight
 
-        other_values = [
-            value for value in weights
-            if value != selected_value
-        ]
+        other_values = [value for value in weights if value != selected_value]
 
         if other_values:
             redistribution = removed_weight / len(other_values)
@@ -196,12 +206,11 @@ class random_eventer():
             for value in other_values:
                 weights[value] += redistribution
 
-
     def resolve_template_variables(self, template):
         text_fields = [
             template.get("headline", ""),
             template.get("target", ""),
-            template.get("target_tag", "")
+            template.get("target_tag", ""),
         ]
         placeholders = set()
 
@@ -261,7 +270,9 @@ class random_eventer():
                     self.rebalance_variable("country", country)
                     selected_values["country"] = country
 
-                selected_values[variable_name] = self.country_capitals[selected_values["country"]]
+                selected_values[variable_name] = self.country_capitals[
+                    selected_values["country"]
+                ]
                 continue
 
             if variable_name in ("subdivision-capital", "subdivision_capital"):
@@ -270,7 +281,9 @@ class random_eventer():
                     self.rebalance_variable("subdivision", subdivision)
                     selected_values["subdivision"] = subdivision
 
-                selected_values[variable_name] = self.subdivision_capitals[selected_values["subdivision"]]
+                selected_values[variable_name] = self.subdivision_capitals[
+                    selected_values["subdivision"]
+                ]
                 continue
 
             if variable_name == "ceo":
@@ -283,7 +296,6 @@ class random_eventer():
                 selected_values["ceo"] = ceo
                 continue
 
-
             if variable_name == "company" and "company" in selected_values:
                 continue
 
@@ -295,8 +307,7 @@ class random_eventer():
 
             if variable_name not in self.variable_weights:
                 raise ValueError(
-                    "No probability source exists for variable: "
-                    + variable_name
+                    "No probability source exists for variable: " + variable_name
                 )
 
             value = weighted_choice(self.variable_weights[variable_name])
@@ -305,23 +316,17 @@ class random_eventer():
 
         return selected_values
 
-
     def resolve_string(self, value, selected_values):
         if not isinstance(value, str):
             return value
 
         for variable_name, selected_value in selected_values.items():
-            value = value.replace(
-                "{" + variable_name + "}",
-                selected_value
-            )
+            value = value.replace("{" + variable_name + "}", selected_value)
 
         return value
 
-
     def generate_impact(self, template):
         return random.uniform(*template["impact_range"]) * self.chaos
-
 
     def build_event(self):
         scope = self.select_scope()
@@ -334,39 +339,24 @@ class random_eventer():
         return {
             "template_id": template["id"],
             "scope": scope,
-            "headline": self.resolve_string(
-                template["headline"],
-                selected_values
-            ),
+            "headline": self.resolve_string(template["headline"], selected_values),
             "impact": impact,
             "duration_ticks": template["duration_ticks"],
-            "target": self.resolve_string(
-                template.get("target"),
-                selected_values
-            ),
+            "target": self.resolve_string(template.get("target"), selected_values),
             "target_tag": self.resolve_string(
-                template.get("target_tag"),
-                selected_values
+                template.get("target_tag"), selected_values
             ),
             "variables": selected_values,
-            "play_probability": {
-                "minor": 0.70,
-                "major": 0.45,
-                "global": 0.25
-            }[scope],
-            "failure_increase": 0.10
+            "play_probability": {"minor": 0.70, "major": 0.45, "global": 0.25}[scope],
+            "failure_increase": 0.10,
         }
-
 
     def resolve_targets(self, event, market):
         stocks = market.stocks
 
         if event["scope"] == "minor":
             company = event["variables"].get("company")
-            return [
-                stock for stock in stocks.values()
-                if stock.name == company
-            ]
+            return [stock for stock in stocks.values() if stock.name == company]
 
         if event["scope"] == "major":
             company = event["variables"].get("company")
@@ -379,7 +369,8 @@ class random_eventer():
                     if company_record.get("tag") == company_tag
                 }
                 return [
-                    stock for stock in stocks.values()
+                    stock
+                    for stock in stocks.values()
                     if stock.name in matching_companies
                 ]
 
@@ -387,13 +378,13 @@ class random_eventer():
 
             if target_tag is not None:
                 return [
-                    stock for stock in stocks.values()
+                    stock
+                    for stock in stocks.values()
                     if target_tag in getattr(stock, "tags", [])
                     or getattr(stock, "tag", None) == target_tag
                 ]
 
         return list(stocks.values())
-
 
     def apply_event(self, event, market):
         for stock in self.resolve_targets(event, market):
@@ -401,18 +392,16 @@ class random_eventer():
 
             stock.history.append(stock.price)
 
-
     def write_state(self):
         state = {
             "scope_weights": self.scope_weights,
             "template_weights": self.template_weights,
             "variable_weights": self.variable_weights,
-            "event_queue": self.event_list
+            "event_queue": self.event_list,
         }
 
-        with self.state_file.open("w", encoding = "utf-8") as state_file:
-            json.dump(state, state_file, indent = 2, ensure_ascii = False)
-
+        with self.state_file.open("w", encoding="utf-8") as state_file:
+            json.dump(state, state_file, indent=2, ensure_ascii=False)
 
     def load_state(self):
         if not self.state_file.exists():
@@ -424,11 +413,7 @@ class random_eventer():
         except (json.JSONDecodeError, OSError):
             return False
 
-        required_keys = {
-            "scope_weights",
-            "template_weights",
-            "event_queue"
-        }
+        required_keys = {"scope_weights", "template_weights", "event_queue"}
 
         if not required_keys.issubset(state):
             return False
@@ -440,16 +425,19 @@ class random_eventer():
             saved_variable_weights = state["variable_weights"]
         else:
             saved_variable_weights = {
-                "company": state.get("company_weights", self.variable_weights["company"]),
+                "company": state.get(
+                    "company_weights", self.variable_weights["company"]
+                ),
                 "region": state.get("region_weights", self.variable_weights["region"]),
-                "country": state.get("country_weights", self.variable_weights["country"])
+                "country": state.get(
+                    "country_weights", self.variable_weights["country"]
+                ),
             }
 
         for variable_name, default_weights in self.variable_weights.items():
             saved_weights = saved_variable_weights.get(variable_name, {})
             self.variable_weights[variable_name] = {
-                value: float(saved_weights.get(value, 1.0))
-                for value in default_weights
+                value: float(saved_weights.get(value, 1.0)) for value in default_weights
             }
 
         for template in self.templates:
@@ -473,19 +461,21 @@ class random_eventer():
                     "subdivision",
                     "subdivision_capital",
                     "tag",
-                    "capital"
+                    "capital",
                 ):
                     if event.get(variable_name) is not None:
                         event["variables"][variable_name] = event[variable_name]
 
         return True
 
-
     def update(self, current_iteration, check_interval, market=None):
-        return self.process_event_queue( check_interval = check_interval, current_iteration=current_iteration, market = market)
+        return self.process_event_queue(
+            check_interval=check_interval,
+            current_iteration=current_iteration,
+            market=market,
+        )
 
-
-    def process_event_queue(self, check_interval, current_iteration, market = None):
+    def process_event_queue(self, check_interval, current_iteration, market=None):
         if current_iteration % check_interval != 0:
             return None
 
@@ -498,14 +488,16 @@ class random_eventer():
 
         if random.random() <= event["play_probability"]:
             if market is not None:
-                self.apply_event(event,market)
+                self.apply_event(event, market)
 
             self.event_list.pop(0)
             self.event_list.append(self.build_event())
             self.write_state()
             return event
 
-        event["play_probability"] = min(0.95, event["play_probability"] + event["failure_increase"])
+        event["play_probability"] = min(
+            0.95, event["play_probability"] + event["failure_increase"]
+        )
 
         self.write_state()
         return None

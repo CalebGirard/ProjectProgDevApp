@@ -3,6 +3,7 @@ import random
 import json
 from assets import Assets
 
+
 class Stock:
     def __init__(
         self,
@@ -49,11 +50,7 @@ class Stock:
         self.price = max(
             0.01,
             self.price
-            * (
-                1
-                + random.gauss(self.drift, self.volatility)
-                + trading_impact
-            ),
+            * (1 + random.gauss(self.drift, self.volatility) + trading_impact),
         )
         self.history.append(self.price)
         self.bought = self.sold = 0
@@ -70,8 +67,7 @@ class Market:
     def __init__(self, size, impact=0.01):
         self.size = size
         self.assets = Assets("market")
-        self.stocks = self.create_stocks(self.size, impact)          # Dictionnaire des actions
-        
+        self.stocks = self.create_stocks(self.size, impact)  # Dictionnaire des actions
 
     def create_stocks(self, size, impact):
         with open(self.assets.getAssetPath("stocks.json"), "r") as f:
@@ -103,14 +99,14 @@ class Market:
         for stock in self.stocks.values():
             stock.update()
 
-    def setPrices(self,prices):
+    def setPrices(self, prices):
         if not prices:
             return
 
         for t, price in prices.items():
             self.stocks[t].price = price
 
-    def addHist(self,lastHist):
+    def addHist(self, lastHist):
         if not lastHist:
             return
 
@@ -120,9 +116,14 @@ class Market:
     def snapshot(self):
         return {
             t: {
-                "name": s.name, "shares": s.shares, "currency": s.currency,
-                "tags": s.tags, "volatility": s.volatility, "drift": s.drift,
-                "impact": s.impact, "price": s.price,
+                "name": s.name,
+                "shares": s.shares,
+                "currency": s.currency,
+                "tags": s.tags,
+                "volatility": s.volatility,
+                "drift": s.drift,
+                "impact": s.impact,
+                "price": s.price,
                 "history": [round(p, 4) for p in s.history],
             }
             for t, s in self.stocks.items()
@@ -130,8 +131,18 @@ class Market:
 
     def load_snapshot(self, stocks):
         self.stocks = {
-            t: Stock(d["name"], t, d["shares"], d["price"], d["history"], d["impact"],
-                    d["currency"], d["tags"], d["volatility"], d["drift"])
+            t: Stock(
+                d["name"],
+                t,
+                d["shares"],
+                d["price"],
+                d["history"],
+                d["impact"],
+                d["currency"],
+                d["tags"],
+                d["volatility"],
+                d["drift"],
+            )
             for t, d in stocks.items()
         }
 
