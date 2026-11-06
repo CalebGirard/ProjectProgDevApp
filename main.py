@@ -27,7 +27,7 @@ class MainApp(ctk.CTk):
         self.wm_iconphoto(False, ImageTk.PhotoImage(Image.open(self.assets.getAssetPath("snake.ico"))))
         self.after(0, lambda: self.state("zoomed"))
         self.configure(fg_color="black")
-        self.title("Pynance Desktop")
+        self.title("Pynance Bureau")
         self.menu()
         self.run_clock()
 
@@ -178,13 +178,13 @@ class MainApp(ctk.CTk):
 
         titles = {
                     "Casino": "Application - Royal Casino",
-                    "Market": "Application - Market",
+                    "Market": "Application - Marché",
                     "Trading": "Application - Trading",
-                    "Multi": "Application - Multiplayer",
-                    "Bank": "Application - Bank"
+                    "Multi": "Application - Multijoueur",
+                    "Bank": "Application - Banque"
                 }
         
-        self.title(titles.get(page_name, "Main Application"))
+        self.title(titles.get(page_name, "Application principale"))
 
         if hasattr(frame, "refresh"):
             frame.refresh()

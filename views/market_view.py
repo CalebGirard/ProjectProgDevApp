@@ -100,7 +100,7 @@ class MarketView(ctk.CTkFrame):
 
         # Titre
         self.name = ctk.CTkLabel(
-            bar, text="International Market Viewer™", font=("Arial", 20, "bold")
+            bar, text="Visualiseur de marchés internationaux™", font=("Arial", 20, "bold")
         )
         self.name.pack(side="left", padx=12, pady=8)
 
@@ -115,7 +115,7 @@ class MarketView(ctk.CTkFrame):
 
         self.stat_text = ctk.CTkLabel(
             bar,
-            text=f"Last move: {_latest_change_pct(self.current_stock):+.2f}%  |  Market cap: ${number_formatter(self.current_stock.market_cap)} {self.current_stock.currency}",
+            text=f"Dernier mouvement : {_latest_change_pct(self.current_stock):+.2f}%  | Capitalisation boursière : ${number_formatter(self.current_stock.market_cap)} {self.current_stock.currency}",
             font=("Arial", 12),
             text_color="#848e9c",
         )
@@ -222,7 +222,7 @@ class MarketView(ctk.CTkFrame):
 
         ctk.CTkLabel(
             panel,
-            text="MARKET PULSE",
+            text="POULS DU MARCHÉ",
             text_color="#eaecef",
             font=("Arial", 14, "bold"),
         ).pack(anchor="w", padx=14, pady=(14, 8))
@@ -232,7 +232,7 @@ class MarketView(ctk.CTkFrame):
 
         ctk.CTkLabel(
             breadth_card,
-            text="MARKET BREADTH",
+            text="AMPLITUDE DU MARCHÉ",
             text_color="#848e9c",
             font=("Arial", 10, "bold"),
         ).pack(anchor="w", padx=10, pady=(8, 2))
@@ -253,7 +253,7 @@ class MarketView(ctk.CTkFrame):
 
         ctk.CTkLabel(
             panel,
-            text="TOP MOVERS · YESTERDAY",
+            text="PLUS FORTES VARIATIONS · HIER",
             text_color="#848e9c",
             font=("Arial", 10, "bold"),
         ).pack(anchor="w", padx=14, pady=(0, 4))
@@ -278,7 +278,7 @@ class MarketView(ctk.CTkFrame):
 
         buy_btn = ctk.CTkButton(
             btn_row,
-            text="Buy",
+            text="Acheter",
             fg_color="#0ecb81",
             hover_color="#0ba367",
             width=100,
@@ -288,7 +288,7 @@ class MarketView(ctk.CTkFrame):
 
         sell_btn = ctk.CTkButton(
             btn_row,
-            text="Sell",
+            text="Vendre",
             fg_color="#f6465d",
             hover_color="#f6465d",
             width=100,
@@ -298,7 +298,7 @@ class MarketView(ctk.CTkFrame):
 
         # Clavier
         ctk.CTkLabel(
-            panel, text="Amount (Shares)", text_color="#848e9c", font=("Arial", 11)
+            panel, text="Quantité (actions)", text_color="#848e9c", font=("Arial", 11)
         ).pack(anchor="w", padx=14, pady=(10, 0))
         self.amount_entry = ctk.CTkEntry(
             panel, placeholder_text="0", fg_color="#2b313a", border_width=0
@@ -346,7 +346,7 @@ class MarketView(ctk.CTkFrame):
     def refresh(self):
         self.price_label.configure(text=f"${self.current_stock.price:.2f}")
         self.stat_text.configure(
-            text=f"Last move: {_latest_change_pct(self.current_stock):+.2f}%  |  Market cap: ${number_formatter(self.current_stock.market_cap)} {self.current_stock.currency}"
+            text=f"Dernier mouvement : {_latest_change_pct(self.current_stock):+.2f}%  |  Capitalisation boursière : ${number_formatter(self.current_stock.market_cap)} {self.current_stock.currency}"
         )
         self._refresh_market_pulse()
 
@@ -368,7 +368,7 @@ class MarketView(ctk.CTkFrame):
                 f"{next_event['headline']}\n"
             )
         else:
-            self.news_box.insert("end", "No event is queued yet.\n")
+            self.news_box.insert("fin", "Aucun événement n’est encore en file d’attente.\n")
         self.news_box.configure(state="disabled")
 
         # Refresh le graphique
@@ -492,4 +492,4 @@ def candlesticker(ax, prices, start_index=0, previous_close=None):
         )
     if prices:
         ax.set_xlim(start_index - 0.5, start_index + len(prices) - 0.5)
-    ax.set_xlabel(f"{candle_sizer} samples per candle", color="#848e9c")
+    ax.set_xlabel(f"{candle_sizer} échantillons par bougie", color="#848e9c")
