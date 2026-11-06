@@ -119,6 +119,7 @@ class Engine:
         self.database.set("bank_state", {
             "stock_value": self.bank.stock_value,
             "stock_change_percent": self.bank.stock_change_percent,
+            "stock_history": self.bank.stock_history,
             "player_loans": self.bank.player_loans
         })
 
@@ -215,6 +216,7 @@ class Engine:
             self.database.set("bank_state", {
                 "stock_value": self.bank.stock_value,
                 "stock_change_percent": self.bank.stock_change_percent,
+                "stock_history": self.bank.stock_history,
                 "player_loans": self.bank.player_loans
                 })
 
@@ -262,6 +264,36 @@ class Engine:
                 self.iteration = snap["iteration"]
                 if self.onMarketLoaded:
                     self.onMarketLoaded()
+
+            bank_state = self.database.get("bank_state")
+            if bank_state:
+                try:
+                    stock_value = float(bank_state.get("stock_value", self.bank.stock_value))
+                    stock_change = float(
+                        bank_state.get("stock_change_percent", self.bank.stock_change_percent)
+                    )
+                except (TypeError, ValueError):
+                    stock_value = self.bank.stock_value
+                    stock_change = self.bank.stock_change_percent
+
+                if math.isfinite(stock_value) and stock_value > 0:
+                    self.bank.stock_value = stock_value
+                if math.isfinite(stock_change):
+                    self.bank.stock_change_percent = stock_change
+
+                history = bank_state.get("stock_history")
+                if isinstance(history, list) and history:
+                    self.bank.stock_history = [
+                        float(value) for value in history
+                        if isinstance(value, (int, float))
+                        and not isinstance(value, bool)
+                        and math.isfinite(float(value))
+                        and float(value) > 0
+                    ][-240:]
+                saved_loans = bank_state.get("player_loans")
+                if isinstance(saved_loans, dict):
+                    self.bank.player_loans = saved_loans
+            
             
             td = self.database.get("tick")
             if td and td.get("iteration", 0) > self.iteration and self.market:

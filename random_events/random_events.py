@@ -54,6 +54,7 @@ class random_eventer():
     def __init__(self, chaos, market = None):
         self.chaos = chaos
         self.event_list = []
+        self.active_events = []
 
         data_directory = Path(__file__).resolve().parent
 
@@ -401,14 +402,30 @@ class random_eventer():
 
             stock.history.append(stock.price)
 
+    def apply_event_tick(self, event, market):
+        duration = max(1, int(event.get("duration_ticks", 1)))
+        total_multiplier = max(0.01, 1.0 + event["impact"] * 0.1)
+        tick_multiplier = max(0.01, total_multiplier ** (1.0 / duration))
+
+        for stock in self.resolve_targets(event, market):
+            stock.price = max(0.01, stock.price * tick_multiplier)
+
+    def activate_event(self, event):
+        duration = max(1, int(event.get("duration_ticks", 1)))
+        active_event = dict(event)
+        active_event["remaining_ticks"] = duration
+        self.active_events.append(active_event)
+
 
     def write_state(self):
         state = {
             "scope_weights": self.scope_weights,
             "template_weights": self.template_weights,
             "variable_weights": self.variable_weights,
-            "event_queue": self.event_list
+            "event_queue": self.event_list,
+            "active_events": self.active_events
         }
+        
 
         with self.state_file.open("w", encoding = "utf-8") as state_file:
             json.dump(state, state_file, indent = 2, ensure_ascii = False)
@@ -472,11 +489,53 @@ class random_eventer():
                     "country_capital",
                     "subdivision",
                     "subdivision_capital",
+                    "company_tag",
+                    "target_tag",
                     "tag",
                     "capital"
                 ):
                     if event.get(variable_name) is not None:
                         event["variables"][variable_name] = event[variable_name]
+
+        self.active_events = state.get("active_events", [])
+        for event in self.active_events:
+            if "variables" not in event:
+                event["variables"] = {}
+
+                for variable_name in (
+                    "company",
+                    "ceo",
+                    "region",
+                    "country",
+                    "country_capital",
+                    "subdivision",
+                    "subdivision_capital",
+                    "company_tag",
+                    "target_tag",
+                    "tag",
+                    "capital"
+                ):
+                    if event.get(variable_name) is not None:
+                        event["variables"][variable_name] = event[variable_name]
+
+            try:
+                duration = max(1, int(event.get("duration_ticks", 1)))
+            except (TypeError, ValueError):
+                duration = 1
+
+            try:
+                remaining_ticks = int(event.get("remaining_ticks", duration))
+            except (TypeError, ValueError):
+                remaining_ticks = duration
+
+            event["duration_ticks"] = duration
+            event["remaining_ticks"] = min(duration, max(0, remaining_ticks))
+
+        self.active_events = [
+            event for event in self.active_events
+            if event.get("remaining_ticks", 0) > 0
+        ]
+
 
         return True
 
@@ -486,7 +545,23 @@ class random_eventer():
 
 
     def process_event_queue(self, check_interval, current_iteration, market = None):
+        active_state_changed = False
+
+        if market is not None and self.active_events:
+            for event in list(self.active_events):
+                self.apply_event_tick(event, market)
+                event["remaining_ticks"] = max(
+                    0,
+                    int(event.get("remaining_ticks", 1)) - 1
+                )
+                active_state_changed = True
+
+                if event["remaining_ticks"] <= 0:
+                    self.active_events.remove(event)
+
         if current_iteration % check_interval != 0:
+            if active_state_changed:
+                self.write_state()
             return None
 
         if not self.event_list:
@@ -498,7 +573,7 @@ class random_eventer():
 
         if random.random() <= event["play_probability"]:
             if market is not None:
-                self.apply_event(event,market)
+                self.activate_event(event)
 
             self.event_list.pop(0)
             self.event_list.append(self.build_event())

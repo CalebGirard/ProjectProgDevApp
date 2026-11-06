@@ -1,10 +1,14 @@
 import math
+import random
 
 class Bank:
     def __init__(self):
         self.stock_value = 100.0
         self.stock_change_percent = 0.0
         self.player_loans = {}
+        self.stock_history = [self.stock_value]
+        self.stock_drift = 0.0015
+        self.stock_volatility = 0.025
 
 
     max_loans = 10
@@ -95,12 +99,12 @@ class Bank:
 
     def update_bank_stock(self):
         previous_value = self.stock_value
-        gain = 0.0
+        market_move = random.gauss(self.stock_drift, self.stock_volatility)
+        self.stock_value = max(0.01, self.stock_value * (1.0 + market_move))
+        self.stock_history.append(self.stock_value)
 
-        for state in self.player_loans.values():
-            gain += sum(state["loans"]) * 0.001
-
-        self.stock_value += gain
+        if len(self.stock_history) > 240:
+            self.stock_history.pop(0)
 
         if previous_value > 0:
             self.stock_change_percent = ((self.stock_value - previous_value) / previous_value) * 100

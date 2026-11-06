@@ -11,6 +11,7 @@ class BankView(ctk.CTkFrame):
 
         self.grid_columnconfigure((0, 1, 2), weight=1)
         self.grid_rowconfigure(2, weight=1)
+        self.grid_rowconfigure(3, weight=1)
 
         header = ctk.CTkFrame(self, fg_color="#181a20", corner_radius=8)
         header.grid(row=0, column=0, columnspan=3, padx=18, pady=(18, 10), sticky="ew")
@@ -100,6 +101,26 @@ class BankView(ctk.CTkFrame):
         )
         self.repay_button.pack(fill="x", padx=16, pady=(0, 16))
 
+        chart_panel = ctk.CTkFrame(self, fg_color="#181a20", corner_radius=8)
+        chart_panel.grid(row=3, column=0, columnspan=3, padx=18, pady=(0, 18), sticky="nsew")
+
+        ctk.CTkLabel(
+            chart_panel,
+            text="ÉVOLUTION SIMULÉE DE LA VALEUR",
+            text_color="#848e9c",
+            font=("Arial", 11, "bold"),
+        ).pack(anchor="w", padx=14, pady=(10, 4))
+
+        figure, self.bank_chart_axis = plt.subplots(figsize=(7, 1.8), facecolor="#181a20")
+        figure.subplots_adjust(left=0.05, right=0.99, top=0.92, bottom=0.18)
+        self.bank_chart_axis.set_facecolor("#181a20")
+        self.bank_chart_axis.tick_params(colors="#848e9c", labelsize=8)
+        for spine in self.bank_chart_axis.spines.values():
+            spine.set_visible(False)
+
+        self.bank_chart_canvas = FigureCanvasTkAgg(figure, master=chart_panel)
+        self.bank_chart_canvas.get_tk_widget().pack(fill="both", expand=True, padx=8, pady=(0, 8))
+
         self.refresh_job = None
 
         self.refresh_bank()
@@ -115,8 +136,10 @@ class BankView(ctk.CTkFrame):
         vip_status = "VIP" if state["is_vip"] else "Standard"
 
         self.bank_value_label.configure(
-            text=f"${self.engine.bank.stock_value:.2f}", text_color="#0ecb81"
+            text=f"${self.engine.bank.stock_value:.2f}",
+            text_color="#0ecb81" if self.engine.bank.stock_change_percent >= 0 else "#f6465d",
         )
+        
         self.change_label.configure(
             text=f"{self.engine.bank.stock_change_percent:+.2f}%",
             text_color="#0ecb81" if self.engine.bank.stock_change_percent >= 0 else "#f6465d",
@@ -145,6 +168,30 @@ class BankView(ctk.CTkFrame):
                 text=f"Aucun prêt en cours\n{maximum_loan_line}",
                 text_color="#848e9c",
             )
+
+        history = [
+            float(value)
+            for value in self.engine.bank.stock_history
+            if isinstance(value, (int, float))
+            and not isinstance(value, bool)
+            and math.isfinite(float(value))
+            and float(value) > 0
+        ][-240:]
+        self.bank_chart_axis.clear()
+        self.bank_chart_axis.set_facecolor("#181a20")
+        self.bank_chart_axis.tick_params(colors="#848e9c", labelsize=8)
+        for spine in self.bank_chart_axis.spines.values():
+            spine.set_visible(False)
+
+        if history:
+            chart_color = "#0ecb81" if self.engine.bank.stock_change_percent >= 0 else "#f6465d"
+            self.bank_chart_axis.plot(history, color=chart_color, linewidth=1.8)
+            self.bank_chart_axis.set_ylim(
+                max(0.01, min(history) * 0.98),
+                max(history) * 1.02,
+            )
+        self.bank_chart_canvas.draw_idle()
+
 
         self.refresh_job = self.after(1000, self.refresh_bank)
 
