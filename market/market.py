@@ -44,16 +44,15 @@ class Stock:
         self.sold += qty
 
     def update(self):
+        net_demand = (self.bought - self.sold) / self.shares
+        trading_impact = self.impact * net_demand / (1 + abs(net_demand))
         self.price = max(
             0.01,
             self.price
             * (
                 1
-                + 0.1
-                * (
-                    random.gauss(self.drift, self.volatility)
-                    + self.impact * (self.bought - self.sold) / self.shares
-                )
+                + random.gauss(self.drift, self.volatility)
+                + trading_impact
             ),
         )
         self.history.append(self.price)
