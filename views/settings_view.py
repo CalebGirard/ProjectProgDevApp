@@ -137,6 +137,8 @@ class SettingsView(ctk.CTkFrame):
             self.engine.database.setPath(f"cash:{n}",new_config["starting_cash"])
 
         self.engine.database.set("portfolios",{})
+
+        self.engine.needSnapshot = True
         
         market_view = self.controller.frames.get("Market")
         if market_view:
