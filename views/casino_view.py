@@ -147,7 +147,7 @@ class CasinoView(ctk.CTkFrame) :
 
 class Roulette(ctk.CTkFrame):
     def __init__(self, master, engine, back_callback=None):
-        super().__init__(master, fg_color="black")
+        super().__init__(master, fg_color="#0b0e11")
         self.engine = engine
 
         self.assets = Assets("Assets")
@@ -199,15 +199,15 @@ class Roulette(ctk.CTkFrame):
         self.lbl_result.pack(pady=10)
 
         # Bet Amount
-        tk.Label(self, text="Bet Amount:", font=("Arial", 14), fg="white", bg="#0f6321").pack()
-        self.bet_entry = tk.Entry(self, font=("Arial", 14))
+        ctk.CTkLabel(self, text="Bet Amount:", font=("Arial", 14)).pack()
+        self.bet_entry = ctk.CTkEntry(self, font=("Arial", 14))
         self.bet_entry.pack(pady=6)
 
         # Bet Color
-        tk.Label(self, text="Choose Color:", font=("Arial", 14), fg="white", bg="#0f6321").pack()
+        ctk.CTkLabel(self, text="Choose Color:", font=("Arial", 14)).pack()
         self.color_var = tk.StringVar(value="Red")
-        color_menu = tk.OptionMenu(self, self.color_var, "Red", "Black", "Green")
-        color_menu.config(font=("Arial", 12), bg="#006aff", fg="white", width=10)
+        color_menu = ctk.CTkOptionMenu(self, variable=self.color_var, values=["Red", "Black", "Green"])
+        color_menu.configure(font=("Arial", 12), width=10)
         color_menu.pack(pady=5)
 
         self.bind("<space>", lambda x: self.lancer_roulette())
