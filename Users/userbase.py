@@ -7,13 +7,14 @@ import csv
 from assets import Assets
 
 
-class user:
+class User:
     def __init__(self, nom, lvl, starting_cash):
         self.nom = nom
         self.lvl = lvl
         self.wallet = {}
         self.holdings = starting_cash
 
+    # Définir comment les utilisateurs simulés prennent des décisions
     def make_decision(self, market, good_stocks):
         if rd.random() > 0.30:
             return
@@ -90,7 +91,7 @@ class user:
         return f"{self.nom} (holding ${self.holdings})"
 
 
-class userbase:
+class Userbase:
     def __init__(self, nb, difficulty_multiplier):
         self.userbase = []
         self.size = nb
@@ -98,6 +99,7 @@ class userbase:
         self.random_proportions = self.randomize_odds()
         self.assets = Assets("Users")
 
+    # Définir quelles proportions de chaque catégorie de users
     def randomize_odds(self):
         x, y, z, t = 0, 0, 0, 0
         for i in range(self.size):
@@ -112,6 +114,8 @@ class userbase:
                 t += 1
         return [x, y, z, t]
 
+    # T1 users : vraies compagnies d'investissements
+    # Vraies données
     def build_T1s(self):
         with open(self.assets.getAssetPath("predefined_users.json"), "r") as f:
             t1_names = json.load(f)[0]
@@ -119,7 +123,7 @@ class userbase:
         for i in range(self.random_proportions[0]):
             obj = rd.choice(list(t1_names.keys()))
             users.append(
-                user(
+                User(
                     obj,
                     10 * self.difficulty_multiplier**2,
                     math.ceil(t1_names[obj] * self.difficulty_multiplier**2),
@@ -128,6 +132,8 @@ class userbase:
             t1_names.pop(obj)
         self.userbase.extend(users)
 
+    # T2 users : vraies personnes célèbres en rapport avec la "finance"
+    # Vraies données
     def build_T2s(self):
         with open(self.assets.getAssetPath("predefined_users.json"), "r") as f:
             t2_names = json.load(f)[1]
@@ -135,7 +141,7 @@ class userbase:
         for i in range(self.random_proportions[1]):
             obj = rd.choice(list(t2_names.keys()))
             users.append(
-                user(
+                User(
                     obj,
                     rd.uniform(7, 9.5) * self.difficulty_multiplier**2,
                     math.ceil(t2_names[obj] * self.difficulty_multiplier**2),
@@ -144,6 +150,9 @@ class userbase:
             t2_names.pop(obj)
         self.userbase.extend(users)
 
+    # Fausses compagnies
+    # 10% chances "The" + Adjectif + suffixe
+    # Entre 1 et 10 B de fonds
     def build_T3s(self):
         with open(self.assets.getAssetPath("adjectives.json"), "r") as f:
             data = json.load(f)
@@ -163,7 +172,7 @@ class userbase:
             name += " "
             name += rd.choice(terminology)
             temp.append(
-                user(
+                User(
                     name,
                     rd.uniform(4, 8) * self.difficulty_multiplier**2,
                     math.ceil(
@@ -177,6 +186,9 @@ class userbase:
 
         self.userbase.extend(temp)
 
+    # T4 users : fausses personnes
+    # Prénom + nom
+    # Entre 100$ et 10000000 $ de fonds
     def build_T4s(self):
         with open(self.assets.getAssetPath("names.json"), "r") as f:
             first_names = json.load(f)
@@ -186,7 +198,7 @@ class userbase:
         users = []
         for i in range(self.random_proportions[3]):
             users.append(
-                user(
+                User(
                     (rd.choice(first_names) + " " + rd.choice(last_names)),
                     rd.uniform(0, 3),
                     math.ceil(
@@ -199,10 +211,13 @@ class userbase:
             )
         self.userbase.extend(users)
 
+    # Essentiellement, trouve, pour chaque actions, quelle est sa "vraie valeur",
+    # en fonction de l'action elle-même et des événements aléatoires.
+    # Les deux paramètres sont donc le momentum et le mouvement des événements (event_impact)
     def good_stock_finder(self, market, active_event=None, eventer=None):
         scores = {}
 
-        event_targets = set()
+        event_targets = {}
         event_impact = 0.0
         if active_event and eventer:
             affected_stocks = eventer.resolve_targets(active_event, market)
@@ -224,6 +239,7 @@ class userbase:
 
         return scores
 
+    # Relier les users et le marché évalué
     def update(self, market, active_event=None, eventer=None):
         good_stocks = self.good_stock_finder(market, active_event, eventer)
 

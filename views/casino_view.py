@@ -51,6 +51,7 @@ class CasinoView(ctk.CTkFrame):
             text_color="#848e9c",
             font=("Arial", 13),
             wraplength=760,
+            justify="left",
         ).pack(anchor="w", padx=20, pady=(2, 14))
 
         try:
@@ -75,7 +76,7 @@ class CasinoView(ctk.CTkFrame):
 
         self.btn_wheel = ctk.CTkButton(
             games_frame,
-            text="Roulette",
+            text="PyWheel™",
             width=240,
             height=225,
             fg_color="#181a20",
@@ -90,7 +91,7 @@ class CasinoView(ctk.CTkFrame):
 
         self.btn_market = ctk.CTkButton(
             games_frame,
-            text="Machine à sous",
+            text="PySlots™",
             width=240,
             height=225,
             fg_color="#181a20",

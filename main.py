@@ -35,7 +35,7 @@ class MainApp(ctk.CTk):
             )
         self.after(0, lambda: self.state("zoomed"))
         self.configure(fg_color="black")
-        self.title("Pynance Bureau")
+        self.title("Pynance Inc.")
         self.menu()
         self.run_clock()
 
@@ -200,8 +200,6 @@ class MainApp(ctk.CTk):
             "Multi": "Application - Multijoueur",
             "Bank": "Application - Banque",
         }
-
-        self.title(titles.get(page_name, "Application principale"))
 
         if hasattr(frame, "refresh"):
             frame.refresh()
