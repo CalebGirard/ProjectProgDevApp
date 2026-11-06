@@ -215,7 +215,7 @@ class userbase:
                 else:
                     momentum = 0.0
     
-                score = (momentum * 0.5) + (stock.drift * 10)
+                score = (momentum * 0.1) + (stock.drift * 10)
     
                 if ticker in event_targets:
                     score += event_impact
@@ -229,4 +229,3 @@ class userbase:
     
         for bot in self.userbase:
             bot.make_decision(market, good_stocks)
-

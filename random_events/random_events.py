@@ -397,7 +397,7 @@ class random_eventer():
 
     def apply_event(self, event, market):
         for stock in self.resolve_targets(event, market):
-            stock.price = max(0.01, stock.price * (1.0 + event["impact"]))
+            stock.price = max(0.01, stock.price * (1.0 + event["impact"] * 0.1))
 
             stock.history.append(stock.price)
 
