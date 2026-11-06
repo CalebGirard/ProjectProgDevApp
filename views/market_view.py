@@ -19,7 +19,7 @@ class MarketView(ctk.CTkFrame):
 
         # Vues temporelles
 
-        self.time_views = {"1W": 7, "1M": 30, "6M": 180, "1Y": 365, "ALL": None}
+        self.time_views = {"1S": 7, "1M": 30, "6M": 180, "1A": 365, "TOUT": None}
         self.current_time_view = 30
 
         # Configuration de la grille
@@ -195,7 +195,7 @@ class MarketView(ctk.CTkFrame):
 
         ctk.CTkLabel(
             panel,
-            text="POULS DU MARCHÉ",
+            text="MOUVEMENTS DU MARCHÉ",
             text_color="#eaecef",
             font=("Arial", 14, "bold"),
         ).pack(anchor="w", padx=14, pady=(14, 8))
@@ -379,7 +379,7 @@ class MarketView(ctk.CTkFrame):
         declining = sum(change < 0 for _, change in changes)
         unchanged = len(changes) - advancing - declining
 
-        breadth_text = f"{advancing} up  ·  {declining} down"
+        breadth_text = f"{advancing} montant  ·  {declining} descendant"
         if unchanged:
             breadth_text += f"  ·  {unchanged} flat"
         self.market_breadth_label.configure(text=breadth_text)

@@ -22,6 +22,7 @@ ctk.set_default_color_theme("blue")
 class MainApp(ctk.CTk):
     def __init__(self):
         super().__init__()
+        self.title("Pynance Desktop")
         self.geometry("800x600+0+0")
         self.engine = Engine()
         self.assets = Assets("Assets")

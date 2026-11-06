@@ -84,18 +84,18 @@ class MultiView(ctk.CTkFrame):
         card.grid_columnconfigure(0, weight=1)
 
         ctk.CTkLabel(
-            card, text="Multiplayer", font=("Arial", 18, "bold"), text_color="#eaecef"
+            card, text="Multijoueur", font=("Arial", 18, "bold"), text_color="#eaecef"
         ).grid(row=0, column=0, padx=32, pady=(32, 2), sticky="w")
         ctk.CTkLabel(
             card,
-            text="Host a room or join a friend's game.",
+            text="Créez une partie ou rejoignez celle d'un ami.",
             font=("Arial", 13),
             text_color="#848e9c",
         ).grid(row=1, column=0, padx=32, pady=(0, 24), sticky="w")
 
         self.hostButton = ctk.CTkButton(
             card,
-            text="Host Game",
+            text="Créer une partie",
             font=("Arial", 14, "bold"),
             height=46,
             corner_radius=10,
@@ -122,26 +122,26 @@ class MultiView(ctk.CTkFrame):
         )
 
         ctk.CTkLabel(
-            card, text="USERNAME", font=("Arial", 11, "bold"), text_color="#848e9c"
+            card, text="NOM D'UTILISATEUR", font=("Arial", 11, "bold"), text_color="#848e9c"
         ).grid(row=6, column=0, padx=32, sticky="w")
 
         self.usernameEntry = ctk.CTkEntry(
-            card, placeholder_text="Enter your name", height=42
+            card, placeholder_text="Entrez votre nom", height=42
         )
         self.usernameEntry.grid(row=7, column=0, padx=32, pady=(6, 20), sticky="ew")
 
         ctk.CTkLabel(
-            card, text="ROOM CODE", font=("Arial", 11, "bold"), text_color="#848e9c"
+            card, text="CODE DE PARTIE", font=("Arial", 11, "bold"), text_color="#848e9c"
         ).grid(row=8, column=0, padx=32, sticky="w")
 
         self.codeEntry = ctk.CTkEntry(
-            card, placeholder_text="e.g. stupid-astroid-1", height=42
+            card, placeholder_text="ex.: stupid-astroid-1", height=42
         )
         self.codeEntry.grid(row=9, column=0, padx=32, pady=(6, 14), sticky="ew")
 
         self.joinButton = ctk.CTkButton(
             card,
-            text="Join Game",
+            text="Rejoindre une partie",
             font=("Arial", 14, "bold"),
             height=46,
             corner_radius=10,
@@ -174,12 +174,12 @@ class ConnectedFrame(ctk.CTkFrame):
 
     def updateRoomCode(self, code, token=None):
         self.code = code
-        self.code_label.configure(text=f"Room: {self.code}")
+        self.code_label.configure(text=f"Partie : {self.code}")
 
     def copyCode(self):
         self.clipboard_clear()
         self.clipboard_append(self.code)
-        print("Code coppied to clipboard")
+        print("Code copié dans le presse-papier")
 
     def createConnectedMenu(self):
         self.initframe = ctk.CTkFrame(self, fg_color="#0b0e11")
@@ -203,7 +203,7 @@ class ConnectedFrame(ctk.CTkFrame):
 
         ctk.CTkButton(
             bar,
-            text="Copy Room Code",
+            text="Copier le code de la partie",
             width=100,
             fg_color="#2b313a",
             hover_color="#227700",
@@ -212,7 +212,7 @@ class ConnectedFrame(ctk.CTkFrame):
 
         ctk.CTkButton(
             bar,
-            text="Disconnect",
+            text="Déconnecter",
             width=100,
             fg_color="#2b313a",
             hover_color="#f6465d",
@@ -222,7 +222,7 @@ class ConnectedFrame(ctk.CTkFrame):
         players = ctk.CTkFrame(self.initframe, fg_color="#181a20", corner_radius=6)
         players.grid(row=1, column=0, sticky="nsew", padx=(6, 3), pady=3)
 
-        ctk.CTkLabel(players, text="Players", font=("Arial", 14, "bold")).pack(
+        ctk.CTkLabel(players, text="Joueurs", font=("Arial", 14, "bold")).pack(
             anchor="w", padx=12, pady=(10, 4)
         )
 
@@ -234,7 +234,7 @@ class ConnectedFrame(ctk.CTkFrame):
         chat = ctk.CTkFrame(self.initframe, fg_color="#181a20", corner_radius=6)
         chat.grid(row=1, column=1, sticky="nsew", padx=(3, 6), pady=3)
 
-        ctk.CTkLabel(chat, text="Live chat", font=("Arial", 14, "bold")).pack(
+        ctk.CTkLabel(chat, text="Chat", font=("Arial", 14, "bold")).pack(
             anchor="w", padx=12, pady=(10, 4)
         )
         self.chat_box = ctk.CTkTextbox(
@@ -256,7 +256,7 @@ class ConnectedFrame(ctk.CTkFrame):
         self.chat_entry.bind("<Return>", self.sendChat)
         self.chat_send_btn = ctk.CTkButton(
             chat,
-            text="Send Message",
+            text="Envoyer",
             height=48,
             width=100,
             fg_color="#2b313a",
@@ -311,7 +311,7 @@ class ConnectedFrame(ctk.CTkFrame):
 
             connected = db.host and db.sigRoomRunning or db.canSend
             self.status_label.configure(
-                text="Connected" if connected else "Connecting ...",
+                text="Connecté" if connected else "Connections ...",
                 text_color="#0ecb81" if connected else "#e64b37",
             )
 

@@ -40,7 +40,7 @@ class SettingsView(ctk.CTkFrame):
 
         title = ctk.CTkLabel(
             main,
-            text="Simulation Parameters",
+            text="Paramètres de la simulation",
             font=("Arial", 22, "bold"),
             text_color="#eaecef",
         )
@@ -49,7 +49,7 @@ class SettingsView(ctk.CTkFrame):
         # chaos
         self.chaos_label = ctk.CTkLabel(
             main,
-            text="Chaos level (affects random events) : ",
+            text="Chaos (affecte les événements aléatoires) : ",
             font=("Arial", 14, "bold"),
         )
         self.chaos_label.pack(anchor="w", padx=30, pady=(10, 0))
@@ -65,7 +65,7 @@ class SettingsView(ctk.CTkFrame):
         # Difficulté
         self.difficulty_label = ctk.CTkLabel(
             main,
-            text="Difficulty multiplier (affects simulated players' starting amount and plays)",
+            text="Multiplicateur de difficulté (influe sur le montant de départ et les actions des joueurs simulés)",
             font=("Arial", 14, "bold"),
         )
         self.difficulty_label.pack(anchor="w", padx=30, pady=(10, 0))
@@ -80,7 +80,7 @@ class SettingsView(ctk.CTkFrame):
 
         # Joueurs
         self.number_players_label = ctk.CTkLabel(
-            main, text="Number simulated players : ", font=("Arial", 14, "bold")
+            main, text="Nombre de joueurs simulés : ", font=("Arial", 14, "bold")
         )
         self.number_players_label.pack(anchor="w", padx=30, pady=(10, 0))
 
@@ -94,7 +94,7 @@ class SettingsView(ctk.CTkFrame):
 
         # Actions
         self.number_stocks_label = ctk.CTkLabel(
-            main, text="Number of stocks : ", font=("Arial", 14, "bold")
+            main, text="Nombre d'actions : ", font=("Arial", 14, "bold")
         )
         self.number_stocks_label.pack(anchor="w", padx=30, pady=(10, 0))
 
@@ -109,7 +109,7 @@ class SettingsView(ctk.CTkFrame):
         # Montant de départ
         self.starting_cash_label = ctk.CTkLabel(
             main,
-            text="Starting player cash (doesn't affect simulated players) :",
+            text="Liquidités de départ des joueurs (n'affecte pas les joueurs simulés) :",
             font=("Arial", 14, "bold"),
         )
         self.starting_cash_label.pack(anchor="w", padx=30, pady=(10, 0))
@@ -126,7 +126,7 @@ class SettingsView(ctk.CTkFrame):
 
         self.apply_btn = ctk.CTkButton(
             main,
-            text="Apply & Restart Simulation",
+            text="Appliquer et redémarrer la simulation",
             fg_color="#0ecb81",
             hover_color="#0ba367",
             font=("Arial", 14, "bold"),
