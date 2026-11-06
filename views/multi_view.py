@@ -114,7 +114,7 @@ class MultiView(ctk.CTkFrame):
         )
 
         ctk.CTkLabel(
-            divider, text="OR", font=("Arial", 11, "bold"), text_color="#848e9c"
+            divider, text="OU", font=("Arial", 11, "bold"), text_color="#848e9c"
         ).grid(row=0, column=1, padx=12)
 
         ctk.CTkFrame(divider, height=1, fg_color="#2b3139").grid(

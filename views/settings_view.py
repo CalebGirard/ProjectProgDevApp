@@ -12,15 +12,18 @@ class SettingsView(ctk.CTkFrame):
         # Configuration de la grille
         # Paramètres :
         #
+        # Chaos
         # Multiplicateur de difficulté
         # Nombre de joueurs
         # Nombre d'actions
         # Capital de départ
+        # Plus éventuellement ?
 
         self.engine = engine
 
         self.ui_builder()
 
+    # Construire l'interface
     def ui_builder(self):
         state = "normal"
         if not self.engine.hosting:
@@ -29,14 +32,6 @@ class SettingsView(ctk.CTkFrame):
         # Titre de la page
         main = ctk.CTkFrame(self, fg_color="#181a20", corner_radius=10, width=500)
         main.pack(pady=40, padx=40, fill="both", expand=True)
-
-        self.host_warning_label = ctk.CTkLabel(
-            main,
-            text="",
-            font=("Arial", 12, "italic"),
-            text_color="#f6465d",
-        )
-        self.host_warning_label.pack(anchor="w", padx=30, pady=(0, 5))
 
         title = ctk.CTkLabel(
             main,
@@ -135,6 +130,7 @@ class SettingsView(ctk.CTkFrame):
         )
         self.apply_btn.pack(anchor="se", padx=30, pady=48)
 
+    # Permet de changer la page si le statut de hôte change
     def refresh(self):
         state = "normal" if self.engine.hosting else "disabled"
         for entry in (
@@ -146,6 +142,7 @@ class SettingsView(ctk.CTkFrame):
         ):
             entry.configure(state=state)
 
+    # Récupérer les données des entrées, puis tout repasser dans engine
     def _apply_settings(self):
         new_config = {
             "num_stocks": int(
