@@ -271,7 +271,7 @@ class Roulette(ctk.CTkFrame):
         ctk.CTkLabel(self, text="Choisir la couleur :", font=("Arial", 14)).pack()
         self.color_var = tk.StringVar(value="Rouge")
         color_menu = ctk.CTkOptionMenu(
-            self, variable=self.color_var, values=["Rouge", "Noire", "Vert"]
+            self, variable=self.color_var, values=["Rouge", "Noire", "Verte"]
         )
         color_menu.configure(font=("Arial", 12), width=10)
         color_menu.pack(pady=5)

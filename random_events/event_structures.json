@@ -48,10 +48,10 @@
     "duration_ticks": 30
   },
   {
-    "id": "event_country_tariffs",
+    "id": "event_country_tarifs",
     "scope": "global",
     "target_tag": "{country}",
-    "headline": "{country} annonce de nouveaux tariffs touchant absolument tout le monde. Même toi.",
+    "headline": "{country} annonce de nouveaux tarifs touchant absolument tout le monde. Même toi.",
     "impact_range": [-0.15, -0.05],
     "duration_ticks": 30
   },
@@ -67,7 +67,7 @@
     "id": "rats_rats_rats",
     "scope": "major",
     "target": "{company_tag}",
-    "headline": "les entreprises du secteur de {company_tag} sont aggressées par l'empire viltrumite!",
+    "headline": "les entreprises du secteur de {company_tag} sont agressées par l'empire viltrumite!",
     "impact_range": [-0.34, -0.45],
     "duration_ticks": 20
   },

@@ -75,7 +75,7 @@ class Market:
         self.stocks = self.create_stocks(self.size, impact)  # Dictionnaire des actions
 
     # Les actions sont créées à partir de vraies données. Ces données incluent :
-    # S&P500, TSX60, NASDAQ100, et 10 cryptos monnaies.
+    # S&P500, TSX60, NASDAQ100, et 10 cryptomonnaies.
     def create_stocks(self, size, impact):
         with open(self.assets.getAssetPath("stocks.json"), "r") as f:
             stocks = json.load(f)
@@ -158,7 +158,7 @@ class Market:
             for t, d in stocks.items()
         }
 
-    # Faire avancé le marché d'une itération
+    # Faire avancer le marché d'une itération
     def apply_tick(self, prices):
         for t, price in prices.items():
             stock = self.stocks.get(t)
@@ -170,7 +170,7 @@ class Market:
     def __repr__(self):
         return str(self.stocks)
 
-    # Retourne les tickers (ex.: APPL)
+    # Retourne les tickers (ex.: AAPL)
     def get_tickers(self):
         return sorted(list(self.stocks.keys()))
 
