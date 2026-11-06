@@ -5,6 +5,7 @@ from random_events.random_events import random_eventer
 from Bank.bank import Bank
 import json
 import time
+import math
 
 class Engine:
     def __init__(self, starting_cash_def=50000, market_def=200, chaos_def=1.0, nbusers_def = 500, diff_mul_def = 1.0):
@@ -48,21 +49,47 @@ class Engine:
 
     def sell(self,username,ticker,x):
         current_stock = self.market.get_stock_by_ticker(ticker)
+        if current_stock is None or x <= 0:
+            return False
+
         user_cash = self.database.getPath(f"cash:{username}")
+        if user_cash is None:
+            return False
+
+        portfolios = dict(self.database.get("portfolios") or {})
+        positions = dict(portfolios.get(username, {}))
+        owned = positions.get(ticker, 0)
+        if x > owned:
+            return False
+
         spending = user_cash + x * current_stock.price
         self.database.setPath(f"cash:{username}", spending)
+        positions[ticker] = owned - x
+        if positions[ticker] == 0:
+            del positions[ticker]
+        portfolios[username] = positions
+        self.database.set("portfolios", portfolios)
         current_stock.sell(x)
+        return True
 
     def buy(self,username,ticker,x):
-            current_stock = self.market.get_stock_by_ticker(ticker)
-            user_cash = self.database.getPath(f"cash:{username}")
-            spending = user_cash - x * current_stock.price
-    
-            if user_cash > spending:
-                return
-            
-            self.database.setPath(f"cash:{username}", spending)
-            current_stock.buy(x)
+        current_stock = self.market.get_stock_by_ticker(ticker)
+        if current_stock is None or x <= 0:
+            return False
+
+        user_cash = self.database.getPath(f"cash:{username}")
+        cost = x * current_stock.price
+        if user_cash is None or user_cash < cost:
+            return False
+
+        self.database.setPath(f"cash:{username}", user_cash - cost)
+        portfolios = dict(self.database.get("portfolios") or {})
+        positions = dict(portfolios.get(username, {}))
+        positions[ticker] = positions.get(ticker, 0) + x
+        portfolios[username] = positions
+        self.database.set("portfolios", portfolios)
+        current_stock.buy(x)
+        return True
 
     def newPlayer(self,username):
         self.database.setPath(f"cash:{username}", self.config["starting_cash"])
@@ -100,23 +127,38 @@ class Engine:
         cash_path = f"cash:{username}"
         current_cash = self.database.getPath(cash_path)
 
-        if current_cash is None:
-            current_cash = 0.0
+        if isinstance(current_cash, bool) or not isinstance(current_cash, (int, float)):
+            return False
 
+        current_cash = float(current_cash)
+
+        if not math.isfinite(current_cash) or current_cash < 0:
+            return False
+        
         if action == "take_loan":
             if not self.bank.take_loan(username, amount):
                 return False
             self.database.setPath(cash_path, current_cash + float(amount))
 
         elif action == "repay_loan":
+            if isinstance(amount, bool) or not isinstance(amount, (int, float)):
+                return False
+
+            amount = float(amount)
+
+            if not math.isfinite(amount) or amount <= 0:
+                return False
+
             total_loans = self.bank.get_total_loans(username)
-            if amount <= 0 or amount > total_loans or amount > current_cash:
+
+            if amount > total_loans or amount > current_cash:
                 return False
 
             paid_amount = self.bank.repay_loan(username, amount)
             if paid_amount <= 0:
                 return False
-            self.database.setPath(cash_path, current_cash - paid_amount)
+
+            self.database.setPath(cash_path, current_cash - paid_amount)    
 
         elif action == "repay_all":
             total_loans = self.bank.get_total_loans(username)
@@ -158,7 +200,6 @@ class Engine:
             self.database.set("messages",messages)
 
     def tick(self):
-        """Advances the simulation by 1 time step."""
         if self.hosting:
             self.iteration += 1
 
@@ -189,6 +230,12 @@ class Engine:
                     "scope": next_event["scope"],
                     "play_probability": next_event["play_probability"]
                 })
+
+            self.userbase.update(
+                market=self.market, 
+                active_event=played_event, 
+                eventer=self.eventer
+            )
             
             self.market.update()
             if self.needSnapshot:
@@ -203,20 +250,17 @@ class Engine:
                 "prices": {t: s.price for t, s in self.market.stocks.items()},
             })
         else:
-            prices = self.database.get("prices")
-            lastHist = self.database.get("lastHist")
-            bank_state = self.database.get("bank_state")
-
-            if bank_state is not None:
-                self.bank.stock_value = bank_state["stock_value"]
-                self.bank.stock_change_percent = bank_state["stock_change_percent"]
-                self.bank.player_loans = bank_state["player_loans"]
-            if prices:
-                self.market.setPrices(prices)
-            if lastHist:
-                self.market.addHist(lastHist)
-
-    def _apply_event(self, event):
-        if self.hosting:
-            # E.g., if event affects Tech, modify AAPL/MSFT
-            pass
+            snap = self.database.get("market")
+            if snap and snap.get("id") != self.snapshot_id:
+                if not self.market:
+                    self.market = Market(len(snap["stocks"]))
+                self.market.load_snapshot(snap["stocks"])
+                self.snapshot_id = snap["id"]
+                self.iteration = snap["iteration"]
+                if self.onMarketLoaded:
+                    self.onMarketLoaded()
+            
+            td = self.database.get("tick")
+            if td and td.get("iteration", 0) > self.iteration and self.market:
+                self.iteration = td["iteration"]
+                self.market.apply_tick(td["prices"])

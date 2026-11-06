@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from tkinter import messagebox
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.patches import Rectangle
 import matplotlib.pyplot as plt
@@ -282,7 +283,7 @@ class MarketView(ctk.CTkFrame):
             fg_color="#0ecb81",
             hover_color="#0ba367",
             width=100,
-            command=lambda: self.sales_or_buys_executer(1000),
+            command=lambda: self.sales_or_buys_executer(1),
         )
         buy_btn.pack(side="left", expand=True, fill="x", padx=(0, 4))
 
@@ -292,7 +293,7 @@ class MarketView(ctk.CTkFrame):
             fg_color="#f6465d",
             hover_color="#f6465d",
             width=100,
-            command=lambda: self.sales_or_buys_executer(-1000),
+            command=lambda: self.sales_or_buys_executer(-1),
         )
         sell_btn.pack(side="right", expand=True, fill="x", padx=(4, 0))
 
@@ -301,39 +302,48 @@ class MarketView(ctk.CTkFrame):
             panel, text="Quantité (actions)", text_color="#848e9c", font=("Arial", 11)
         ).pack(anchor="w", padx=14, pady=(10, 0))
         self.amount_entry = ctk.CTkEntry(
-            panel, placeholder_text="0", fg_color="#2b313a", border_width=0
+            panel, fg_color="#2b313a", border_width=0
         )
         self.amount_entry.pack(fill="x", padx=12, pady=4)
+        self.amount_entry.insert(0, "1")
 
-        self.slider = ctk.CTkSlider(
-            panel, from_=0, to=100, number_of_steps=4, button_color="#0ecb81"
+        self.owned_shares_label = ctk.CTkLabel(
+            panel, text="", text_color="#848e9c", font=("Arial", 11)
         )
-        self.slider.pack(fill="x", padx=12, pady=12)
+        self.owned_shares_label.pack(anchor="w", padx=14, pady=(4, 0))
+        self._refresh_owned_shares()
 
         self._refresh_market_pulse()
 
 
     # Ventes et achats
 
-    def sales_or_buys_executer(self, x):
-        user_cash = self.engine.database.getPath(f"cash:{self.engine.username}")
-        spending = user_cash - x * self.current_stock.price
-
-        if user_cash > spending:
+    def sales_or_buys_executer(self, direction):
+        try:
+            quantity = int(self.amount_entry.get())
+        except ValueError:
             return
-        
-        self.engine.database.setPath(f"cash:{self.engine.username}", spending)
-        if x <= 0:
-            if self.engine.hosting:
-                self.current_stock.sell(abs(x))
-                return
-            else:
-                self.engine.database.sendAsClient("/sell "+self.current_stock.ticker+" "+str(abs(x)))
-                return
+
+        if quantity <= 0:
+            return
+
+        action = "buy" if direction > 0 else "sell"
         if self.engine.hosting:
-            self.current_stock.buy(x)
+            trade = self.engine.buy if direction > 0 else self.engine.sell
+            if not trade(self.engine.username, self.current_stock.ticker, quantity):
+                return
+            self._refresh_owned_shares()
         else:
-            self.engine.database.sendAsClient("/buy "+self.current_stock.ticker+" "+str(x))
+            self.engine.database.sendAsClient(
+                f"/{action} {self.current_stock.ticker} {quantity}"
+            )
+
+    def _refresh_owned_shares(self):
+        portfolios = self.engine.database.get("portfolios") or {}
+        owned = portfolios.get(self.engine.username, {}).get(
+            self.current_stock.ticker, 0
+        )
+        self.owned_shares_label.configure(text=f"Owned: {owned} shares")
 
     def bottom_tabs_builder(self):
         # Scrollable events feed
@@ -345,6 +355,7 @@ class MarketView(ctk.CTkFrame):
 
     def refresh(self):
         self.price_label.configure(text=f"${self.current_stock.price:.2f}")
+        self._refresh_owned_shares()
         self.stat_text.configure(
             text=f"Dernier mouvement : {_latest_change_pct(self.current_stock):+.2f}%  |  Capitalisation boursière : ${number_formatter(self.current_stock.market_cap)} {self.current_stock.currency}"
         )

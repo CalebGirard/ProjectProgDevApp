@@ -1,10 +1,10 @@
 import customtkinter as ctk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
-
+from engine import Engine
 
 class SettingsView(ctk.CTkFrame):
-    def __init__(self, master, controller, engine):
+    def __init__(self, master, controller, engine:Engine):
         super().__init__(master, fg_color="#0b0e11")
         self.controller = controller
 
@@ -22,7 +22,7 @@ class SettingsView(ctk.CTkFrame):
 
     def ui_builder(self):
         state = "normal"
-        if self.engine.hosting == False:
+        if not self.engine.hosting:
             state = "disabled"
 
         # Titre de la page
@@ -112,8 +112,18 @@ class SettingsView(ctk.CTkFrame):
         self.apply_btn.pack(anchor="se", padx=30, pady=48)
         
 
+    def refresh(self):
+        state = "normal" if self.engine.hosting else "disabled"
+        for entry in (
+            self.chaos_input,
+            self.difficulty_input,
+            self.number_players_input,
+            self.number_stocks_input,
+            self.starting_cash_input,
+        ):
+            entry.configure(state=state)
+
     def _apply_settings(self):
-                
         new_config = {
             "num_stocks": int(self.number_stocks_input.get().strip() or self.engine.config["num_stocks"]),
             "num_users": int(self.number_players_input.get().strip() or self.engine.config["num_users"]),
@@ -121,8 +131,13 @@ class SettingsView(ctk.CTkFrame):
             "difficulty": float(self.difficulty_input.get().strip() or self.engine.config["difficulty"]),
             "starting_cash": float(self.starting_cash_input.get().strip() or self.engine.config["starting_cash"]),
         }
-        self.engine.rebuild(new_config)
 
+        self.engine.rebuild(new_config)
+        for n in self.engine.database.get("playerlist"):
+            self.engine.database.setPath(f"cash:{n}",new_config["starting_cash"])
+
+        self.engine.database.set("portfolios",{})
+        
         market_view = self.controller.frames.get("Market")
         if market_view:
             market_view.reset()

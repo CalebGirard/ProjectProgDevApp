@@ -65,7 +65,7 @@ class Stock:
 
 
 class Market:
-    def __init__(self, size, impact=10):
+    def __init__(self, size, impact=0.01):
         self.size = size
         self.assets = Assets("market")
         self.stocks = self.create_stocks(self.size, impact)  # dictionnary of stocks

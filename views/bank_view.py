@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
+import math
 
 class BankView(ctk.CTkFrame):
     def __init__(self, master, controller, engine):
@@ -46,6 +47,9 @@ class BankView(ctk.CTkFrame):
         self.refresh_bank()
 
     def refresh_bank(self):
+        if self.refresh_job is not None:
+            self.after_cancel(self.refresh_job)
+
         state = self.engine.bank.get_player_state(self.engine.username)
 
         total_loans = sum(state["loans"])
@@ -57,21 +61,22 @@ class BankView(ctk.CTkFrame):
         self.credit_label.configure(text = f"Score de crédit : {state['credit_score']} - {vip_status}")
 
         maximum_loan = self.engine.bank.get_max_loan(self.engine.username)
+        maximum_loan_line = f"prêt maximal : {maximum_loan:.2f}$"
 
         lines = []
-
-        lines.append(f"prêt maximal : {maximum_loan:.2f}$")
 
         for amount, rate in zip(state["loans"], state["interest_rates"]):
             lines.append(f"Prêt : {amount:.2f}$ — Intérêt : {rate:.2%}")
 
-        if lines:
-            self.loans_label.configure(text = f"Dette totale : {total_loans:.2f}$\n" + "\n".join(lines))
+        if state["loans"]:
+            self.loans_label.configure(
+                text = f"Dette totale : {total_loans:.2f}$\n{maximum_loan_line}\n" + "\n".join(lines)
+            )    
 
         else:
-            self.loans_label.configure(text = "Aucun prêt")
+            self.loans_label.configure(text = f"Aucun prêt\n{maximum_loan_line}")
 
-        self. refresh_job = self.after(1000, self.refresh_bank)
+        self.refresh_job = self.after(1000, self.refresh_bank)
 
     def take_loan(self):
         try:
@@ -81,7 +86,7 @@ class BankView(ctk.CTkFrame):
 
         player_id = self.engine.username
 
-        if amount <= 0:
+        if amount <= 0 or not math.isfinite(amount):
             return
 
         total_loans = self.engine.bank.get_total_loans(player_id)
@@ -100,7 +105,7 @@ class BankView(ctk.CTkFrame):
         except ValueError:
             return
 
-        if amount <= 0:
+        if amount <= 0 or not math.isfinite(amount):
             return
 
         player_id = self.engine.username
@@ -112,7 +117,12 @@ class BankView(ctk.CTkFrame):
         cash_path = f"cash:{player_id}"
         current_cash = self.engine.database.getPath(cash_path)
 
-        if current_cash < amount:
+        if isinstance(current_cash, bool) or not isinstance(current_cash, (int, float)):
+            return
+
+        current_cash = float(current_cash)
+
+        if not math.isfinite(current_cash) or current_cash < amount:
             return
 
         self.engine.request_bank_action("repay_loan", amount)
@@ -127,7 +137,12 @@ class BankView(ctk.CTkFrame):
         cash_path = f"cash:{player_id}"
         current_cash = self.engine.database.getPath(cash_path)
 
-        if current_cash < total_loans:
+        if isinstance(current_cash, bool) or not isinstance(current_cash, (int, float)):
+            return
+
+        current_cash = float(current_cash)
+
+        if not math.isfinite(current_cash) or current_cash < total_loans:
             return
 
         self.engine.request_bank_action("repay_all")
