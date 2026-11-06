@@ -159,7 +159,7 @@ class MarketView(ctk.CTkFrame):
         self._update_time_button_styles()
         self.refresh()
 
-    # Pour que les boutons du temps aient le même effet visuel que les boutons de la barre latérale
+    # Pour que les boutons de durée aient le même effet visuel que les boutons de la barre latérale
     def _update_time_button_styles(self):
         for label, view in self.time_views.items():
             self.time_buttons[label].configure(
@@ -168,7 +168,7 @@ class MarketView(ctk.CTkFrame):
                 )
             )
 
-    # Auto select la première action valide
+    # Sélectionner automatiquement la première action valide
     def _select_first_match(self, event):
         valid_options = self.name_select._values
 
@@ -329,7 +329,7 @@ class MarketView(ctk.CTkFrame):
                 f"/{action} {self.current_stock.ticker} {quantity}"
             )
 
-    # Pour rafraichir avec la database
+    # Pour rafraîchir avec la database
     def _refresh_owned_shares(self):
         portfolios = self.engine.database.get("portfolios") or {}
         owned = portfolios.get(self.engine.username, {}).get(

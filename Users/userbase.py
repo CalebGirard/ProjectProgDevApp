@@ -211,7 +211,7 @@ class Userbase:
             )
         self.userbase.extend(users)
 
-    # Essentiellement, trouve, pour chaque actions, quelle est sa "vraie valeur",
+    # Essentiellement, trouve, pour chaque action, quelle est sa "vraie valeur",
     # en fonction de l'action elle-même et des événements aléatoires.
     # Les deux paramètres sont donc le momentum et le mouvement des événements (event_impact)
     def good_stock_finder(self, market, active_event=None, eventer=None):

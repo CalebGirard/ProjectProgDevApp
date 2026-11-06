@@ -130,7 +130,7 @@ class SettingsView(ctk.CTkFrame):
         )
         self.apply_btn.pack(anchor="se", padx=30, pady=48)
 
-    # Permet de changer la page si le statut de hôte change
+    # Permet de changer la page si le statut de l'hôte change
     def refresh(self):
         state = "normal" if self.engine.hosting else "disabled"
         for entry in (
