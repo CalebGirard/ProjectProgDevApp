@@ -332,6 +332,7 @@ class SlotMachine(ctk.CTkFrame):
             font=("Arial", 20, "bold"),
             text_color="#0ecb81",
             )
+        
         self.user_cash.pack(side="right", padx=20)
         self.update_cash_display()
 
@@ -419,6 +420,9 @@ class SlotMachine(ctk.CTkFrame):
             command=self.lancer_machine,
         )
         self.spin_button.pack(pady=(0, 20))
+
+        self.lbl_result = ctk.CTkLabel(self, text="", font=("Arial", 28, "bold"))
+        self.lbl_result.pack(pady=10)
 
         self.bind("<space>",lambda x:self.lancer_machine())
         self.focus_set()
