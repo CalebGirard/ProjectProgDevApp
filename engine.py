@@ -256,8 +256,7 @@ class Engine:
         else:
             snap = self.database.get("market")
             if snap and snap.get("id") != self.snapshot_id:
-                if not self.market:
-                    self.market = Market(len(snap["stocks"]))
+                self.market = Market(len(snap["stocks"]))
                 self.market.load_snapshot(snap["stocks"])
                 self.snapshot_id = snap["id"]
                 self.iteration = snap["iteration"]
