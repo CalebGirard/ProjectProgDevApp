@@ -83,6 +83,7 @@ class Database:
 
     async def sigWait(self, type: str):
         while self.sigRoomRunning:
+            # on attend pour un certain type de donner dans la room de signalage et on retourne les donner
             data = await self.sigQueue.get()
             self.sigQueue.task_done()
             if data["type"] == "expired":
@@ -92,6 +93,7 @@ class Database:
 
     async def handleConnections(self):
         while self.sigRoomRunning and len(self.connections.keys()) < 4:
+            # on attend q'un utilisateur rejoin, et on lui envoie notre configuration
             await self.sigWait("user_joined")
             print("New client attempting to connect...")
             ice = await self.sigIceGather()
@@ -108,19 +110,28 @@ class Database:
                 "type": pc.localDescription.type,
             }
             await self.webs.send(json.dumps(payload))
+
+            # on attend la configuration de l'utilisateur pour completer la connection
             data = await self.sigWait("relay")
             data = json.loads(data["data"])
             await pc.setRemoteDescription(
                 RTCSessionDescription(data["sdp"], data["type"])
             )
+
+            # on ajoutes c'est informations dans le dictionaire
             self.handleChannel(channel, data["username"])
             self.connections[data["username"]] = pc
             self.channels[data["username"]] = channel
             print("New client successfully connected!")
+
+            # si le callback de nouvelle connection est definie, on l'appel
             if self.newConnCallback:
                 self.newConnCallback(data["username"])
 
     async def sigIceGather(self):
+
+        # obtenir la configuration require a aiortc pour la connection en utilisant le serveur de relay
+
         creds = requests.get(
             "https://" + SERVER + "/turn-cred?username=" + self.username
         )
@@ -141,6 +152,8 @@ class Database:
     async def openRoom(self):
         if not self.host:
             return
+
+        # on clear les variables pour ouvrir une nouvelle room pour permettre la connection des utilisateur
         self.sigRoomRunning = False
         if self.webs:
             try:
@@ -151,6 +164,9 @@ class Database:
 
         self.connections.clear()
         self.channels.clear()
+
+        # on envoie une requete au serveur de signalage pour creer une room
+
         code = requests.get("https://" + SERVER + "/create", timeout=3)
         if code.status_code != 200:
             return False
@@ -159,6 +175,8 @@ class Database:
 
         if self.roomReadyCallback:
             self.roomReadyCallback(self.code, self.token)
+
+        # on se connecte a la room et on peut maintenant attendre les connections des utilisateur
 
         self.webs = await ws.connect(
             "wss://" + SERVER + "/ws?id=" + self.code + "&token=" + self.token
@@ -179,6 +197,8 @@ class Database:
     async def connectToDatabase(self, code: str):
         if self.host:
             return
+
+        # On clear les variable pour s'assurer qu'il reste rien d'une conenction anterieur
         self.sigRoomRunning = False
         if self.webs:
             try:
@@ -194,6 +214,8 @@ class Database:
             self.clientPc = None
         self.channels.clear()
         self.canSend = False
+
+        # On se connecte au serveur de signalement
         try:
             url = f"wss://{SERVER}/ws?id={code}"
             self.webs = await ws.connect(url)
@@ -214,9 +236,12 @@ class Database:
         self.sigRoomRunning = True
         asyncio.create_task(self.signalRecv())
 
+        # on attend de recevoir la config du host
         data = await self.sigWait("relay")
         data = json.loads(data["data"])
         ice = await self.sigIceGather()
+
+        # on configure aiortc pour la connection
         config = aiortc.RTCConfiguration(ice)
         pc = aiortc.RTCPeerConnection(configuration=config)
 
@@ -236,6 +261,7 @@ class Database:
             "sdp": pc.localDescription.sdp,
             "type": pc.localDescription.type,
         }
+        # On peut maintenant envoyer notre propre configuration au host pour terminer la connection
         await self.webs.send(json.dumps(payload))
         self.clientPc = pc
         self.sigRoomRunning = False
@@ -243,6 +269,7 @@ class Database:
 
     # Request Module
     def getPath(self, path: str):
+        # On parcour le path et retourne la valeur de fin
         dt = self.data
         for p in self.splitPath(path):
             if not isinstance(dt, dict) or p not in dt:
@@ -253,6 +280,7 @@ class Database:
     @threadsafe
     async def setPath(self, path: str, value):
         if self.host:
+            # si c'est le host, on parcour le path, on cherche la valeur et on le set, ensuite on envoie le changement au utilisateurs
             path = self.splitPath(path)
             if not path:
                 return None
@@ -270,6 +298,7 @@ class Database:
                     )
                 )
         elif self.clientPc:
+            # si c'est pas le host, on envoie la requete au host
             await self.sendAsClient(
                 json.dumps(
                     {
@@ -286,12 +315,14 @@ class Database:
     @threadsafe
     async def set(self, key: str, value):
         if self.host:
+            #Si la database est en mode host, on set et si une connection est fait, on envoie la modification a la connection
             self.data[key] = value
             if self.connections:
                 await self.broadcast(
                     json.dumps({"type": "sync", "data": {"key": key, "value": value}})
                 )
         elif self.clientPc:
+            # Si la database est pas le host, on envoie la requete de modification au host
             await self.sendAsClient(
                 json.dumps(
                     {
@@ -305,6 +336,7 @@ class Database:
     @threadsafe
     async def opData(self, key: str, value, op: str):
         if self.host:
+            # Si la database est en mode host, on fait l'op sur la valeur et on envoie le changement au connections
             try:
                 if op == "+":
                     self.data[key] += value
@@ -332,6 +364,7 @@ class Database:
                 print("Op data error ->", e)
                 return False
         elif self.clientPc:
+            # Si la database n'est pas en mode host, on envoie la requete au host
             await self.sendAsClient(
                 json.dumps(
                     {
@@ -344,9 +377,11 @@ class Database:
 
     @threadsafe
     async def setDataframe(self, key: str, dataframe):
+        # On converti le dataframe en dictionaire pour faciliter l'envoie par les connections
+        dataframe = dataframe.to_dict()
+
         if self.host:
-            if type(dataframe) == DataFrame:
-                dataframe = dataframe.to_dict()
+            # Si la database est en mode host, on met le dataframe dans la base de donner et on envoie la modification au connection
             self.data[key] = dataframe
             if self.connections:
                 await self.broadcast(
@@ -355,38 +390,45 @@ class Database:
                     )
                 )
         elif self.clientPc:
+            # Si la database n'est pas en mode host, on envoie la requete au host
             await self.sendAsClient(
                 json.dumps(
                     {
                         "type": "set_df",
                         "username": self.username,
-                        "data": {"key": key, "df": dataframe.to_dict()},
+                        "data": {"key": key, "df": dataframe},
                     }
                 )
             )
 
     def getDataframe(self, key: str):
         if self.data.get(key):
+            # Si le dataframe existe dans la database, il sera en dict donc on le converti et on le retourne
             return pd.DataFrame(self.data.get(key))
         return None
 
     # Networking Module
 
     def handleChannel(self, channel, username: str):
+
+        # C'est la fonction qui est lancer initialement pour aiortc, et permet de determiner ce qui ce passe lorsqu'un message est recu, lorsque la conenction est ouverte initalement, etc...
+
         if self.host:
+            # on met la channel (ce quon utilise pour tansmettre les donnes), dans un dictionaire avec le nom d'utilisateur de celui qui a rejoin
             self.channels[username] = channel
         if channel.readyState != "open":
 
             @channel.on("open")
             def on_open():
                 if self.host:
+                    # Si un nouvelle connection est ouverte en tant que host, on lui envoie sa copie personnelle de la database
                     channel.send(json.dumps({"type": "init_sync", "data": self.data}))
                 else:
                     self.canSend = True
                     self.channels[self.username] = channel
-
         else:
             if self.host:
+                # Si un nouvelle connection est ouverte en tant que host, on lui envoie sa copie personnelle de la database
                 channel.send(json.dumps({"type": "init_sync", "data": self.data}))
             else:
                 self.canSend = True
@@ -397,13 +439,16 @@ class Database:
             try:
                 message = json.loads(message)
             except:
+                # Si le message n'est pas du json valide, on appelle la fonction callback rawMsgCallback si elle est definie
                 message = {"type": "raw", "data": message}
                 if self.rawMsgCallback:
                     self.rawMsgCallback(username, message)
 
             if self.host:
+                # Si c'est le host, on met le message dans la Queue de requetes
                 self.requestQueue.put_nowait(message)
             else:
+                # Si c'est le host, on met le message dans la Queue de requetes et on process le message
                 self.waitQueue.put_nowait(message)
                 self.netProcess(message)
 
@@ -423,6 +468,7 @@ class Database:
     async def broadcast(self, data, excep: str = None):
         if not self.host:
             return
+        # Seulment si c'est le host, on envoie data, a tout le monde sauf celui definie en excep
         for user in self.connections.keys():
             if user != excep:
                 try:
@@ -435,6 +481,7 @@ class Database:
             data = await self.requestQueue.get()
             self.requestQueue.task_done()
             try:
+                # on process les requetes envoyer par les utilisateur par exemple un set "key" a 10
                 user = data["username"]
                 if data["type"] == "set":
                     key = data["data"]["key"]
@@ -469,6 +516,7 @@ class Database:
 
     async def netWait(self, type):
         while True:
+            # Attendre qu'un certain type de donner arrive et le retourner
             data = await self.waitQueue.get()
             self.waitQueue.task_done()
             if data["type"] == type:
@@ -477,6 +525,7 @@ class Database:
     def netProcess(self, data):
         if self.host:
             return
+        # Seulment si c'est le user, on process les donner envoyer par le host
         if data["type"] == "sync":
             self.data[data["data"]["key"]] = data["data"]["value"]
         elif data["type"] == "database_close":
@@ -502,6 +551,7 @@ class Database:
     def killDatabase(self):
         if not self.host:
             return
+        # fermer la database et le dire au users qui sont connecter
         self.broadcast(json.dumps({"type": "database_close"}))
         self.data = {}
 
@@ -518,14 +568,17 @@ class Database:
         self.username = username
 
     def startThread(self):
+        # On start le thread pour permettre a une application de continuer a marcher meme lors de l'execution, doit etre la premiere chose fait apres avoir definie une database
         self.loop = asyncio.new_event_loop()
         self._thread = threading.Thread(target=self._run, daemon=True)
         self._thread.start()
 
     def _run(self):
+        # Executer une fonction dans le thread
         asyncio.set_event_loop(self.loop)
         self.loop.create_task(self.init())
         self.loop.run_forever()
 
     def run(self, coro):
+        # Executer une fonction dans le thread
         return asyncio.run_coroutine_threadsafe(coro, self.loop)
