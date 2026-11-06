@@ -49,6 +49,9 @@ class Database:
         self.rawMsgCallback = None
         self.connFailedCallback = None
         self.newConnCallback = None
+        self.roomReadyCallback = None
+
+        self.sigRe = False
         
     async def init(self):
         asyncio.create_task(self.handleRequests())
@@ -56,13 +59,23 @@ class Database:
     # Signaling Module
 
     async def signalRecv(self):
+        if self.sigRe:
+            return
+        self.sigRe = True
         while self.sigRoomRunning:
             try:
+                if not self.webs:
+                    await asyncio.sleep(0.1)
+                    continue
                 data = await self.webs.recv()
                 data = json.loads(data)
-                #print(data)
                 await self.sigQueue.put(data)
-            except:pass
+            except Exception as e:
+                if "cannot call recv while another coroutine" in str(e):
+                    await asyncio.sleep(0.05)
+                    continue
+                print("Signal recv error:", e)
+                break
 
     async def sigWait(self, type:str):
         while self.sigRoomRunning: 
@@ -120,11 +133,25 @@ class Database:
     async def openRoom(self):
         if not self.host:
             return
+        self.sigRoomRunning = False
+        if self.webs:
+            try:
+                await self.webs.close()
+            except:
+                pass
+            self.webs = None
+
+        self.connections.clear()
+        self.channels.clear()
         code = requests.get("https://"+SERVER+"/create",timeout=3)
         if code.status_code != 200:
             return False
         self.code = code.json()["RoomID"]
         self.token = code.json()["OwnerToken"]
+
+        if self.roomReadyCallback:
+            self.roomReadyCallback(self.code,self.token)
+            
         self.webs = await ws.connect("wss://"+SERVER+"/ws?id="+self.code+"&token="+self.token)
         data = json.loads(await self.webs.recv())
         if data["type"] == "successful_connection":
@@ -142,14 +169,41 @@ class Database:
     async def connectToDatabase(self,code:str):
         if self.host:
             return
-        self.webs = await ws.connect("wss://"+SERVER+"/ws?id="+code)
-        data = json.loads(await self.webs.recv())
-        if data["type"] != "successful_connection":
+        self.sigRoomRunning = False
+        if self.webs:
+            try:
+                await self.webs.close()
+            except:
+                pass
+            self.webs = None
+        if self.clientPc:
+            try:
+                self.clientPc.close()
+            except:
+                pass
+            self.clientPc = None
+        self.channels.clear()
+        self.canSend = False
+        try:
+            url = f"wss://{SERVER}/ws?id={code}"
+            self.webs = await ws.connect(url)
+            
+            raw_msg = await self.webs.recv()
+            data = json.loads(raw_msg)
+            
+            if data.get("type") != "successful_connection":
+                if self.connFailedCallback:
+                    self.connFailedCallback()
+                return False
+        except Exception as e:
+            print("Client failed to establish WebSocket connection:", e)
             if self.connFailedCallback:
                 self.connFailedCallback()
             return False
+        
         self.sigRoomRunning = True
         asyncio.create_task(self.signalRecv())
+
         data = await self.sigWait("relay")
         data = json.loads(data["data"])
         ice = await self.sigIceGather()
@@ -305,7 +359,9 @@ class Database:
             return
         for user in self.connections.keys():
             if user != excep:
-                await self.sendAsHost(data,user)
+                try:
+                    await self.sendAsHost(data,user)
+                except:pass
 
     async def handleRequests(self):
         while True:
