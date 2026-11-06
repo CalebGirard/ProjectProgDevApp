@@ -2,7 +2,6 @@ from Users.userbase import userbase
 from market.market import Market
 from Database import Database
 from random_events.random_events import random_eventer
-import time
 
 class Engine:
     def __init__(self, starting_cash_def=50000, market_def=200, chaos_def=1.0, nbusers_def = 500, diff_mul_def = 1.0):
@@ -40,6 +39,8 @@ class Engine:
         self.userbase.build_T2s()
         self.userbase.build_T3s()
         self.userbase.build_T4s()
+        self.bank = Bank()
+        self.bank.add_player(self.username)
 
     def sell(self,username,ticker,x):
         current_stock = self.market.get_stock_by_ticker(ticker)
@@ -76,8 +77,7 @@ class Engine:
         messages.append({"username": "[Notification]", "message": f"{username} just joined !"})
         if len(messages) >= 40:
             messages.pop(0)
-        self.database.set("messages", messages)
-        self.needSnapshot = True
+        self.database.set("messages",messages)
 
     def rawMsgCallback(self,username, msg):
         if msg["data"].startswith("/buy"):
@@ -97,6 +97,20 @@ class Engine:
         """Advances the simulation by 1 time step."""
         if self.hosting:
             self.iteration += 1
+
+            if self.iteration % self.bank.mandatory_payment_interval == 0:
+                for player_id in list(self.bank.player_loans):
+                    self.bank.update_loans(player_id)
+
+                self.bank.update_bank_stock()
+
+            self.database.set("bank_state", {
+                "stock_value": self.bank.stock_value,
+                "stock_change_percent": self.bank.stock_change_percent,
+                "player_loans": self.bank.player_loans
+                })
+
+            bank_state = self.database.get("bank_state")
 
             played_event = self.eventer.update(
                 current_iteration = self.iteration,
@@ -125,20 +139,12 @@ class Engine:
                 "prices": {t: s.price for t, s in self.market.stocks.items()},
             })
         else:
-            snap = self.database.get("market")
-            if snap and snap.get("id") != self.snapshot_id:
-                if not self.market:
-                    self.market = Market(len(snap["stocks"]))
-                self.market.load_snapshot(snap["stocks"])
-                self.snapshot_id = snap["id"]
-                self.iteration = snap["iteration"]
-                if self.onMarketLoaded:
-                    self.onMarketLoaded()
-            
-            td = self.database.get("tick")
-            if td and td.get("iteration", 0) > self.iteration and self.market:
-                self.iteration = td["iteration"]
-                self.market.apply_tick(td["prices"])
+            prices = self.database.get("prices")
+            lastHist = self.database.get("lastHist")
+            if prices:
+                self.market.setPrices(prices)
+            if lastHist:
+                self.market.addHist(lastHist)
 
     def _apply_event(self, event):
         if self.hosting:
