@@ -364,17 +364,19 @@ class MarketView(ctk.CTkFrame):
                 "play_probability": event["play_probability"],
             }
 
-        event_entry = (next_event["scope"], next_event["headline"])
-        if event_entry != self._last_displayed_event:
-            self.news_box.configure(state="normal")
-            self.news_box.insert(
-                "end",
-                f"{next_event['scope'].upper()} - "
-                f"{next_event['headline']}\n"
-            )
-            self.news_box.see("end")
-            self.news_box.configure(state="disabled")
-            self._last_displayed_event = event_entry
+        try:
+            event_entry = (next_event["scope"], next_event["headline"])
+            if event_entry != self._last_displayed_event:
+                self.news_box.configure(state="normal")
+                self.news_box.insert(
+                    "end",
+                    f"{next_event['scope'].upper()} - "
+                    f"{next_event['headline']}\n"
+                )
+                self.news_box.see("end")
+                self.news_box.configure(state="disabled")
+                self._last_displayed_event = event_entry
+        except:pass
 
         # Actualiser le graphique
         self.ax.clear()
