@@ -1,7 +1,7 @@
 import pandas as pd
 import random
 import json
-
+from assets import Assets
 
 class Stock:
     def __init__(
@@ -54,7 +54,7 @@ class Stock:
             ),
         )
         self.history.append(self.price)
-        self.buys = self.sells = 0
+        self.bought = self.sold = 0
 
     @property
     def market_cap(self):
@@ -67,12 +67,14 @@ class Stock:
 class Market:
     def __init__(self, size, impact=10):
         self.size = size
+        self.assets = Assets("market")
         self.stocks = self.create_stocks(self.size, impact)  # dictionnary of stocks
+        
 
     def create_stocks(self, size, impact):
-        with open("./market/stocks.json", "r") as f:
+        with open(self.assets.getAssetPath("stocks.json"), "r") as f:
             stocks = json.load(f)
-        with open("./market/prices.csv") as f:
+        with open(self.assets.getAssetPath("prices.csv")) as f:
             prices = pd.read_csv(f)
 
         iter = random.sample(stocks, k=size)
@@ -112,6 +114,31 @@ class Market:
 
         for t, price in lastHist.items():
             self.stocks[t].history.append(price)
+
+    def snapshot(self):
+        return {
+            t: {
+                "name": s.name, "shares": s.shares, "currency": s.currency,
+                "tags": s.tags, "volatility": s.volatility, "drift": s.drift,
+                "impact": s.impact, "price": s.price,
+                "history": [round(p, 4) for p in s.history],
+            }
+            for t, s in self.stocks.items()
+        }
+
+    def load_snapshot(self, stocks):
+        self.stocks = {
+            t: Stock(d["name"], t, d["shares"], d["price"], d["history"], d["impact"],
+                    d["currency"], d["tags"], d["volatility"], d["drift"])
+            for t, d in stocks.items()
+        }
+
+    def apply_tick(self, prices):
+        for t, price in prices.items():
+            stock = self.stocks.get(t)
+            if stock:
+                stock.price = price
+                stock.history.append(price)
 
     def __repr__(self):
         return str(self.stocks)

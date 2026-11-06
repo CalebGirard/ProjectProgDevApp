@@ -4,7 +4,7 @@ import random as rd
 import json
 import math
 import csv
-
+from assets import Assets
 
 class user:
     def __init__(self, nom, lvl, starting_cash):
@@ -50,6 +50,7 @@ class userbase:
         self.size = nb
         self.difficulty_multiplier = difficulty_multiplier
         self.random_proportions = self.randomize_odds()
+        self.assets = Assets("Users")
 
     def randomize_odds(self):
         x, y, z, t = 0, 0, 0, 0
@@ -66,7 +67,7 @@ class userbase:
         return [x, y, z, t]
 
     def build_T1s(self):
-        with open("./Users/predefined_users.json", "r") as f:
+        with open(self.assets.getAssetPath("predefined_users.json"), "r") as f:
             t1_names = json.load(f)[0]
         users = []
         for i in range(self.random_proportions[0]):
@@ -82,7 +83,7 @@ class userbase:
         self.userbase.extend(users)
 
     def build_T2s(self):
-        with open("./Users/predefined_users.json", "r") as f:
+        with open(self.assets.getAssetPath("predefined_users.json"), "r") as f:
             t2_names = json.load(f)[1]
         users = []
         for i in range(self.random_proportions[1]):
@@ -98,12 +99,12 @@ class userbase:
         self.userbase.extend(users)
 
     def build_T3s(self):
-        with open("./Users/adjectives.json", "r") as f:
+        with open(self.assets.getAssetPath("adjectives.json"), "r") as f:
             data = json.load(f)
 
         temp = []
 
-        with open("./Users/terminology.csv", "r") as f:
+        with open(self.assets.getAssetPath("terminology.csv"), "r") as f:
             terminology = list(csv.reader(f, delimiter=","))[0]
 
         for i in range(self.random_proportions[2]):
@@ -131,9 +132,9 @@ class userbase:
         self.userbase.extend(temp)
 
     def build_T4s(self):
-        with open("./Users/names.json", "r") as f:
+        with open(self.assets.getAssetPath("names.json"), "r") as f:
             first_names = json.load(f)
-        with open("./Users/last.names.json", "r") as f:
+        with open(self.assets.getAssetPath("last.names.json"), "r") as f:
             last_names = json.load(f)
 
         users = []

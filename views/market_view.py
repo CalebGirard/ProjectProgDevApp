@@ -2,7 +2,7 @@ import customtkinter as ctk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.patches import Rectangle
 import matplotlib.pyplot as plt
-
+from engine import Engine
 """
 
 UI STRUCTURE :
@@ -30,7 +30,7 @@ UI STRUCTURE :
 
 
 class MarketView(ctk.CTkFrame):
-    def __init__(self, master, controller, engine):
+    def __init__(self, master, controller, engine:Engine):
         super().__init__(master, fg_color="#0b0e11")
         self.controller = controller
 
@@ -55,6 +55,13 @@ class MarketView(ctk.CTkFrame):
         self.graph_area_builder()
         self.order_panel_builder()
         self.bottom_tabs_builder()
+        self.engine.onMarketLoaded = self.reload_stocks
+
+    def reload_stocks(self):
+        options = self._get_dropdown_options()
+        self.name_select.configure(values=options)
+        self.name_select.set(options[0])
+        self.switch_data(options[0])
 
     def _get_dropdown_options(self):
         # Format: "Apple (AAPL)"
@@ -309,16 +316,24 @@ class MarketView(ctk.CTkFrame):
     # Ventes et achats
 
     def sales_or_buys_executer(self, x):
-        user_cash = self.engine.database.getPath("cash:host")
+        user_cash = self.engine.database.getPath(f"cash:{self.engine.username}")
         spending = user_cash - x * self.current_stock.price
 
-        if user_cash > spending :
+        if user_cash > spending:
             return
-        self.engine.database.setPath("cash:host", spending)
+        
+        self.engine.database.setPath(f"cash:{self.engine.username}", spending)
         if x <= 0:
-             self.current_stock.sell(x)
-             return
-        self.current_stock.buy(x)
+            if self.engine.hosting:
+                self.current_stock.sell(abs(x))
+                return
+            else:
+                self.engine.database.sendAsClient("/sell "+self.current_stock.ticker+" "+str(abs(x)))
+                return
+        if self.engine.hosting:
+            self.current_stock.buy(x)
+        else:
+            self.engine.database.sendAsClient("/buy "+self.current_stock.ticker+" "+str(x))
 
     def bottom_tabs_builder(self):
         # Scrollable events feed
@@ -372,7 +387,9 @@ class MarketView(ctk.CTkFrame):
 
         self.fig.tight_layout()
 
-        self.user_cash.configure(text=f"⭐ {number_formatter(self.engine.database.getPath(f"cash:{self.engine.username}"))} $ ⭐")
+        cash = self.engine.database.getPath(f"cash:{self.engine.username}")
+        cash = number_formatter(cash) if cash else "ERROR"
+        self.user_cash.configure(text=f"⭐ {cash} $ ⭐")
         self.canvas.draw()
 
     def _refresh_market_pulse(self):
@@ -403,6 +420,15 @@ class MarketView(ctk.CTkFrame):
         self.ax.tick_params(colors="#848e9c", labelsize=9)
         for spine in self.ax.spines.values():
             spine.set_color("#2b313a")
+
+    def reset(self):
+        self.current_stock = list(self.engine.market.stocks.values())[0]
+        
+        new_options = self.engine.market.get_names()
+        self.name_select.configure(values=new_options)
+        self.name_select.set(new_options[0] if new_options else "")
+        
+        self.refresh()
 
 
 def number_formatter(valeur):
