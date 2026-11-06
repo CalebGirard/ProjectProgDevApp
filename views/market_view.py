@@ -322,23 +322,16 @@ class MarketView(ctk.CTkFrame):
         try:
             quantity = int(self.amount_entry.get())
         except ValueError:
-            messagebox.showerror("Invalid quantity", "Enter a positive whole number of shares.")
             return
 
         if quantity <= 0:
-            messagebox.showerror("Invalid quantity", "Enter a positive whole number of shares.")
             return
 
         action = "buy" if direction > 0 else "sell"
         if self.engine.hosting:
             trade = self.engine.buy if direction > 0 else self.engine.sell
             if not trade(self.engine.username, self.current_stock.ticker, quantity):
-                messagebox.showerror(
-                    "Order not completed",
-                    "Not enough cash to buy these shares."
-                    if direction > 0
-                    else "You do not own enough shares to sell.",
-                )
+                return
             self._refresh_owned_shares()
         else:
             self.engine.database.sendAsClient(
