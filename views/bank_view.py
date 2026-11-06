@@ -9,38 +9,96 @@ class BankView(ctk.CTkFrame):
         self.controller = controller
         self.engine = engine
 
-        # Grid configuration
-        self.grid_columnconfigure(0, weight=3)  # Chart + News
-        self.grid_columnconfigure(1, weight=1)  # Order execution panel
-        self.grid_rowconfigure(1, weight=3)     # Main chart row
-        self.grid_rowconfigure(2, weight=1)     # News / bottom tabs row
+        self.grid_columnconfigure((0, 1, 2), weight=1)
+        self.grid_rowconfigure(2, weight=1)
 
-        self.bank_value_label = ctk.CTkLabel(self, text = "Valeur de la banque : 100.00", font = ("Arial", 20, "bold"))
-        self.bank_value_label.pack(padx = 20, pady = 10)
+        header = ctk.CTkFrame(self, fg_color="#181a20", corner_radius=8)
+        header.grid(row=0, column=0, columnspan=3, padx=18, pady=(18, 10), sticky="ew")
+        ctk.CTkLabel(
+            header,
+            text="BANQUE",
+            text_color="#0ecb81",
+            font=("Arial", 12, "bold"),
+        ).pack(anchor="w", padx=18, pady=(12, 2))
+        ctk.CTkLabel(
+            header,
+            text="Gérez vos prêts et votre crédit",
+            text_color="#eaecef",
+            font=("Arial", 24, "bold"),
+        ).pack(anchor="w", padx=18, pady=(0, 12))
 
-        self.change_label = ctk.CTkLabel(self, text = "Variation : +0.00%")
-        self.change_label.pack(pady = 5)
+        stats = ctk.CTkFrame(self, fg_color="transparent")
+        stats.grid(row=1, column=0, columnspan=3, padx=12, pady=(0, 10), sticky="ew")
+        for column in range(3):
+            stats.grid_columnconfigure(column, weight=1)
 
-        self.credit_label = ctk.CTkLabel(self, text = "score de crédit:50")
-        self.credit_label.pack(pady = 5)
+        stat_cards = []
+        for column, title in enumerate(("Valeur de la banque", "Variation", "Crédit")):
+            card = ctk.CTkFrame(stats, fg_color="#181a20", corner_radius=8)
+            card.grid(row=0, column=column, padx=6, sticky="ew")
+            ctk.CTkLabel(
+                card, text=title, text_color="#848e9c", font=("Arial", 12, "bold")
+            ).pack(anchor="w", padx=14, pady=(12, 2))
+            value = ctk.CTkLabel(
+                card, text="", text_color="#eaecef", font=("Arial", 18, "bold")
+            )
+            value.pack(anchor="w", padx=14, pady=(0, 12))
+            stat_cards.append(value)
 
-        self.loans_label = ctk.CTkLabel(self,text="Aucun prêt",justify="left",)
-        self.loans_label.pack(padx=20, pady=10, fill="x")
+        self.bank_value_label, self.change_label, self.credit_label = stat_cards
 
-        self.loan_amount_entry = ctk.CTkEntry(self, placeholder_text = "Montant du prêt",)
-        self.loan_amount_entry.pack(padx = 20, pady = 5)
+        loans_panel = ctk.CTkFrame(self, fg_color="#181a20", corner_radius=8)
+        loans_panel.grid(row=2, column=0, padx=(18, 6), pady=(0, 18), sticky="nsew")
+        ctk.CTkLabel(
+            loans_panel,
+            text="VOS PRÊTS",
+            text_color="#eaecef",
+            font=("Arial", 14, "bold"),
+        ).pack(anchor="w", padx=16, pady=(16, 8))
+        self.loans_label = ctk.CTkLabel(
+            loans_panel,
+            text="Aucun prêt",
+            text_color="#848e9c",
+            justify="left",
+            anchor="nw",
+            font=("Arial", 13),
+        )
+        self.loans_label.pack(anchor="w", padx=16, pady=(0, 16))
 
-        self.take_loan_button = ctk.CTkButton(self, text = "Prendre un prêt", command = self.take_loan)
-        self.take_loan_button.pack(padx = 20, pady = 10)
+        actions_panel = ctk.CTkFrame(self, fg_color="#181a20", corner_radius=8)
+        actions_panel.grid(row=2, column=1, columnspan=2, padx=(6, 18), pady=(0, 18), sticky="nsew")
+        ctk.CTkLabel(
+            actions_panel,
+            text="OPÉRATIONS",
+            text_color="#eaecef",
+            font=("Arial", 14, "bold"),
+        ).pack(anchor="w", padx=16, pady=(16, 8))
 
-        self.repay_amount_entry = ctk.CTkEntry(self, placeholder_text = "Montant du remboursement")
-        self.repay_amount_entry.pack(padx=20, pady=5)
+        self.loan_amount_entry = ctk.CTkEntry(
+            actions_panel, placeholder_text="Montant du prêt"
+        )
+        self.loan_amount_entry.pack(fill="x", padx=16, pady=(4, 6))
+        self.take_loan_button = ctk.CTkButton(
+            actions_panel, text="Prendre un prêt", command=self.take_loan
+        )
+        self.take_loan_button.pack(fill="x", padx=16, pady=(0, 14))
 
-        self.repay_button = ctk.CTkButton(self, text = "Rembourser tous les prêts", command = self.repay_loans)
-        self.repay_button.pack(padx=20, pady=10)
-
-        self.repay_partial_button = ctk.CTkButton(self, text = "Rembourser une partie", command = self.repay_loan)
-        self.repay_partial_button.pack(padx=20, pady=10)
+        self.repay_amount_entry = ctk.CTkEntry(
+            actions_panel, placeholder_text="Montant du remboursement"
+        )
+        self.repay_amount_entry.pack(fill="x", padx=16, pady=(4, 6))
+        self.repay_partial_button = ctk.CTkButton(
+            actions_panel, text="Rembourser une partie", command=self.repay_loan
+        )
+        self.repay_partial_button.pack(fill="x", padx=16, pady=(0, 8))
+        self.repay_button = ctk.CTkButton(
+            actions_panel,
+            text="Rembourser tous les prêts",
+            command=self.repay_loans,
+            fg_color="#2b313a",
+            hover_color="#363c4e",
+        )
+        self.repay_button.pack(fill="x", padx=16, pady=(0, 16))
 
         self.refresh_job = None
 
@@ -56,25 +114,37 @@ class BankView(ctk.CTkFrame):
 
         vip_status = "VIP" if state["is_vip"] else "Standard"
 
-        self.bank_value_label.configure(text = f"Valeur de la banque : {self.engine.bank.stock_value:.2f}")
-        self.change_label.configure(text = f"Variation : {self.engine.bank.stock_change_percent:+.2f}%")
-        self.credit_label.configure(text = f"Score de crédit : {state['credit_score']} - {vip_status}")
+        self.bank_value_label.configure(
+            text=f"${self.engine.bank.stock_value:.2f}", text_color="#0ecb81"
+        )
+        self.change_label.configure(
+            text=f"{self.engine.bank.stock_change_percent:+.2f}%",
+            text_color="#0ecb81" if self.engine.bank.stock_change_percent >= 0 else "#f6465d",
+        )
+        self.credit_label.configure(
+            text=f"{state['credit_score']} / 100 · {vip_status}"
+        )
 
         maximum_loan = self.engine.bank.get_max_loan(self.engine.username)
-        maximum_loan_line = f"prêt maximal : {maximum_loan:.2f}$"
+        maximum_loan_line = f"Prêt maximal : ${maximum_loan:.2f}"
 
         lines = []
 
         for amount, rate in zip(state["loans"], state["interest_rates"]):
-            lines.append(f"Prêt : {amount:.2f}$ — Intérêt : {rate:.2%}")
+            lines.append(f"${amount:.2f}  ·  Intérêt : {rate:.2%}")
 
         if state["loans"]:
             self.loans_label.configure(
-                text = f"Dette totale : {total_loans:.2f}$\n{maximum_loan_line}\n" + "\n".join(lines)
+                text=f"Dette totale : ${total_loans:.2f}\n{maximum_loan_line}\n\n"
+                + "\n".join(lines),
+                text_color="#eaecef",
             )    
 
         else:
-            self.loans_label.configure(text = f"Aucun prêt\n{maximum_loan_line}")
+            self.loans_label.configure(
+                text=f"Aucun prêt en cours\n{maximum_loan_line}",
+                text_color="#848e9c",
+            )
 
         self.refresh_job = self.after(1000, self.refresh_bank)
 

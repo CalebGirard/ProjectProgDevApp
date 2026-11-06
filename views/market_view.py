@@ -101,7 +101,7 @@ class MarketView(ctk.CTkFrame):
 
         # Titre
         self.name = ctk.CTkLabel(
-            bar, text="Visualiseur de marchés internationaux™", font=("Arial", 20, "bold")
+            bar, text="Visualiseur de marchés™", font=("Arial", 20, "bold")
         )
         self.name.pack(side="left", padx=12, pady=8)
 
@@ -116,7 +116,7 @@ class MarketView(ctk.CTkFrame):
 
         self.stat_text = ctk.CTkLabel(
             bar,
-            text=f"Dernier mouvement : {_latest_change_pct(self.current_stock):+.2f}%  | Capitalisation boursière : ${number_formatter(self.current_stock.market_cap)} {self.current_stock.currency}",
+            text=f"Dernier mouvement : {_latest_change_pct(self.current_stock):+.2f}%  | Capitalisation : ${number_formatter(self.current_stock.market_cap)} {self.current_stock.currency}",
             font=("Arial", 12),
             text_color="#848e9c",
         )

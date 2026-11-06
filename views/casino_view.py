@@ -178,13 +178,15 @@ class Roulette(ctk.CTkFrame):
         except:
             self.original_image = Image.new("RGBA", (300, 300), (34, 139, 34, 255))
 
+        cash_bar = ctk.CTkFrame(self, fg_color="#181a20", corner_radius=8)
+        cash_bar.pack(side="bottom", fill="x", padx=24, pady=(8, 16))
         self.user_cash = ctk.CTkLabel(
-                    self,
-                    text="",
-                    font=("Arial", 20, "bold"),
-                    text_color="#0ecb81",
-                )
-        self.user_cash.pack(side="right", padx=20)
+            cash_bar,
+            text="",
+            font=("Arial", 18, "bold"),
+            text_color="#0ecb81",
+        )
+        self.user_cash.pack(pady=10)
         self.update_cash_display()
 
         self.wheel_container = ctk.CTkFrame(self, fg_color="transparent")
@@ -333,14 +335,15 @@ class SlotMachine(ctk.CTkFrame):
                 self.loaded_images.append(
                     ctk.CTkImage(dark_image=symbol.copy(), size=(160, 160))
                 )
+        cash_bar = ctk.CTkFrame(self, fg_color="#181a20", corner_radius=8)
+        cash_bar.pack(side="bottom", fill="x", padx=24, pady=(8, 16))
         self.user_cash = ctk.CTkLabel(
-            self,
+            cash_bar,
             text="",
-            font=("Arial", 20, "bold"),
+            font=("Arial", 18, "bold"),
             text_color="#0ecb81",
-            )
-        
-        self.user_cash.pack(side="right", padx=20)
+        )
+        self.user_cash.pack(pady=10)
         self.update_cash_display()
 
         header = ctk.CTkFrame(self, fg_color="transparent")
@@ -477,7 +480,7 @@ class SlotMachine(ctk.CTkFrame):
         self.machine_running = True
         self.curr = 1
         
-        """Chaque rouleau tourne un peu plus longtemps que le précédent"""
+        # Chaque rouleau tourne un peu plus longtemps que le précédent
         self.temps_1 = 500
         self.temps_2 = 1500
         self.temps_3 = 2500
