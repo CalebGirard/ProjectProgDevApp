@@ -181,15 +181,23 @@ class random_eventer:
     # (scope) précédemment sélectionné
 
     def select_template(self, scope):
-        weights = self.template_weights[scope]
-        template_id = weighted_choice(weights)
+        matching_templates = [t for t in self.templates if t.get("scope") == scope]
+        
+        # Si aucun template n'existe pour ce scope précis, on prend ce qui existe
+        if not matching_templates:
+            matching_templates = self.templates
 
-        template = next(
-            template
-            for template in self.templates
-            if template["id"] == template_id and template["scope"] == scope
+        weights = self.template_weights.get(scope, {})
+        valid_weights = {
+            t["id"]: weights.get(t["id"], 1.0) for t in matching_templates
+        }
+
+        template_id = weighted_choice(valid_weights)
+
+        return next(
+            (t for t in matching_templates if t["id"] == template_id),
+            matching_templates[0]
         )
-        return template
 
     # rebalancement du coefficient de probabilité des autres événements.
     # Le coefficient de l'élément choisi diminue de moitié et la moitié qui
@@ -365,10 +373,11 @@ class random_eventer:
     def build_event(self):
         scope = self.select_scope()
         template = self.select_template(scope)
+        actual_scope = template["scope"]
         selected_values = self.resolve_template_variables(template)
         impact = self.generate_impact(template)
 
-        self.rebalance_template_weights(scope, template["id"])
+        self.rebalance_template_weights(actual_scope, template["id"])
 
         return {
             "template_id": template["id"],

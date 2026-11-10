@@ -501,4 +501,4 @@ def candlesticker(ax, prices, start_index=0, previous_close=None):
         )
     if prices:
         ax.set_xlim(start_index - 0.5, start_index + len(prices) - 0.5)
-    ax.set_xlabel(f"{candle_sizer} jours", color="#848e9c")
+    ax.set_xlabel(f"Jours", color="#848e9c")
